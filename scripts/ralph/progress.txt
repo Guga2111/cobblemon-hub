@@ -1,0 +1,44 @@
+## Codebase Patterns
+- React Router v7 framework mode (SPA): requires `ssr: false` in react-router.config.ts and `@react-router/node` package
+- tsconfig MUST include `"rootDirs": [".", "./.react-router/types"]` for generated types to resolve
+- tsconfig needs `"allowImportingTsExtensions": true` and `"noEmit": true` in bundler/RR7 mode
+- Tailwind v4 setup: use `@tailwindcss/vite` plugin + `@import "tailwindcss"` in CSS (no tailwind.config.ts needed)
+- Route files use `$param` convention (not `[param]`): `$id.tsx`, `$slug.tsx`
+- App directory is `src/app` (configured in react-router.config.ts), routes in `src/app/routes/`
+- `src/app/routes.ts` file required — use `index()` and `route()` helpers from `@react-router/dev/routes` (no `flatRoutes`)
+- `~/*` path alias maps to `./src/*` via tsconfig paths
+- Types in `src/types/` (pokemon.ts, spawn.ts, team.ts); Zod schemas in `src/lib/schemas.ts`; constants in `src/lib/constants.ts`
+- Zod enums from const arrays: cast with `as [string, ...string[]]` then further cast to `z.ZodEnum<[...]>` for type safety
+- PokemonType tuple `[PokemonType] | [PokemonType, PokemonType]` — use `z.union([z.tuple([...]), z.tuple([..., ...])])`
+
+---
+
+## 2026-05-27 - US-001
+- Initialized full project: Vite 6.4.2 + React 19.2.6 + TypeScript strict
+- Configured Tailwind CSS v4 via @tailwindcss/vite plugin
+- Set up React Router v7 framework mode (SPA, appDirectory: "src/app")
+- Installed: Zustand, TanStack Query v5, TanStack Table v8, TanStack Virtual, Zod, Lucide React, concurrently
+- Created dark-mode-first CSS variables in src/styles/globals.css
+- Created components.json for Shadcn UI (violet base color)
+- Created placeholder route files for all routes defined in routes.ts
+- Files changed: package.json, vite.config.ts, react-router.config.ts, tsconfig.json, components.json, .gitignore, src/app/root.tsx, src/app/routes.ts, src/app/routes/_index.tsx, src/app/routes/pokedex/index.tsx, src/app/routes/pokedex/$id.tsx, src/app/routes/team-builder.tsx, src/app/routes/items.tsx, src/app/routes/guides/index.tsx, src/app/routes/guides/$slug.tsx, src/lib/utils.ts, src/styles/globals.css, server/index.ts
+- **Learnings for future iterations:**
+  - `flatRoutes()` is NOT exported from `@react-router/dev/routes` in v7.15.1 — use `index()` and `route()` helpers instead
+  - React Router v7 framework mode needs `@react-router/node` even with `ssr: false`
+  - The `.react-router/types/` directory is auto-generated on first `react-router dev` run — typecheck must happen after dev runs once
+  - `rootDirs` in tsconfig is the critical fix for `.react-router/types/**/*` module resolution
+  - Vite 8 not available on npm yet (got 6.4.2 as latest)
+---
+
+## 2026-05-27 - US-002
+- Created `src/types/pokemon.ts`: PokemonType, GrowthRate, EggGroup, BaseStats, Ability, LearnableMove, Evolution, ItemDrop, PokemonForm, Pokemon interfaces
+- Created `src/types/spawn.ts`: SpawnBucket, SpawnContext, NearbyBlock, SpawnCondition, SpawnEntry interfaces
+- Created `src/types/team.ts`: Nature, NatureEffect, EVSpread, IVSpread, StatBlock, TeamMember, TeamSlot interfaces
+- Created `src/lib/constants.ts`: all 18 Pokemon types, 25 natures with stat effects, growth rates, egg groups, spawn contexts/buckets, display name maps, EV/IV limits
+- Created `src/lib/schemas.ts`: Zod schemas for every interface above; re-exports inferred types
+- Files changed: src/types/pokemon.ts, src/types/spawn.ts, src/types/team.ts, src/lib/constants.ts, src/lib/schemas.ts
+- **Learnings for future iterations:**
+  - `noUnusedLocals: true` is strict — every import in schemas/constants must be used or typecheck fails
+  - Zod enum from a const array requires double cast: `z.enum(arr as [string, ...string[]]) as z.ZodEnum<[...]>` to preserve type literal
+  - Single-type and dual-type tuples modeled as `z.union([z.tuple([t]), z.tuple([t, t])])` matching the TS union `[T] | [T, T]`
+---
