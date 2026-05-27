@@ -46,7 +46,12 @@ function rowToListItem(row: Record<string, unknown>) {
     name: row.name as string,
     displayName: row.display_name as string,
     types: JSON.parse(row.types as string) as unknown,
+    baseStats: JSON.parse(row.base_stats as string) as unknown,
     generation: row.generation as number,
+    primaryBucket: (row.primary_bucket as string | null) ?? null,
+    primaryBiomes: row.primary_biomes
+      ? (JSON.parse(row.primary_biomes as string) as string[])
+      : null,
   };
 }
 
@@ -56,7 +61,7 @@ function rowToListItem(row: Record<string, unknown>) {
 app.get("/api/pokemon", async (c) => {
   const query = c.req.query();
   const page = Math.max(1, parseInt(query.page ?? "1", 10));
-  const limit = Math.min(100, Math.max(1, parseInt(query.limit ?? "20", 10)));
+  const limit = Math.min(1000, Math.max(1, parseInt(query.limit ?? "20", 10)));
   const offset = (page - 1) * limit;
 
   const conditions: string[] = [];
@@ -76,7 +81,11 @@ app.get("/api/pokemon", async (c) => {
   const [countResult, dataResult] = await Promise.all([
     db.execute({ sql: `SELECT COUNT(*) as total FROM pokemon ${where}`, args }),
     db.execute({
-      sql: `SELECT id, dex_number, name, display_name, types, generation FROM pokemon ${where} ORDER BY dex_number LIMIT ? OFFSET ?`,
+      sql: `SELECT
+        p.id, p.dex_number, p.name, p.display_name, p.types, p.base_stats, p.generation,
+        (SELECT bucket FROM spawn_entries WHERE pokemon_id = p.id ORDER BY weight DESC LIMIT 1) as primary_bucket,
+        (SELECT biomes FROM spawn_entries WHERE pokemon_id = p.id ORDER BY weight DESC LIMIT 1) as primary_biomes
+      FROM pokemon p ${where} ORDER BY p.dex_number LIMIT ? OFFSET ?`,
       args: [...args, limit, offset],
     }),
   ]);
