@@ -129,8 +129,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 7,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Layout route at src/app/routes/layout.tsx, wrapped via layout() helper in routes.ts. Sheet component in src/components/ui/sheet.tsx uses @radix-ui/react-dialog. Sidebar collapse state persisted to localStorage. Type colors in src/styles/type-colors.css as RGB triplets."
     },
     {
       "id": "US-008",

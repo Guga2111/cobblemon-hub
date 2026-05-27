@@ -1,4 +1,9 @@
 ## Codebase Patterns
+- Layout route: use `layout("routes/layout.tsx", [...children])` in routes.ts — `layout` is exported from `@react-router/dev/routes`
+- Sheet/Drawer component: built from @radix-ui/react-dialog primitives in src/components/ui/sheet.tsx — no shadcn CLI needed
+- Type colors: CSS custom properties in src/styles/type-colors.css as RGB triplets (`--type-fire: 240 128 48`) for alpha composability (`rgb(var(--type-fire) / 0.2)`)
+- Sidebar collapse state persisted to localStorage key `"sidebar-collapsed"` — read on init with `localStorage.getItem()`
+- `data-[state=open]` / `data-[state=closed]` Tailwind variants work in v4 for Radix dialog transitions
 - Scripts use relative imports (`../src/lib/schemas`) NOT `~/` aliases — tsx resolves tsconfig paths but relative is more reliable in script context
 - data/*.json is in .gitignore; scripts call mkdirSync("./data", { recursive: true }) to ensure the directory exists at runtime
 - Item type lives in src/types/item.ts; standalone Move type in src/types/move.ts (separate from LearnableMove in pokemon.ts)
@@ -117,4 +122,19 @@
   - Biome grouping: one spawn entry can have multiple biomes, so it may appear in multiple groups; flatten with a `for (biome of entry.biomes)` loop
   - `rowToItem` follows same JSON.parse pattern as `rowToPokemon` for TEXT columns
   - Item lookup by `id OR name` (same pattern as pokemon) allows either identifier in the URL
+---
+
+## 2026-05-27 - US-007
+- Created `src/styles/type-colors.css` with CSS custom properties for all 18 Pokémon types as RGB triplets
+- Created `src/components/ui/sheet.tsx` — Sheet/Drawer component built from @radix-ui/react-dialog primitives
+- Created `src/app/routes/layout.tsx` — App shell: desktop collapsible sidebar + tablet sheet drawer + mobile bottom nav; skip-to-content link; NavLink active states via semantic CSS variables only
+- Updated `src/app/routes.ts` — wrapped all routes with `layout("routes/layout.tsx", [...])`
+- Updated `src/app/root.tsx` — added `import "~/styles/type-colors.css"`
+- Updated `src/app/routes/_index.tsx` — removed `min-h-screen` (layout owns the height)
+- **Learnings for future iterations:**
+  - `layout` IS exported from `@react-router/dev/routes` (confirmed at runtime) — safe to use alongside `index()` and `route()`
+  - Dialog.Root (Sheet) renders no DOM element — it's safe to wrap the entire layout in it so SheetTrigger and SheetContent can be placed independently in the tree
+  - `data-[state=closed]:-translate-x-full` works in Tailwind v4 — arbitrary data-attribute variants are supported natively
+  - `NavLink` children can be a render function `({ isActive }) => JSX` enabling dynamic icon scaling / indicator dots
+  - The `id="header-actions"` div in the header is a stable slot for US-008's theme toggle (avoid recreating the header)
 ---
