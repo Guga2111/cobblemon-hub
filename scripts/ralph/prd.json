@@ -57,8 +57,8 @@
         "Typecheck passes"
       ],
       "priority": 3,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Scripts use relative imports (../src/...) not ~/aliases to avoid tsx path resolution issues. data/*.json is gitignored; data/ dir created by scripts at runtime. Without COBBLEMON_DATAPACK_PATH, scripts produce empty valid JSONs gracefully. Item and Move types added to src/types/item.ts and src/types/move.ts; schemas added to src/lib/schemas.ts."
     },
     {
       "id": "US-004",

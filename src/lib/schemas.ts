@@ -173,6 +173,33 @@ export const teamSlotSchema = z.object({
   member: teamMemberSchema.nullable(),
 });
 
+const itemCategorySchema = z.enum([
+  "ball", "medicine", "berry", "held-item", "evolution-item", "ingredient", "other",
+]);
+
+export const itemSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  displayName: z.string(),
+  category: itemCategorySchema,
+  description: z.string(),
+  sprite: z.string().nullable(),
+  droppedBy: z.array(z.string()),
+});
+
+export const moveSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  displayName: z.string(),
+  type: pokemonTypeSchema,
+  category: moveCategorySchema,
+  power: z.number().int().min(1).nullable(),
+  accuracy: z.number().int().min(1).max(100).nullable(),
+  pp: z.number().int().min(1),
+});
+
 export type PokemonSchema = z.infer<typeof pokemonSchema>;
 export type SpawnEntrySchema = z.infer<typeof spawnEntrySchema>;
 export type TeamMemberSchema = z.infer<typeof teamMemberSchema>;
+export type ItemSchema = z.infer<typeof itemSchema>;
+export type MoveSchema = z.infer<typeof moveSchema>;

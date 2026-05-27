@@ -1,4 +1,9 @@
 ## Codebase Patterns
+- Scripts use relative imports (`../src/lib/schemas`) NOT `~/` aliases — tsx resolves tsconfig paths but relative is more reliable in script context
+- data/*.json is in .gitignore; scripts call mkdirSync("./data", { recursive: true }) to ensure the directory exists at runtime
+- Item type lives in src/types/item.ts; standalone Move type in src/types/move.ts (separate from LearnableMove in pokemon.ts)
+- itemSchema and moveSchema exported from src/lib/schemas.ts; itemCategorySchema and moveCategorySchema are local const reuse within the file
+- Scripts exit gracefully (code 0) when datapack isn't present — produce empty valid JSON arrays
 - React Router v7 framework mode (SPA): requires `ssr: false` in react-router.config.ts and `@react-router/node` package
 - tsconfig MUST include `"rootDirs": [".", "./.react-router/types"]` for generated types to resolve
 - tsconfig needs `"allowImportingTsExtensions": true` and `"noEmit": true` in bundler/RR7 mode
@@ -41,4 +46,23 @@
   - `noUnusedLocals: true` is strict — every import in schemas/constants must be used or typecheck fails
   - Zod enum from a const array requires double cast: `z.enum(arr as [string, ...string[]]) as z.ZodEnum<[...]>` to preserve type literal
   - Single-type and dual-type tuples modeled as `z.union([z.tuple([t]), z.tuple([t, t])])` matching the TS union `[T] | [T, T]`
+---
+
+## 2026-05-27 - US-003
+- Created `scripts/extract-pokemon.ts`: parses Cobblemon v1.7.x species JSONs, normalizes to Pokemon interface, validates with pokemonSchema, writes data/pokemon.json
+- Created `scripts/extract-spawns.ts`: parses spawn_pool_world JSONs, normalizes to SpawnEntry, validates with spawnEntrySchema, writes data/spawns.json
+- Created `scripts/extract-items.ts`: collects unique items from pokemon drops, auto-detects ItemCategory via regex patterns, writes data/items.json
+- Created `scripts/extract-moves.ts`: collects unique move names from pokemon.json, fetches power/accuracy/PP/type from PokeAPI in batches of 20, caches results, writes data/moves.json
+- Created `scripts/README.md`: documents datapack setup, env var, output files, and re-extraction process
+- Created `src/types/item.ts` with Item interface and ItemCategory union type
+- Created `src/types/move.ts` with standalone Move interface
+- Extended `src/lib/schemas.ts` with itemSchema, moveSchema, and their exported inferred types
+- Files changed: src/types/item.ts (new), src/types/move.ts (new), src/lib/schemas.ts, scripts/extract-pokemon.ts (new), scripts/extract-spawns.ts (new), scripts/extract-items.ts (new), scripts/extract-moves.ts (new), scripts/README.md (new)
+- **Learnings for future iterations:**
+  - Scripts import via relative paths (`../src/lib/schemas`) not `~/` alias — more robust for tsx execution
+  - Cobblemon species JSONs have subtle format variations between versions: abilities can be string[] or Record<string,string>; moves can be RawLevelMove[] or "level:name" strings — handle both
+  - `extract-moves.ts` preserves existing cache in data/moves.json — re-running only fetches new/missing moves
+  - Without COBBLEMON_DATAPACK_PATH set, all 4 scripts gracefully write empty JSON arrays (exit code 0) so `npm run extract` always succeeds
+  - data/*.json is gitignored (can be large); scripts call mkdirSync({recursive:true}) to create the directory
+  - moveCategorySchema defined locally in schemas.ts — can be referenced for moveSchema without re-defining
 ---
