@@ -1,4 +1,8 @@
 ## Codebase Patterns
+- TanStack Query: QueryClient created at module scope in root.tsx; QueryClientProvider wraps the `<Outlet />` in the `App` export (not `Layout`) — available to all routes
+- cmdk v1.0.0 uses named exports: `import { Command, CommandInput, CommandList, CommandGroup, CommandItem, CommandEmpty, CommandLoading, CommandSeparator } from "cmdk"` — NOT dot-notation sub-components
+- Command palette pattern: use `shouldFilter={false}` when doing server-side filtering; prefix item values (`pokemon-{id}`, `history-{id}`, `action-{id}`) to distinguish types in `onValueChange`
+- API calls from frontend use full URL `http://localhost:3001/api/...` — no Vite proxy configured
 - Theme toggle: dark-first, `.light` class on `<html>` toggles vars; FODT prevented with inline `<script>` in root.tsx `<head>`; smooth transitions via `.theme-transitioning` CSS class applied briefly; theme stored in `localStorage.getItem("theme")`
 - Layout route: use `layout("routes/layout.tsx", [...children])` in routes.ts — `layout` is exported from `@react-router/dev/routes`
 - Sheet/Drawer component: built from @radix-ui/react-dialog primitives in src/components/ui/sheet.tsx — no shadcn CLI needed
@@ -167,4 +171,19 @@
   - Use `satisfies PokemonType[]` on arrays of type literals to get both type-safety and narrowed inference (e.g. for a `Set<PokemonType>` check)
   - Some type colors are very light (electric=248 208 48, ice=152 216 216, bug=168 184 32) — white text fails WCAG contrast; maintain a LIGHT_TYPES set for dark text
   - Manual browser verification needed — no browser MCP tools available in this environment
+---
+
+## 2026-05-27 - US-010
+- Created `src/components/search/command-search.tsx` — split-pane Command Palette using cmdk + Radix Dialog
+- Added `QueryClientProvider` to `src/app/root.tsx` (App component) wrapping `<Outlet />`
+- Updated `src/app/routes/layout.tsx` — imported and rendered `<CommandSearch />` in `div#header-actions`
+- Component features: Cmd+K global listener, 200ms debounce search via `/api/pokemon/search`, split-pane layout (list + preview), LocalStorage history (5 entries), loading skeleton, empty state, quick actions
+- Files changed: src/components/search/command-search.tsx (new), src/app/root.tsx, src/app/routes/layout.tsx
+- **Learnings for future iterations:**
+  - cmdk v1.0.0 exports named components (`CommandInput`, `CommandList`, etc.) NOT dot-notation (`Command.Input`)
+  - Use `shouldFilter={false}` on `Command` when results come from an API (disables client-side filtering)
+  - Prefix cmdk item `value` props with category (`pokemon-`, `history-`, `action-`) to distinguish types in `onValueChange` callback
+  - QueryClient should be module-scoped (outside component), not created inside render
+  - API URL must be `http://localhost:3001/...` — no Vite proxy is configured
+  - Manual browser verification needed — no browser MCP tools available
 ---

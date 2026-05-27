@@ -183,8 +183,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 10,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "CommandSearch in src/components/search/command-search.tsx. Uses cmdk named exports (CommandInput, CommandList, CommandGroup, CommandItem, CommandEmpty, CommandLoading) + @radix-ui/react-dialog for overlay/focus-trap. QueryClientProvider added to root.tsx App component (module-scoped QueryClient). Split-pane layout: 55% list / 45% preview. shouldFilter=false on Command since server does filtering. selectedValue uses prefixed keys (pokemon-{id}, history-{id}, action-{id}) to distinguish item types in the preview. History in localStorage key cmd-search-history. Trigger button rendered inline in header-actions slot."
     },
     {
       "id": "US-011",
