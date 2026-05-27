@@ -2,7 +2,7 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { db } from "./db/client.ts";
-import { pokemonSchema } from "../src/lib/schemas.ts";
+import { pokemonSchema, itemSchema, spawnEntrySchema } from "../src/lib/schemas.ts";
 
 const app = new Hono();
 
@@ -147,6 +147,122 @@ app.get("/api/pokemon/:id", async (c) => {
   }
 
   return c.json({ data: { ...pokemon, spawns } });
+});
+
+// ── Spawn routes ────────────────────────────────────────────────────
+
+// GET /api/spawns/:pokemonId — spawn entries grouped by biome
+app.get("/api/spawns/:pokemonId", async (c) => {
+  const pokemonId = c.req.param("pokemonId");
+
+  const result = await db.execute({
+    sql: "SELECT * FROM spawn_entries WHERE pokemon_id = ? ORDER BY weight DESC",
+    args: [pokemonId],
+  });
+
+  if (result.rows.length === 0) {
+    return c.json({ data: { grouped: {}, entries: [] } });
+  }
+
+  const entries = result.rows.map((row) => {
+    const r = row as Record<string, unknown>;
+    const entry = {
+      id: r.id as string,
+      pokemonId: r.pokemon_id as string,
+      bucket: r.bucket as string,
+      context: r.context as string,
+      biomes: JSON.parse(r.biomes as string) as string[],
+      weight: r.weight as number,
+      levelRange: { min: r.level_min as number, max: r.level_max as number },
+      conditions: JSON.parse(r.conditions as string),
+      anticonditions: JSON.parse(r.anticonditions as string),
+    };
+
+    const validated = spawnEntrySchema.safeParse(entry);
+    if (!validated.success) {
+      console.error(`[/api/spawns/:pokemonId] Validation warning for entry ${entry.id}:`, validated.error.issues);
+    }
+
+    return entry;
+  });
+
+  // Group entries by biome (an entry with multiple biomes appears in each)
+  const grouped: Record<string, typeof entries> = {};
+  for (const entry of entries) {
+    for (const biome of entry.biomes) {
+      if (!grouped[biome]) grouped[biome] = [];
+      grouped[biome].push(entry);
+    }
+  }
+
+  return c.json({ data: { grouped, entries } });
+});
+
+// ── Item routes ─────────────────────────────────────────────────────
+
+function rowToItem(row: Record<string, unknown>) {
+  return {
+    id: row.id as string,
+    name: row.name as string,
+    displayName: row.display_name as string,
+    category: row.category as string,
+    description: row.description as string,
+    sprite: row.sprite as string | null,
+    droppedBy: JSON.parse(row.dropped_by as string) as string[],
+  };
+}
+
+// GET /api/items — list with optional text search (q) and category filter
+app.get("/api/items", async (c) => {
+  const query = c.req.query();
+  const q = (query.q ?? "").trim();
+  const category = (query.category ?? "").trim();
+
+  const conditions: string[] = [];
+  const args: (string | number)[] = [];
+
+  if (q) {
+    conditions.push("(name LIKE ? OR display_name LIKE ?)");
+    args.push(`%${q}%`, `%${q}%`);
+  }
+  if (category) {
+    conditions.push("category = ?");
+    args.push(category);
+  }
+
+  const where = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+
+  const result = await db.execute({
+    sql: `SELECT * FROM items ${where} ORDER BY display_name`,
+    args,
+  });
+
+  const items = result.rows.map((r) => rowToItem(r as Record<string, unknown>));
+
+  return c.json({ data: items });
+});
+
+// GET /api/items/:id — full item data
+app.get("/api/items/:id", async (c) => {
+  const id = c.req.param("id");
+
+  const result = await db.execute({
+    sql: "SELECT * FROM items WHERE id = ? OR name = ?",
+    args: [id, id],
+  });
+
+  if (result.rows.length === 0) {
+    return c.json({ error: "Item not found" }, 404);
+  }
+
+  const item = rowToItem(result.rows[0] as Record<string, unknown>);
+
+  const validated = itemSchema.safeParse(item);
+  if (!validated.success) {
+    console.error(`[/api/items/:id] Validation warning for ${id}:`, validated.error.issues);
+  }
+
+  return c.json({ data: item });
 });
 
 // ── Health ──────────────────────────────────────────────────────────
