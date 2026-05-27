@@ -1,4 +1,5 @@
 ## Codebase Patterns
+- Theme toggle: dark-first, `.light` class on `<html>` toggles vars; FODT prevented with inline `<script>` in root.tsx `<head>`; smooth transitions via `.theme-transitioning` CSS class applied briefly; theme stored in `localStorage.getItem("theme")`
 - Layout route: use `layout("routes/layout.tsx", [...children])` in routes.ts — `layout` is exported from `@react-router/dev/routes`
 - Sheet/Drawer component: built from @radix-ui/react-dialog primitives in src/components/ui/sheet.tsx — no shadcn CLI needed
 - Type colors: CSS custom properties in src/styles/type-colors.css as RGB triplets (`--type-fire: 240 128 48`) for alpha composability (`rgb(var(--type-fire) / 0.2)`)
@@ -122,6 +123,21 @@
   - Biome grouping: one spawn entry can have multiple biomes, so it may appear in multiple groups; flatten with a `for (biome of entry.biomes)` loop
   - `rowToItem` follows same JSON.parse pattern as `rowToPokemon` for TEXT columns
   - Item lookup by `id OR name` (same pattern as pokemon) allows either identifier in the URL
+---
+
+## 2026-05-27 - US-008
+- Created `src/components/layout/theme-toggle.tsx` — pill-shaped toggle with sliding thumb (moon left=dark, sun right=light), CSS-only icon cross-fade, amber glow for light / violet glow for dark
+- Updated `src/app/root.tsx` — added inline `<script>` in `<head>` that reads localStorage and applies `.light` class before React hydrates (prevents FODT)
+- Updated `src/styles/globals.css` — added `.theme-transitioning` layer rule that temporarily applies `transition: background-color, border-color, color` to all elements during theme switch
+- Updated `src/app/routes/layout.tsx` — imported ThemeToggle, rendered it inside `div#header-actions`
+- Files changed: src/components/layout/theme-toggle.tsx (new), src/app/root.tsx, src/styles/globals.css, src/app/routes/layout.tsx
+- **Learnings for future iterations:**
+  - Dark-first: `:root` has dark vars; `.light` class on `<html>` overrides to light — toggling this class is all that's needed
+  - FODT prevention requires a synchronous inline `<script>` in `<head>` (not a useEffect) since React hasn't painted yet
+  - Wrap theme class mutation with `document.documentElement.classList.add("theme-transitioning")` + `setTimeout(..., 300)` to smooth all CSS variable derivatives simultaneously without adding permanent transitions
+  - `getInitialTheme()` must check `typeof window !== "undefined"` for SSR safety (even in SPA mode, tsc/RR7 may complain)
+  - `div#header-actions` in layout.tsx is the stable slot — other stories adding header actions should render children there
+
 ---
 
 ## 2026-05-27 - US-007

@@ -145,8 +145,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 8,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "ThemeToggle in src/components/layout/theme-toggle.tsx — pill with sliding thumb (moon left=dark, sun right=light). FODT prevented by inline script in root.tsx head. Theme transitioning uses .theme-transitioning class in globals.css for smooth full-page color changes. Rendered inside `div#header-actions` in layout.tsx."
     },
     {
       "id": "US-009",
