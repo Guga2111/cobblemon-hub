@@ -154,3 +154,17 @@
   - `NavLink` children can be a render function `({ isActive }) => JSX` enabling dynamic icon scaling / indicator dots
   - The `id="header-actions"` div in the header is a stable slot for US-008's theme toggle (avoid recreating the header)
 ---
+
+## 2026-05-27 - US-009
+- Created `src/components/pokemon/type-badge.tsx` — game-authentic type chip using CSS vars from type-colors.css
+- Background via inline style `rgb(var(--type-${type}))` — dynamic CSS variable, can't use Tailwind classes for this
+- `LIGHT_TYPES` set (electric, ice, normal, bug, fairy, steel) uses dark text `rgba(0,0,0,0.72)`; all others use white with textShadow for legibility
+- Box-shadow: outer colored glow + inset top highlight + inset bottom shadow — gives game-chip depth
+- sm variant: `px-2 py-0.5 text-[10px] min-w-[52px]`; md variant: `px-3 py-1 text-xs min-w-[64px]`
+- Files changed: src/components/pokemon/type-badge.tsx (new)
+- **Learnings for future iterations:**
+  - Dynamic CSS variable names (e.g. `--type-${type}`) MUST use inline styles — Tailwind can't generate arbitrary CSS var references at runtime
+  - Use `satisfies PokemonType[]` on arrays of type literals to get both type-safety and narrowed inference (e.g. for a `Set<PokemonType>` check)
+  - Some type colors are very light (electric=248 208 48, ice=152 216 216, bug=168 184 32) — white text fails WCAG contrast; maintain a LIGHT_TYPES set for dark text
+  - Manual browser verification needed — no browser MCP tools available in this environment
+---

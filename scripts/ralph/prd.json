@@ -161,8 +161,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 9,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "TypeBadge in src/components/pokemon/type-badge.tsx. Uses inline style with rgb(var(--type-{type})) for background. LIGHT_TYPES set (electric, ice, normal, bug, fairy, steel) uses dark text for contrast; others use white with textShadow. Box-shadow adds inset top highlight + bottom shadow for game-authentic depth. sm: px-2 py-0.5 text-[10px] min-w-[52px]; md: px-3 py-1 text-xs min-w-[64px]. satisfies PokemonType[] used for type-safe LIGHT_TYPES set."
     },
     {
       "id": "US-010",
