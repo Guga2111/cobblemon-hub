@@ -19,6 +19,7 @@ import {
   SheetTitle,
 } from "~/components/ui/sheet";
 import { ThemeToggle } from "~/components/layout/theme-toggle";
+import { CommandSearch } from "~/components/search/command-search";
 
 interface NavItem {
   to: string;
@@ -220,6 +221,7 @@ export default function AppLayout() {
             <div className="flex-1" />
 
             <div id="header-actions" className="flex items-center gap-2">
+              <CommandSearch />
               <ThemeToggle />
             </div>
           </header>

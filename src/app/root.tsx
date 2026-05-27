@@ -1,6 +1,16 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "~/styles/globals.css";
 import "~/styles/type-colors.css";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60_000,
+      retry: 1,
+    },
+  },
+});
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -27,5 +37,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Outlet />
+    </QueryClientProvider>
+  );
 }
