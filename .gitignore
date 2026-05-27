@@ -1,0 +1,9 @@
+node_modules
+build
+dist
+.react-router
+*.local
+.env
+.env.local
+data/*.db
+data/*.json
