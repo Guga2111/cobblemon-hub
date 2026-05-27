@@ -7,8 +7,8 @@ export const meta: MetaFunction = () => [
 
 export default function Index() {
   return (
-    <main className="flex min-h-screen items-center justify-center">
+    <div className="flex min-h-full items-center justify-center p-8">
       <h1 className="text-4xl font-bold text-primary">Cobblemon Hub</h1>
-    </main>
+    </div>
   );
 }

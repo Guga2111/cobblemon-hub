@@ -1,0 +1,22 @@
+/* Pokémon type color variables as RGB triplets for opacity/alpha composability.
+   Usage: background: rgb(var(--type-fire) / 0.2) or color: rgb(var(--type-fire)) */
+:root {
+  --type-normal: 168 168 120;
+  --type-fire: 240 128 48;
+  --type-water: 104 144 240;
+  --type-electric: 248 208 48;
+  --type-grass: 120 200 80;
+  --type-ice: 152 216 216;
+  --type-fighting: 192 48 40;
+  --type-poison: 160 64 160;
+  --type-ground: 224 192 104;
+  --type-flying: 168 144 240;
+  --type-psychic: 248 88 136;
+  --type-bug: 168 184 32;
+  --type-rock: 184 160 56;
+  --type-ghost: 112 88 152;
+  --type-dragon: 112 56 248;
+  --type-dark: 112 88 72;
+  --type-steel: 184 184 208;
+  --type-fairy: 238 153 172;
+}
