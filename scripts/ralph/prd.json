@@ -202,8 +202,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 11,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "TanStack Table v8 + TanStack Virtual v3. Server list endpoint extended: base_stats added to rowToListItem, correlated subqueries for primary_bucket/primary_biomes, limit raised to 1000. useVirtualizer on shared parentRef with estimateSize switching on isMobile (80px cards / 52px rows). Desktop: table with sticky thead + padding spacer rows. Mobile: absolute-positioned card list. BucketBadge with zinc/emerald/sky/amber variants. useIsMobile() via matchMedia. Columns: sprite, dexNumber, displayName, types, biome, bucket, bst."
     },
     {
       "id": "US-012",

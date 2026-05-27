@@ -1,4 +1,11 @@
 ## Codebase Patterns
+- TanStack Virtual v3: `rowVirtualizer.measureElement` is a ref callback — place on DOM elements with `data-index={virtualRow.index}`; padding rows approach (spacer `<tr>`) for tables; absolute-positioned items for card lists
+- For table virtualization: `paddingTop = virtualItems[0]?.start ?? 0`; `paddingBottom = totalSize - (lastItem?.end ?? totalSize)` — add as spacer rows with `height` style
+- For mobile card virtualization: use `position: "relative"` container with `height: totalVirtualSize + offset`, items use `position: "absolute", transform: translateY(start + topPadding)`
+- `useIsMobile()` pattern: useState initialized from `window.innerWidth < 768`, updated via `matchMedia("(max-width: 767px)").addEventListener("change", handler)`
+- TanStack Table v8: `createColumnHelper<T>()` for typed columns; `.display({id, header, cell, enableSorting, size})` for computed columns; `.accessor(key, {header, cell, sortingFn, size})` for data columns; `getSortedRowModel()` needed for client-side sorting
+- Server list endpoint (`GET /api/pokemon`): limit max bumped to 1000; now returns `base_stats`, `primaryBucket`, `primaryBiomes` (via correlated subqueries on spawn_entries); BST computed client-side from baseStats fields
+- WHERE conditions in list query use unqualified column names — safe with table alias `p` since SQLite resolves without ambiguity when single table in FROM
 - TanStack Query: QueryClient created at module scope in root.tsx; QueryClientProvider wraps the `<Outlet />` in the `App` export (not `Layout`) — available to all routes
 - cmdk v1.0.0 uses named exports: `import { Command, CommandInput, CommandList, CommandGroup, CommandItem, CommandEmpty, CommandLoading, CommandSeparator } from "cmdk"` — NOT dot-notation sub-components
 - Command palette pattern: use `shouldFilter={false}` when doing server-side filtering; prefix item values (`pokemon-{id}`, `history-{id}`, `action-{id}`) to distinguish types in `onValueChange`
@@ -185,5 +192,21 @@
   - Prefix cmdk item `value` props with category (`pokemon-`, `history-`, `action-`) to distinguish types in `onValueChange` callback
   - QueryClient should be module-scoped (outside component), not created inside render
   - API URL must be `http://localhost:3001/...` — no Vite proxy is configured
+  - Manual browser verification needed — no browser MCP tools available
+---
+
+## 2026-05-27 - US-011
+- Modified `server/index.ts`: added `base_stats`, `primaryBucket`, `primaryBiomes` to list response; correlated subqueries on spawn_entries for primary spawn data; raised limit cap to 1000
+- Created full `src/app/routes/pokedex/index.tsx` with TanStack Table v8 + TanStack Virtual v3
+- Desktop: sticky-header `<table>` with padding spacer rows; 7 columns: sprite, Dex#, Nome, Tipos, Bioma, Raridade, BST
+- Mobile: absolute-positioned card list with `useIsMobile()` hook switching `estimateSize` and render mode
+- `BucketBadge` component with 4 visual variants (zinc/emerald/sky/amber for common/uncommon/rare/ultra-rare)
+- Loading: 20-row animated skeleton; Error: destructive alert with retry; Empty: instructional message
+- Files changed: server/index.ts, src/app/routes/pokedex/index.tsx
+- **Learnings for future iterations:**
+  - TanStack Virtual `measureElement` is a ref callback — pair with `data-index` on DOM node; spacer rows technique works cleanly for table virtualization
+  - `estimateSize` is reactive in TanStack Virtual v3 — change it dynamically for mobile/desktop switching
+  - Correlated subqueries (`SELECT ... FROM spawn_entries WHERE pokemon_id = p.id`) reliably get highest-weight spawn per Pokémon
+  - `border-separate border-spacing-0` on `<table>` is required when using `border-b` on rows — prevents double borders
   - Manual browser verification needed — no browser MCP tools available
 ---
