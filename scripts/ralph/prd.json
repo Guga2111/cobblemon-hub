@@ -74,8 +74,8 @@
         "Typecheck passes"
       ],
       "priority": 4,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Uses @libsql/client with file: URL for local dev (no auth token needed). Schema in server/db/schema.sql; client in server/db/client.ts. seed-db.ts reads data/*.json, validates with Zod, inserts with INSERT OR REPLACE. Works with empty JSON arrays (no errors)."
     },
     {
       "id": "US-005",
@@ -92,8 +92,8 @@
         "Typecheck passes"
       ],
       "priority": 5,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Hono + @hono/node-server. Routes: GET /api/pokemon (filters: type, generation; pagination: page, limit), GET /api/pokemon/search?q= (fuzzy LIKE, must be before /:id), GET /api/pokemon/:id (full data + spawns). CORS for localhost:5173. Nested JSON fields parsed from SQLite TEXT. pokemonSchema.safeParse used for validation warnings."
     },
     {
       "id": "US-006",

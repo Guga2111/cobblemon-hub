@@ -3,6 +3,9 @@
 - data/*.json is in .gitignore; scripts call mkdirSync("./data", { recursive: true }) to ensure the directory exists at runtime
 - Item type lives in src/types/item.ts; standalone Move type in src/types/move.ts (separate from LearnableMove in pokemon.ts)
 - itemSchema and moveSchema exported from src/lib/schemas.ts; itemCategorySchema and moveCategorySchema are local const reuse within the file
+- DB client: @libsql/client with `file:./data/cobblemon.db` for local dev — no auth token needed for file: URLs
+- Schema applied by splitting schema.sql on `;` and executing each statement; INSERT OR REPLACE used for idempotent seeding
+- Nested data (types, baseStats, abilities, moves, etc.) stored as JSON strings in SQLite TEXT columns
 - Scripts exit gracefully (code 0) when datapack isn't present — produce empty valid JSON arrays
 - React Router v7 framework mode (SPA): requires `ssr: false` in react-router.config.ts and `@react-router/node` package
 - tsconfig MUST include `"rootDirs": [".", "./.react-router/types"]` for generated types to resolve
@@ -15,6 +18,8 @@
 - Types in `src/types/` (pokemon.ts, spawn.ts, team.ts); Zod schemas in `src/lib/schemas.ts`; constants in `src/lib/constants.ts`
 - Zod enums from const arrays: cast with `as [string, ...string[]]` then further cast to `z.ZodEnum<[...]>` for type safety
 - PokemonType tuple `[PokemonType] | [PokemonType, PokemonType]` — use `z.union([z.tuple([...]), z.tuple([..., ...])])`
+- Hono server uses `@hono/node-server` serve() for tsx/Node; route order matters — specific paths (/search) before params (/:id)
+- SQLite TEXT columns (types, base_stats, etc.) stored as JSON strings — parse with JSON.parse() in row-mapping helpers
 
 ---
 
@@ -65,4 +70,37 @@
   - Without COBBLEMON_DATAPACK_PATH set, all 4 scripts gracefully write empty JSON arrays (exit code 0) so `npm run extract` always succeeds
   - data/*.json is gitignored (can be large); scripts call mkdirSync({recursive:true}) to create the directory
   - moveCategorySchema defined locally in schemas.ts — can be referenced for moveSchema without re-defining
+---
+
+## 2026-05-27 - US-004
+- Installed `@libsql/client` as a runtime dependency
+- Created `server/db/schema.sql` with tables: pokemon, spawn_entries, items, moves — all complex nested fields stored as JSON TEXT columns
+- Created `server/db/client.ts` — exports `db` (createClient); uses file: URL for local dev, cloud URL+authToken for Turso cloud
+- Created `scripts/seed-db.ts` — reads data/*.json, validates each row with Zod, inserts with INSERT OR REPLACE; gracefully skips missing files
+- Created `.env.example` documenting TURSO_DATABASE_URL and TURSO_AUTH_TOKEN
+- Files changed: package.json, package-lock.json, server/db/schema.sql (new), server/db/client.ts (new), scripts/seed-db.ts (new), .env.example (new)
+- **Learnings for future iterations:**
+  - `@libsql/client` supports `file:` URLs natively — no Turso CLI or auth token needed for local SQLite
+  - For `file:` URLs, pass `{ url }` only to createClient; adding `authToken: undefined` may cause errors in some versions
+  - Schema.sql split on `;` + trim + filter(Boolean) handles multi-statement SQL files reliably
+  - INSERT OR REPLACE makes seeding idempotent — safe to re-run after re-extraction
+  - seed-db.ts produces empty-valid JSON output when data files are absent (same graceful pattern as extract scripts)
+---
+
+## 2026-05-27 - US-005
+- Installed `hono` and `@hono/node-server` as runtime dependencies
+- Implemented `server/index.ts` with Hono + @hono/node-server (serve()) for tsx/Node
+- CORS configured for `http://localhost:5173` on all `/api/*` routes
+- GET /api/pokemon: list with `type` (LIKE %"type"%) and `generation` filters + pagination (page, limit, total, totalPages)
+- GET /api/pokemon/search?q=: fuzzy LIKE on `name` OR `display_name`, max 20 results (declared BEFORE /:id to avoid route clash)
+- GET /api/pokemon/:id: full pokemon row + spawn_entries joined; pokemonSchema.safeParse for validation warnings
+- GET /api/health: simple health check
+- Helper `rowToPokemon` parses all JSON TEXT columns; `rowToListItem` for lightweight list responses
+- Files changed: server/index.ts, package.json, package-lock.json
+- **Learnings for future iterations:**
+  - Hono route order matters: `/api/pokemon/search` MUST be declared before `/api/pokemon/:id` or "search" is treated as an :id param
+  - `@hono/node-server` provides `serve({ fetch, port }, callback)` — required for tsx/Node execution
+  - SQLite TEXT columns (types, base_stats, etc.) must be JSON.parse'd in response helpers
+  - `db.execute({ sql, args })` args must be `(string | number)[]` — no undefined values
+  - biome/bucket filter for spawn requires joining spawn_entries; deferred to US-006 where spawn routes live
 ---
