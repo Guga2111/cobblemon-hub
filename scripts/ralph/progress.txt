@@ -104,3 +104,17 @@
   - `db.execute({ sql, args })` args must be `(string | number)[]` — no undefined values
   - biome/bucket filter for spawn requires joining spawn_entries; deferred to US-006 where spawn routes live
 ---
+
+## 2026-05-27 - US-006
+- Added `GET /api/spawns/:pokemonId` — queries spawn_entries by pokemon_id, parses biomes/conditions/anticonditions JSON, groups entries by each biome key; returns `{ data: { grouped, entries } }`
+- Added `GET /api/items` — supports `?q=` (LIKE on name/display_name) and `?category=` filter; returns ordered list
+- Added `GET /api/items/:id` — looks up by id OR name, returns full item with Zod validation warning on mismatch
+- Added `rowToItem` helper that parses `dropped_by` TEXT column as JSON array
+- Imported `itemSchema` and `spawnEntrySchema` from `../src/lib/schemas.ts` for validation
+- Files changed: server/index.ts
+- **Learnings for future iterations:**
+  - `spawnEntrySchema` uses `levelRange: { min, max }` but DB stores `level_min`/`level_max` — map when building the entry object
+  - Biome grouping: one spawn entry can have multiple biomes, so it may appear in multiple groups; flatten with a `for (biome of entry.biomes)` loop
+  - `rowToItem` follows same JSON.parse pattern as `rowToPokemon` for TEXT columns
+  - Item lookup by `id OR name` (same pattern as pokemon) allows either identifier in the URL
+---

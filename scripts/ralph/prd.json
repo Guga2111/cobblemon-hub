@@ -107,8 +107,8 @@
         "Typecheck passes"
       ],
       "priority": 6,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "GET /api/spawns/:pokemonId returns entries + grouped-by-biome object. GET /api/items supports ?q= (LIKE) and ?category= filters. GET /api/items/:id. Both use Zod safeParse for validation warnings. rowToItem helper parses dropped_by JSON TEXT column."
     },
     {
       "id": "US-007",
