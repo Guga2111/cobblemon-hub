@@ -18,6 +18,7 @@ import {
   SheetContent,
   SheetTitle,
 } from "~/components/ui/sheet";
+import { ThemeToggle } from "~/components/layout/theme-toggle";
 
 interface NavItem {
   to: string;
@@ -218,8 +219,9 @@ export default function AppLayout() {
 
             <div className="flex-1" />
 
-            {/* Slot for future header actions (theme toggle, search, etc.) */}
-            <div id="header-actions" className="flex items-center gap-2" />
+            <div id="header-actions" className="flex items-center gap-2">
+              <ThemeToggle />
+            </div>
           </header>
 
           {/* Main content area */}
