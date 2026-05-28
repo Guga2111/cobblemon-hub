@@ -121,7 +121,7 @@ app.get("/api/pokemon/search", async (c) => {
   });
 });
 
-// GET /api/pokemon/:id — full data including spawns
+// GET /api/pokemon/:id — full data including spawns and prev/next navigation
 app.get("/api/pokemon/:id", async (c) => {
   const id = c.req.param("id");
 
@@ -141,6 +141,25 @@ app.get("/api/pokemon/:id", async (c) => {
   }
 
   const pokemon = rowToPokemon(pokemonResult.rows[0] as Record<string, unknown>);
+  const dexNumber = (pokemonResult.rows[0] as Record<string, unknown>).dex_number as number;
+
+  const [prevResult, nextResult] = await Promise.all([
+    db.execute({
+      sql: "SELECT id FROM pokemon WHERE dex_number < ? ORDER BY dex_number DESC LIMIT 1",
+      args: [dexNumber],
+    }),
+    db.execute({
+      sql: "SELECT id FROM pokemon WHERE dex_number > ? ORDER BY dex_number ASC LIMIT 1",
+      args: [dexNumber],
+    }),
+  ]);
+
+  const prevId = prevResult.rows.length > 0
+    ? (prevResult.rows[0] as Record<string, unknown>).id as string
+    : null;
+  const nextId = nextResult.rows.length > 0
+    ? (nextResult.rows[0] as Record<string, unknown>).id as string
+    : null;
 
   const spawns = spawnResult.rows.map((row) => {
     const r = row as Record<string, unknown>;
@@ -163,7 +182,7 @@ app.get("/api/pokemon/:id", async (c) => {
     console.error(`[/api/pokemon/:id] Validation warning for ${id}:`, validated.error.issues);
   }
 
-  return c.json({ data: { ...pokemon, spawns } });
+  return c.json({ data: { ...pokemon, spawns, prevId, nextId } });
 });
 
 // ── Spawn routes ────────────────────────────────────────────────────
