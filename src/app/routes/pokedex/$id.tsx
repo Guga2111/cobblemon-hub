@@ -15,6 +15,7 @@ import {
 import type { Pokemon, PokemonForm, ItemDrop, PokemonType } from "~/types/pokemon";
 import { TypeBadge } from "~/components/pokemon/type-badge";
 import { EvolutionChain } from "~/components/pokemon/evolution-chain";
+import { StatBar } from "~/components/pokemon/stat-bar";
 import { normalizePokemonName, cn } from "~/lib/utils";
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -494,13 +495,19 @@ export default function PokemonDetailPage() {
             </div>
           )}
 
-          {/* ── Placeholder tabs ──────────────────────────────────── */}
-          {activeTab !== "overview" && (
+          {/* ── Base Stats tab ────────────────────────────────────── */}
+          {activeTab === "base-stats" && (
+            <div className="max-w-2xl mx-auto pb-12">
+              <SectionCard title="Base Stats">
+                <StatBar stats={activeForm?.baseStats ?? pokemon.baseStats} />
+              </SectionCard>
+            </div>
+          )}
+
+          {/* ── Placeholder tabs (spawns, moves) ──────────────────── */}
+          {(activeTab === "spawns" || activeTab === "moves") && (
             <div className="flex flex-col items-center justify-center py-24 text-center pb-12">
               <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-4">
-                {activeTab === "base-stats" && (
-                  <BarChart2 className="w-5 h-5 text-zinc-600" />
-                )}
                 {activeTab === "spawns" && (
                   <MapPin className="w-5 h-5 text-zinc-600" />
                 )}
