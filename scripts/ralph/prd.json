@@ -219,8 +219,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 12,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "use-pokedex-filters.ts manages all filter state via URL searchParams (useSearchParams from react-router). applyPokedexFilters() does client-side filtering on the full 1000-item dataset. FilterSheet uses @radix-ui/react-dialog + @radix-ui/react-checkbox primitives. Types use toggleable TypeBadge grid (opacity for inactive). server/index.ts extended with primaryContext + primaryWeather subqueries (CASE for thunderstorm/rain from JSON conditions)."
     },
     {
       "id": "US-013",

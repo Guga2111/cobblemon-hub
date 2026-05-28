@@ -1,4 +1,8 @@
 ## Codebase Patterns
+- Filter state in URL via useSearchParams (react-router): encode arrays as comma-joined strings (?types=fire,water), delete key when empty, use { replace: true } to avoid polluting history
+- Client-side filtering with applyPokedexFilters(): fetch all 1000 rows once, filter in useMemo — avoids round-trips for facet changes
+- FilterSheet built from @radix-ui/react-dialog primitives (no shadcn CLI needed); same pattern as Sheet component in layout
+- Server primaryContext/primaryWeather: correlated subqueries using CASE WHEN json_extract(conditions,'$.isThundering') for weather detection
 - TanStack Virtual v3: `rowVirtualizer.measureElement` is a ref callback — place on DOM elements with `data-index={virtualRow.index}`; padding rows approach (spacer `<tr>`) for tables; absolute-positioned items for card lists
 - For table virtualization: `paddingTop = virtualItems[0]?.start ?? 0`; `paddingBottom = totalSize - (lastItem?.end ?? totalSize)` — add as spacer rows with `height` style
 - For mobile card virtualization: use `position: "relative"` container with `height: totalVirtualSize + offset`, items use `position: "absolute", transform: translateY(start + topPadding)`
@@ -208,5 +212,19 @@
   - `estimateSize` is reactive in TanStack Virtual v3 — change it dynamically for mobile/desktop switching
   - Correlated subqueries (`SELECT ... FROM spawn_entries WHERE pokemon_id = p.id`) reliably get highest-weight spawn per Pokémon
   - `border-separate border-spacing-0` on `<table>` is required when using `border-b` on rows — prevents double borders
+  - Manual browser verification needed — no browser MCP tools available
+---
+
+## 2026-05-27 - US-012
+- Created `src/features/pokedex/use-pokedex-filters.ts` — URL-state filter hook using useSearchParams; encodes types/buckets/contexts as comma-separated params; applyPokedexFilters() for client-side predicate
+- Created `src/features/pokedex/filter-sheet.tsx` — slide-in filter panel with TypeGrid, BucketToggles, ContextCheckboxes, BiomeCombobox, WeatherSelect
+- Updated `src/app/routes/pokedex/index.tsx` — integrated FilterSheet + ActiveFiltersStrip chips + FilterEmptyState; removed unused TYPE_DISPLAY_NAMES import
+- Extended `server/index.ts` — added primaryContext (context column) and primaryWeather (CASE WHEN json conditions) subqueries to list endpoint
+- Files changed: src/features/pokedex/use-pokedex-filters.ts (new), src/features/pokedex/filter-sheet.tsx (new), src/app/routes/pokedex/index.tsx, server/index.ts, package.json (tailwindcss-animate)
+- **Learnings for future iterations:**
+  - URL filter state: useSearchParams + setSearchParams({ replace: true }) — clean for SPA filter UX
+  - BiomeCombobox: controlled input + dropdown from filtered array with onBlur setTimeout(150ms) to allow click registration
+  - TypeGrid: opacity-35/hover:opacity-65 for inactive; absolute positioned check badge for active — clear visual distinction without modifying TypeBadge itself
+  - Weather detection from spawn conditions: json_extract on JSON TEXT column in SQLite works in correlated subqueries
   - Manual browser verification needed — no browser MCP tools available
 ---
