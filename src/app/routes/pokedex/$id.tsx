@@ -17,6 +17,7 @@ import { TypeBadge } from "~/components/pokemon/type-badge";
 import { EvolutionChain } from "~/components/pokemon/evolution-chain";
 import { StatBar } from "~/components/pokemon/stat-bar";
 import { SpawnCard, type SpawnEntryData } from "~/components/pokemon/spawn-card";
+import { MovesTable } from "~/components/pokemon/moves-table";
 import { normalizePokemonName, cn } from "~/lib/utils";
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -527,14 +528,10 @@ export default function PokemonDetailPage() {
             </div>
           )}
 
-          {/* ── Moves placeholder ─────────────────────────────────── */}
+          {/* ── Moves tab ─────────────────────────────────────────── */}
           {activeTab === "moves" && (
-            <div className="flex flex-col items-center justify-center py-24 text-center pb-12">
-              <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-4">
-                <Swords className="w-5 h-5 text-zinc-600" />
-              </div>
-              <p className="text-sm font-semibold text-zinc-500">Moves — Coming soon</p>
-              <p className="text-xs text-zinc-700 mt-1">This section is under construction</p>
+            <div className="pb-12">
+              <MovesTable moves={pokemon.moves} />
             </div>
           )}
 
