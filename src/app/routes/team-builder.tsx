@@ -1,6 +1,7 @@
 import { Swords, Trash2 } from "lucide-react";
 import { TeamSlot } from "~/components/team/team-slot";
 import { useTeamStore } from "~/features/team-builder/use-team-store";
+import { ExportDialog } from "~/components/team/export-dialog";
 
 export default function TeamBuilderPage() {
   const slots = useTeamStore((s) => s.slots);
@@ -25,14 +26,17 @@ export default function TeamBuilderPage() {
         </div>
 
         {filledCount > 0 && (
-          <button
-            type="button"
-            onClick={clearTeam}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-muted-foreground/60 hover:text-destructive hover:bg-destructive/10 transition-colors border border-border/50 hover:border-destructive/30"
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-            Limpar time
-          </button>
+          <div className="flex items-center gap-2">
+            <ExportDialog />
+            <button
+              type="button"
+              onClick={clearTeam}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-muted-foreground/60 hover:text-destructive hover:bg-destructive/10 transition-colors border border-border/50 hover:border-destructive/30"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              Limpar time
+            </button>
+          </div>
         )}
       </div>
 
