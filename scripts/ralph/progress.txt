@@ -263,3 +263,38 @@
   - Form-aware stats: `activeForm?.baseStats ?? pokemon.baseStats` pattern works for both base and alternate forms
   - Manual browser verification needed — no browser MCP tools available
 ---
+
+## 2026-05-27 - US-015
+- Created `src/components/pokemon/spawn-card.tsx` — SpawnCard component with left bucket accent bar, condition chips, anti-condition forbidden chips, biome tags, level range pill
+- Updated `src/app/routes/pokedex/$id.tsx` — replaced unified spawns/moves placeholder with actual spawns tab (reading pokemon.spawns from detail API) and separate moves placeholder
+- Spawns tab reads `pokemon.spawns as SpawnEntryData[]` — data already embedded in GET /api/pokemon/:id response (no extra API call needed)
+- Files changed: src/components/pokemon/spawn-card.tsx (new), src/app/routes/pokedex/$id.tsx
+- **Learnings for future iterations:**
+  - Spawn data is already embedded in the pokemon detail response (pokemon.spawns) — no need to call /api/spawns/:pokemonId separately for the detail page
+  - SpawnConditionData has fields `isRaining`/`isThundering`/`isDay` as `boolean | null` — use `=== true`/`=== false` checks (not just truthiness) to avoid treating `null` as false
+  - `hasConditions()` guard function avoids rendering empty "Requires"/"Forbidden" sections when all condition fields are null/empty
+  - Bucket accent bar: `w-1 shrink-0 self-stretch` on a flex sibling creates a full-height colored left border without affecting content width
+  - Level range and weight come as `levelMin`/`levelMax` (not `levelRange.min/max`) from the /:id endpoint — the /api/spawns/:pokemonId endpoint uses the SpawnEntry interface shape, but /:id maps differently
+  - Manual browser verification needed — no browser MCP tools available
+---
+
+## 2026-05-27 - US-016
+- Created `src/components/pokemon/moves-table.tsx` — full moves table with method filter pills, TanStack Table sorting, category icons, power color scale
+- Updated `src/app/routes/pokedex/$id.tsx` — replaced "Moves — Coming soon" placeholder with `<MovesTable moves={pokemon.moves} />`
+- Method filter pills: "Todos" + one pill per method with glow (violet=level-up, blue=TM, pink=egg, amber=tutor); count badge on each pill
+- Columns: Lv/Método (level number or method pill), Nome, Tipo (TypeBadge sm), Cat. (icon+dot+label), Poder (color-scaled), Precisão, PP
+- Power color scale: red>=120, orange>=90, yellow>=60, zinc for low/—
+- Category icons: Sword (physical/orange dot), Wand2 (special/cyan dot), MinusCircle (status/gray dot)
+- Level-up method shows "Lv. N" styled label; other methods show colored mini-pill inside the cell
+- Sorting via TanStack Table v8: level (default asc), power, displayName
+- Empty state: "Nenhum move por este método" + "Ver todos os métodos" reset button
+- Skeleton: animated pill strip + striped table rows
+- Files changed: src/components/pokemon/moves-table.tsx (new), src/app/routes/pokedex/$id.tsx
+- **Learnings for future iterations:**
+  - LearnableMove has `level: number | null` — use `row.level ?? 0` in sort accessor; `row.original` gives full move data in cell renderer
+  - Column accessor for computed sort key: `colHelper.accessor((row) => expr, { id, ... })` then use `row.original` in cell
+  - `sortingFn` override in column def handles nullable numerics cleanly (sort null as -1 to push to bottom)
+  - Category icon config object keyed by category string avoids switch statements; reusable pattern
+  - Method filter state is local — no URL sync needed for detail-page sub-filters
+  - Manual browser verification needed — no browser MCP tools available
+---

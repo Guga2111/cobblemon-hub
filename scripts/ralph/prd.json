@@ -273,8 +273,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 15,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "SpawnCard in src/components/pokemon/spawn-card.tsx — left accent bar colored by bucket (zinc/emerald/sky/amber), condition chips with Lucide icons (Sun/Moon/CloudRain/Zap/Layers/Lightbulb/Building2/Blocks), anti-conditions rendered with red-tinted forbidden chips + X icon. Spawns tab in $id.tsx reads pokemon.spawns (already embedded in detail API response) cast as SpawnEntryData[]. Empty state in Portuguese. hasConditions() guard prevents empty Requires/Forbidden sections."
     },
     {
       "id": "US-016",
@@ -290,8 +290,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 16,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "MovesTable in src/components/pokemon/moves-table.tsx. Method filter pills with per-method glow colors (violet/blue/pink/amber). TanStack Table v8 with getSortedRowModel; sortable columns: level, power, displayName. Category icons: Sword (physical/orange), Wand2 (special/cyan), MinusCircle (status/gray). Power color scale: red>=120, orange>=90, yellow>=60, zinc otherwise. Level-up moves show 'Lv. N' label; others show method pill inline in the table cell. Skeleton renders filter pills + row placeholders."
     },
     {
       "id": "US-017",
