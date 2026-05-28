@@ -1,4 +1,4 @@
-import { useRef, useState, useMemo, useEffect } from "react";
+import { useRef, useState, useMemo, useEffect, useCallback } from "react";
 import { Link } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -8,6 +8,7 @@ import {
   getSortedRowModel,
   useReactTable,
   type SortingState,
+  type Updater,
 } from "@tanstack/react-table";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import {
@@ -17,10 +18,23 @@ import {
   AlertTriangle,
   RefreshCw,
   BookOpen,
+  SlidersHorizontal,
+  X,
+  SearchX,
 } from "lucide-react";
 import type { PokemonType } from "~/types/pokemon";
 import { TypeBadge } from "~/components/pokemon/type-badge";
 import { normalizePokemonName, cn } from "~/lib/utils";
+import {
+  usePokedexFilters,
+  applyPokedexFilters,
+  type PokedexFilters,
+} from "~/features/pokedex/use-pokedex-filters";
+import { FilterSheet } from "~/features/pokedex/filter-sheet";
+import {
+  SPAWN_BUCKET_DISPLAY_NAMES,
+  SPAWN_CONTEXT_DISPLAY_NAMES,
+} from "~/lib/constants";
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -43,6 +57,8 @@ interface PokemonListItem {
   generation: number;
   primaryBucket: string | null;
   primaryBiomes: string[] | null;
+  primaryContext: string | null;
+  primaryWeather: string | null;
   bst: number;
 }
 
@@ -56,6 +72,8 @@ interface RawPokemonListItem {
   generation: number;
   primaryBucket: string | null;
   primaryBiomes: string[] | null;
+  primaryContext: string | null;
+  primaryWeather: string | null;
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────
@@ -64,7 +82,7 @@ function getSpriteUrl(name: string): string {
   return `https://play.pokemonshowdown.com/sprites/dex/${normalizePokemonName(name)}.png`;
 }
 
-function formatBiome(biome: string): string {
+export function formatBiome(biome: string): string {
   const name = biome.replace(/^[^:]+:/, "");
   return name
     .split("_")
@@ -118,6 +136,143 @@ function SortIcon({ state }: { state: "asc" | "desc" | false }) {
       size={11}
       className="ml-1 inline text-muted-foreground/40 group-hover:text-muted-foreground/70 transition-colors"
     />
+  );
+}
+
+// ── Active filter chip ────────────────────────────────────────────────
+
+function FilterChip({
+  onRemove,
+  children,
+}: {
+  onRemove: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <span className="inline-flex items-center gap-1 pl-0.5 pr-1 py-0.5 rounded-full border border-primary/25 bg-primary/8 text-xs text-foreground shrink-0">
+      {children}
+      <button
+        type="button"
+        onClick={onRemove}
+        className="flex h-4 w-4 items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+        aria-label="Remover filtro"
+      >
+        <X size={9} strokeWidth={2.5} />
+      </button>
+    </span>
+  );
+}
+
+function ActiveFiltersStrip({
+  filters,
+  onUpdate,
+  onClearAll,
+}: {
+  filters: PokedexFilters;
+  onUpdate: (patch: Partial<PokedexFilters>) => void;
+  onClearAll: () => void;
+}) {
+  const chips: React.ReactNode[] = [];
+
+  filters.types.forEach((type) => {
+    chips.push(
+      <FilterChip
+        key={`type-${type}`}
+        onRemove={() =>
+          onUpdate({ types: filters.types.filter((t) => t !== type) })
+        }
+      >
+        <TypeBadge type={type} size="sm" className="text-[9px] min-w-0 px-1.5 py-0" />
+      </FilterChip>
+    );
+  });
+
+  if (filters.generation !== null) {
+    chips.push(
+      <FilterChip
+        key="gen"
+        onRemove={() => onUpdate({ generation: null })}
+      >
+        <span className="px-1 text-xs text-foreground/80">
+          Gen {filters.generation}
+        </span>
+      </FilterChip>
+    );
+  }
+
+  if (filters.biome) {
+    chips.push(
+      <FilterChip key="biome" onRemove={() => onUpdate({ biome: "" })}>
+        <span className="px-1 text-xs text-foreground/80 max-w-[120px] truncate">
+          {formatBiome(filters.biome)}
+        </span>
+      </FilterChip>
+    );
+  }
+
+  filters.buckets.forEach((bucket) => {
+    chips.push(
+      <FilterChip
+        key={`bucket-${bucket}`}
+        onRemove={() =>
+          onUpdate({ buckets: filters.buckets.filter((b) => b !== bucket) })
+        }
+      >
+        <span className="px-1 text-xs text-foreground/80">
+          {SPAWN_BUCKET_DISPLAY_NAMES[bucket]}
+        </span>
+      </FilterChip>
+    );
+  });
+
+  filters.contexts.forEach((ctx) => {
+    chips.push(
+      <FilterChip
+        key={`ctx-${ctx}`}
+        onRemove={() =>
+          onUpdate({ contexts: filters.contexts.filter((c) => c !== ctx) })
+        }
+      >
+        <span className="px-1 text-xs text-foreground/80">
+          {SPAWN_CONTEXT_DISPLAY_NAMES[ctx]}
+        </span>
+      </FilterChip>
+    );
+  });
+
+  if (filters.weather) {
+    const WEATHER_PT: Record<string, string> = {
+      clear: "Limpo",
+      rain: "Chuva",
+      thunderstorm: "Tempestade",
+    };
+    chips.push(
+      <FilterChip key="weather" onRemove={() => onUpdate({ weather: null })}>
+        <span className="px-1 text-xs text-foreground/80">
+          {WEATHER_PT[filters.weather] ?? filters.weather}
+        </span>
+      </FilterChip>
+    );
+  }
+
+  if (chips.length === 0) return null;
+
+  return (
+    <div className="flex items-center gap-2 px-4 py-2 border-b border-border/40 bg-muted/5 shrink-0 overflow-x-auto">
+      <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50 shrink-0">
+        Filtros:
+      </span>
+      <div className="flex items-center gap-1.5 flex-nowrap overflow-x-auto">
+        {chips}
+      </div>
+      <button
+        type="button"
+        onClick={onClearAll}
+        className="ml-auto shrink-0 text-[11px] text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
+      >
+        Limpar todos
+      </button>
+    </div>
   );
 }
 
@@ -198,7 +353,7 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
   );
 }
 
-// ── Empty state ──────────────────────────────────────────────────────
+// ── Empty states ─────────────────────────────────────────────────────
 
 function EmptyState() {
   return (
@@ -216,6 +371,34 @@ function EmptyState() {
         </code>{" "}
         para popular o banco de dados.
       </p>
+    </div>
+  );
+}
+
+function FilterEmptyState({ onClear }: { onClear: () => void }) {
+  return (
+    <div className="flex flex-col items-center justify-center flex-1 py-20 text-center px-6">
+      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/30 border border-border mb-4">
+        <SearchX size={28} className="text-muted-foreground/50" />
+      </div>
+      <h3 className="text-lg font-semibold text-foreground mb-1">
+        Nenhum Pokémon encontrado
+      </h3>
+      <p className="text-sm text-muted-foreground max-w-xs mb-4">
+        Nenhum Pokémon encontrado com esses filtros. Tente ajustar os critérios
+        de busca.
+      </p>
+      <button
+        onClick={onClear}
+        className={cn(
+          "flex items-center gap-2 px-4 py-2 rounded-lg",
+          "bg-primary/10 border border-primary/25 text-primary",
+          "text-sm font-medium hover:bg-primary/20 transition-colors"
+        )}
+      >
+        <X size={14} />
+        Limpar filtros
+      </button>
     </div>
   );
 }
@@ -402,9 +585,39 @@ const columns = [
 export default function Pokedex() {
   const parentRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
-  const [sorting, setSorting] = useState<SortingState>([
-    { id: "dexNumber", desc: false },
-  ]);
+  const [filterOpen, setFilterOpen] = useState(false);
+
+  const {
+    filters,
+    activeFilterCount,
+    hasFilters,
+    update,
+    toggleType,
+    toggleBucket,
+    toggleContext,
+    clearFilters,
+  } = usePokedexFilters();
+
+  const sorting: SortingState = useMemo(
+    () => [{ id: filters.sort, desc: filters.dir === "desc" }],
+    [filters.sort, filters.dir]
+  );
+
+  const handleSortingChange = useCallback(
+    (updater: Updater<SortingState>) => {
+      const next =
+        typeof updater === "function" ? updater(sorting) : updater;
+      if (next.length === 0) {
+        update({ sort: "dexNumber", dir: "asc" });
+      } else {
+        update({
+          sort: next[0]!.id,
+          dir: next[0]!.desc ? "desc" : "asc",
+        });
+      }
+    },
+    [sorting, update]
+  );
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["pokemon-list"],
@@ -435,11 +648,33 @@ export default function Pokedex() {
     });
   }, [data]);
 
+  const filteredData = useMemo(
+    () => applyPokedexFilters(processedData, filters),
+    [processedData, filters]
+  );
+
+  const biomeOptions = useMemo(() => {
+    const seen = new Set<string>();
+    const result: string[] = [];
+    for (const p of processedData) {
+      if (p.primaryBiomes) {
+        for (const b of p.primaryBiomes) {
+          const formatted = formatBiome(b);
+          if (!seen.has(formatted)) {
+            seen.add(formatted);
+            result.push(formatted);
+          }
+        }
+      }
+    }
+    return result.sort();
+  }, [processedData]);
+
   const table = useReactTable({
-    data: processedData,
+    data: filteredData,
     columns,
     state: { sorting },
-    onSortingChange: setSorting,
+    onSortingChange: handleSortingChange,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
@@ -462,152 +697,205 @@ export default function Pokedex() {
   const lastItem = virtualItems[virtualItems.length - 1];
   const paddingBottom = lastItem ? totalVirtualSize - lastItem.end : 0;
 
-  const isEmpty = processedData.length === 0;
+  const isDataEmpty = processedData.length === 0;
+  const isFilteredEmpty = filteredData.length === 0 && !isDataEmpty;
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Page header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 border border-primary/20">
-            <BookOpen size={16} className="text-primary" />
+    <>
+      <div className="flex flex-col h-full">
+        {/* Page header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 border border-primary/20">
+              <BookOpen size={16} className="text-primary" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-foreground leading-tight">
+                Pokédex
+              </h1>
+              <p className="text-xs text-muted-foreground leading-tight">
+                {isDataEmpty
+                  ? "Nenhum Pokémon"
+                  : hasFilters
+                  ? `${filteredData.length} de ${processedData.length} Pokémon`
+                  : `${processedData.length} Pokémon`}
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-xl font-bold text-foreground leading-tight">
-              Pokédex
-            </h1>
-            <p className="text-xs text-muted-foreground leading-tight">
-              {processedData.length > 0
-                ? `${processedData.length} Pokémon`
-                : "Nenhum Pokémon"}
-            </p>
-          </div>
+
+          {/* Filter button */}
+          <button
+            type="button"
+            onClick={() => setFilterOpen(true)}
+            className={cn(
+              "flex items-center gap-2 px-3 py-2 rounded-lg text-sm",
+              "border transition-all duration-150",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+              activeFilterCount > 0
+                ? "border-primary/40 bg-primary/10 text-primary hover:bg-primary/15"
+                : "border-border bg-muted/20 text-muted-foreground hover:text-foreground hover:border-border/80"
+            )}
+            aria-label={`Filtros${activeFilterCount > 0 ? ` (${activeFilterCount} ativos)` : ""}`}
+          >
+            <SlidersHorizontal size={15} />
+            <span className="hidden sm:inline">Filtros</span>
+            {activeFilterCount > 0 && (
+              <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-bold px-1">
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
         </div>
-      </div>
 
-      {isEmpty ? (
-        <EmptyState />
-      ) : (
-        /* Scrollable container */
-        <div ref={parentRef} className="flex-1 overflow-auto">
-          {!isMobile ? (
-            /* ── Desktop table ── */
-            <table className="w-full border-separate border-spacing-0 min-w-[700px]">
-              <thead className="sticky top-0 z-10">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <th
-                        key={header.id}
-                        style={{ width: header.getSize() }}
-                        className={cn(
-                          "h-10 px-3 text-left",
-                          "text-[11px] font-semibold uppercase tracking-widest text-muted-foreground",
-                          "border-b border-border",
-                          "bg-background/95 backdrop-blur-sm",
-                          header.column.getCanSort() &&
-                            "cursor-pointer select-none group hover:text-foreground/80 transition-colors duration-150"
-                        )}
-                        onClick={header.column.getToggleSortingHandler()}
-                      >
-                        <span className="inline-flex items-center">
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                          {header.column.getCanSort() && (
-                            <SortIcon
-                              state={header.column.getIsSorted()}
-                            />
+        {/* Active filter chips strip */}
+        {hasFilters && (
+          <ActiveFiltersStrip
+            filters={filters}
+            onUpdate={update}
+            onClearAll={clearFilters}
+          />
+        )}
+
+        {isDataEmpty ? (
+          <EmptyState />
+        ) : isFilteredEmpty ? (
+          <FilterEmptyState onClear={clearFilters} />
+        ) : (
+          /* Scrollable container */
+          <div ref={parentRef} className="flex-1 overflow-auto">
+            {!isMobile ? (
+              /* ── Desktop table ── */
+              <table className="w-full border-separate border-spacing-0 min-w-[700px]">
+                <thead className="sticky top-0 z-10">
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <tr key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => (
+                        <th
+                          key={header.id}
+                          style={{ width: header.getSize() }}
+                          className={cn(
+                            "h-10 px-3 text-left",
+                            "text-[11px] font-semibold uppercase tracking-widest text-muted-foreground",
+                            "border-b border-border",
+                            "bg-background/95 backdrop-blur-sm",
+                            header.column.getCanSort() &&
+                              "cursor-pointer select-none group hover:text-foreground/80 transition-colors duration-150"
                           )}
-                        </span>
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
+                          onClick={header.column.getToggleSortingHandler()}
+                        >
+                          <span className="inline-flex items-center">
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext()
+                                )}
+                            {header.column.getCanSort() && (
+                              <SortIcon
+                                state={header.column.getIsSorted()}
+                              />
+                            )}
+                          </span>
+                        </th>
+                      ))}
+                    </tr>
+                  ))}
+                </thead>
 
-              <tbody>
-                {paddingTop > 0 && (
-                  <tr aria-hidden>
-                    <td
-                      colSpan={columns.length}
-                      style={{ height: `${paddingTop}px`, padding: 0, border: 0 }}
-                    />
-                  </tr>
-                )}
+                <tbody>
+                  {paddingTop > 0 && (
+                    <tr aria-hidden>
+                      <td
+                        colSpan={columns.length}
+                        style={{ height: `${paddingTop}px`, padding: 0, border: 0 }}
+                      />
+                    </tr>
+                  )}
 
+                  {virtualItems.map((virtualRow) => {
+                    const row = rows[virtualRow.index]!;
+                    return (
+                      <tr
+                        key={row.id}
+                        data-index={virtualRow.index}
+                        ref={rowVirtualizer.measureElement}
+                        className={cn(
+                          "group border-b border-border/40",
+                          "hover:bg-muted/20 transition-colors duration-100"
+                        )}
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <td
+                            key={cell.id}
+                            className="px-3 h-[52px] align-middle"
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    );
+                  })}
+
+                  {paddingBottom > 0 && (
+                    <tr aria-hidden>
+                      <td
+                        colSpan={columns.length}
+                        style={{ height: `${paddingBottom}px`, padding: 0, border: 0 }}
+                      />
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            ) : (
+              /* ── Mobile card list ── */
+              <div
+                style={{
+                  height: `${totalVirtualSize + 24}px`,
+                  position: "relative",
+                }}
+              >
                 {virtualItems.map((virtualRow) => {
                   const row = rows[virtualRow.index]!;
                   return (
-                    <tr
+                    <div
                       key={row.id}
                       data-index={virtualRow.index}
                       ref={rowVirtualizer.measureElement}
-                      className={cn(
-                        "group border-b border-border/40",
-                        "hover:bg-muted/20 transition-colors duration-100"
-                      )}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: "12px",
+                        right: "12px",
+                        transform: `translateY(${virtualRow.start + 12}px)`,
+                        paddingBottom: "8px",
+                      }}
                     >
-                      {row.getVisibleCells().map((cell) => (
-                        <td
-                          key={cell.id}
-                          className="px-3 h-[52px] align-middle"
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </td>
-                      ))}
-                    </tr>
+                      <MobileCard pokemon={row.original} />
+                    </div>
                   );
                 })}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
-                {paddingBottom > 0 && (
-                  <tr aria-hidden>
-                    <td
-                      colSpan={columns.length}
-                      style={{ height: `${paddingBottom}px`, padding: 0, border: 0 }}
-                    />
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          ) : (
-            /* ── Mobile card list ── */
-            <div
-              style={{
-                height: `${totalVirtualSize + 24}px`,
-                position: "relative",
-              }}
-            >
-              {virtualItems.map((virtualRow) => {
-                const row = rows[virtualRow.index]!;
-                return (
-                  <div
-                    key={row.id}
-                    data-index={virtualRow.index}
-                    ref={rowVirtualizer.measureElement}
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: "12px",
-                      right: "12px",
-                      transform: `translateY(${virtualRow.start + 12}px)`,
-                      paddingBottom: "8px",
-                    }}
-                  >
-                    <MobileCard pokemon={row.original} />
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+      {/* Filter sheet (outside main div to avoid stacking context issues) */}
+      <FilterSheet
+        open={filterOpen}
+        onOpenChange={setFilterOpen}
+        filters={filters}
+        onToggleType={toggleType}
+        onToggleBucket={toggleBucket}
+        onToggleContext={toggleContext}
+        onUpdate={update}
+        onClear={clearFilters}
+        activeFilterCount={activeFilterCount}
+        biomeOptions={biomeOptions}
+      />
+    </>
   );
 }

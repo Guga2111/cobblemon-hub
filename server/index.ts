@@ -52,6 +52,8 @@ function rowToListItem(row: Record<string, unknown>) {
     primaryBiomes: row.primary_biomes
       ? (JSON.parse(row.primary_biomes as string) as string[])
       : null,
+    primaryContext: (row.primary_context as string | null) ?? null,
+    primaryWeather: (row.primary_weather as string | null) ?? null,
   };
 }
 
@@ -84,7 +86,13 @@ app.get("/api/pokemon", async (c) => {
       sql: `SELECT
         p.id, p.dex_number, p.name, p.display_name, p.types, p.base_stats, p.generation,
         (SELECT bucket FROM spawn_entries WHERE pokemon_id = p.id ORDER BY weight DESC LIMIT 1) as primary_bucket,
-        (SELECT biomes FROM spawn_entries WHERE pokemon_id = p.id ORDER BY weight DESC LIMIT 1) as primary_biomes
+        (SELECT biomes FROM spawn_entries WHERE pokemon_id = p.id ORDER BY weight DESC LIMIT 1) as primary_biomes,
+        (SELECT context FROM spawn_entries WHERE pokemon_id = p.id ORDER BY weight DESC LIMIT 1) as primary_context,
+        (SELECT CASE
+          WHEN json_extract(conditions, '$.isThundering') = 1 THEN 'thunderstorm'
+          WHEN json_extract(conditions, '$.isRaining') = 1 THEN 'rain'
+          ELSE NULL
+         END FROM spawn_entries WHERE pokemon_id = p.id ORDER BY weight DESC LIMIT 1) as primary_weather
       FROM pokemon p ${where} ORDER BY p.dex_number LIMIT ? OFFSET ?`,
       args: [...args, limit, offset],
     }),
