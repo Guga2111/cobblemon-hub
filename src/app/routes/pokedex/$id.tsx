@@ -16,6 +16,7 @@ import type { Pokemon, PokemonForm, ItemDrop, PokemonType } from "~/types/pokemo
 import { TypeBadge } from "~/components/pokemon/type-badge";
 import { EvolutionChain } from "~/components/pokemon/evolution-chain";
 import { StatBar } from "~/components/pokemon/stat-bar";
+import { SpawnCard, type SpawnEntryData } from "~/components/pokemon/spawn-card";
 import { normalizePokemonName, cn } from "~/lib/utils";
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -504,23 +505,36 @@ export default function PokemonDetailPage() {
             </div>
           )}
 
-          {/* ── Placeholder tabs (spawns, moves) ──────────────────── */}
-          {(activeTab === "spawns" || activeTab === "moves") && (
+          {/* ── Spawns tab ────────────────────────────────────────── */}
+          {activeTab === "spawns" && (
+            <div className="pb-12">
+              {pokemon.spawns.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-24 text-center">
+                  <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-4">
+                    <MapPin className="w-5 h-5 text-zinc-600" />
+                  </div>
+                  <p className="text-sm font-semibold text-zinc-500">
+                    Este Pokémon não possui dados de spawn registrados
+                  </p>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  {(pokemon.spawns as SpawnEntryData[]).map((spawn) => (
+                    <SpawnCard key={spawn.id} spawn={spawn} />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ── Moves placeholder ─────────────────────────────────── */}
+          {activeTab === "moves" && (
             <div className="flex flex-col items-center justify-center py-24 text-center pb-12">
               <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-4">
-                {activeTab === "spawns" && (
-                  <MapPin className="w-5 h-5 text-zinc-600" />
-                )}
-                {activeTab === "moves" && (
-                  <Swords className="w-5 h-5 text-zinc-600" />
-                )}
+                <Swords className="w-5 h-5 text-zinc-600" />
               </div>
-              <p className="text-sm font-semibold text-zinc-500">
-                {TABS.find((t) => t.id === activeTab)?.label} — Coming soon
-              </p>
-              <p className="text-xs text-zinc-700 mt-1">
-                This section is under construction
-              </p>
+              <p className="text-sm font-semibold text-zinc-500">Moves — Coming soon</p>
+              <p className="text-xs text-zinc-700 mt-1">This section is under construction</p>
             </div>
           )}
 
