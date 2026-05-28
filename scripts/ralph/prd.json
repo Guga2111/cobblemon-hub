@@ -256,8 +256,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 14,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "StatBar in src/components/pokemon/stat-bar.tsx — custom bar rendering (not Radix Progress) to allow glow bleed-outside via two layers: blur glow div + solid bar div, no overflow-hidden on track. Progress component in src/components/ui/progress.tsx using @radix-ui/react-progress with indicatorStyle/indicatorClassName props. Color tiers: 0-49=destructive, 50-79=warning, 80-99=muted-foreground, 100-119=foreground, 120-149=primary, 150+=chart-1. Double RAF in useEffect ensures browser paints zero-width before CSS transition plays. Tab content in $id.tsx restructured: base-stats handled separately from spawns/moves placeholder. Respects activeForm?.baseStats ?? pokemon.baseStats for form-aware display."
     },
     {
       "id": "US-015",

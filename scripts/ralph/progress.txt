@@ -1,4 +1,7 @@
 ## Codebase Patterns
+- StatBar glow pattern: two absolutely-positioned divs inside a relative container (no overflow-hidden on track) — glow layer uses filter:blur + opacity, solid bar overlays it; both transition `width` via CSS
+- Double RAF for CSS mount animation: `requestAnimationFrame(() => requestAnimationFrame(() => setAnimated(true)))` ensures browser renders zero-width state before transition plays
+- Shadcn Progress: src/components/ui/progress.tsx uses @radix-ui/react-progress with custom `indicatorStyle`/`indicatorClassName` props for color/glow customization
 - Pokémon detail route ($id.tsx): uses useEffect([id]) to reset form/tab state on navigation; inline <style> tag for keyframes since Tailwind v4 can't generate arbitrary animation classes; type-adaptive glow via `rgb(var(--type-${primaryType}) / 0.X)` in inline styles
 - server GET /api/pokemon/:id returns prevId/nextId via: `SELECT id FROM pokemon WHERE dex_number < ? ORDER BY dex_number DESC LIMIT 1` and `dex_number > ? ORDER BY dex_number ASC LIMIT 1`
 - EvolutionChain component receives pokemonName + evolutions[] (what current evolves INTO); full pre-evo chain not available from single API call
@@ -245,5 +248,18 @@
   - For prev/next navigation, the server approach (SQL subqueries at query time) is cleaner than client-side list lookups; avoids stale data
   - EvolutionChain only shows current → evolutions (no pre-evo chain) — getting pre-evo would require an extra API call with `SELECT * FROM pokemon WHERE evolutions LIKE ?`
   - PokemonDetail type extends Pokemon: `interface PokemonDetail extends Pokemon { spawns: unknown[]; prevId: string | null; nextId: string | null }`
+  - Manual browser verification needed — no browser MCP tools available
+---
+
+## 2026-05-27 - US-014
+- Created `src/components/ui/progress.tsx` — Shadcn-style Progress using @radix-ui/react-progress; adds `indicatorStyle` and `indicatorClassName` props for downstream color/glow customization
+- Created `src/components/pokemon/stat-bar.tsx` — 6-stat visualization with animated bars; color tiers via `getStatColor()` mapping ranges to semantic CSS vars (destructive/warning/muted-foreground/foreground/primary/chart-1); BST total row with divider
+- Updated `src/app/routes/pokedex/$id.tsx` — replaced unified placeholder block with per-tab rendering; base-stats tab renders `<StatBar stats={activeForm?.baseStats ?? pokemon.baseStats} />`; spawns/moves keep "Coming soon" placeholder
+- Files changed: src/components/ui/progress.tsx (new), src/components/pokemon/stat-bar.tsx (new), src/app/routes/pokedex/$id.tsx
+- **Learnings for future iterations:**
+  - Radix Progress `overflow-hidden` clips box-shadow from indicator — for glowing bars, use a custom two-layer approach (glow div + solid bar, no overflow-hidden on track container)
+  - Double RAF pattern (`raf(() => raf(() => setState(true)))`) is reliable for triggering CSS transitions on mount — ensures browser paints the initial zero state first
+  - `getStatColor()` returns `hsl(var(--X))` strings for inline styles — cannot use Tailwind classes because the tier is determined at runtime from the value
+  - Form-aware stats: `activeForm?.baseStats ?? pokemon.baseStats` pattern works for both base and alternate forms
   - Manual browser verification needed — no browser MCP tools available
 ---
