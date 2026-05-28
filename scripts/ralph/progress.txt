@@ -1,4 +1,6 @@
 ## Codebase Patterns
+- EV/IV slider overlay pattern: visual track (two divs: bg track + fill div) with an absolutely-positioned transparent `<input type="range">` on top for interaction; glowing thumb via absolute div at `left: fillPct%` with boxShadow
+- Zustand persist version bump: increment `version` in persist config to clear stale localStorage when store shape changes (e.g., adding required fields to nested objects)
 - StatBar glow pattern: two absolutely-positioned divs inside a relative container (no overflow-hidden on track) — glow layer uses filter:blur + opacity, solid bar overlays it; both transition `width` via CSS
 - Double RAF for CSS mount animation: `requestAnimationFrame(() => requestAnimationFrame(() => setAnimated(true)))` ensures browser renders zero-width state before transition plays
 - Shadcn Progress: src/components/ui/progress.tsx uses @radix-ui/react-progress with custom `indicatorStyle`/`indicatorClassName` props for color/glow customization
@@ -315,5 +317,22 @@
   - Click-outside: use `document.addEventListener("mousedown", handler)` inside `useEffect([openDropdown])` — add/remove only when a dropdown is active
   - Items query `enabled: openDropdown === "item"` — only fetches when dropdown is open, avoiding unnecessary API calls
   - StoredPokemonData imported as `type` in store is sufficient; component only uses the store's typed actions — no need to re-import the type in the component
+  - Manual browser verification needed — no browser MCP tools available
+---
+
+## 2026-05-28 - US-018
+- Created `src/features/team-builder/use-stat-calculator.ts` — `useStatCalculator` hook with official formula: HP = floor(((2*base+iv+floor(ev/4))*level)/100) + level + 10; other stats = floor((inner+5)*natureMult); returns CalculatedStats with lv50 and lv100 StatBlocks
+- Created `src/features/team-builder/use-ev-validation.ts` — `useEvValidation` hook computing totalEvs (explicit sum not Object.values), remaining, per-stat errors, isValid flag
+- Created `src/components/team/ev-slider.tsx` — EvSlider component with EV/IV mode toggle; overlay slider pattern (visual track + transparent range input); per-stat color-coded glowing thumb; EV total progress bar; 4 preset buttons
+- Created `src/components/team/stat-calculator.tsx` — StatCalculator component showing Lv50/Lv100 grid with nature ▲▼ arrows and value-quality color scale
+- Updated `src/features/team-builder/use-team-store.ts` — added evs/ivs to TeamSlotState (EVs=0, IVs=31 defaults); added baseStats to StoredPokemonData; setEvs/setIvs actions; bumped persist version to 2
+- Updated `src/components/team/team-slot.tsx` — added baseStats to PokemonDetailResponse and selectPokemon call; Dumbbell toggle for collapsible EV/IV panel; EvSlider + StatCalculator rendered when panel open; useEffect resets panel on pokemon change
+- Files changed: src/features/team-builder/use-stat-calculator.ts (new), src/features/team-builder/use-ev-validation.ts (new), src/components/team/ev-slider.tsx (new), src/components/team/stat-calculator.tsx (new), src/features/team-builder/use-team-store.ts, src/components/team/team-slot.tsx
+- **Learnings for future iterations:**
+  - Overlay slider pattern: visual divs in relative container + absolute opacity-0 range input on top; glowing thumb div at `left: ${pct}%` with -translate-x-1/2
+  - Official Pokémon stat formula: inner = floor(((2*base+iv+floor(ev/4))*level)/100); HP = inner+level+10; other = floor((inner+5)*natureMult)
+  - StoredPokemonData in use-team-store.ts can safely import from ~/types/team — no circular dep
+  - Zustand persist version bump forces localStorage reset — acceptable in dev; prod would need migrate() function
+  - `noUnusedLocals: true` catches destructured-but-unused vars inside components — avoid useless destructuring
   - Manual browser verification needed — no browser MCP tools available
 ---

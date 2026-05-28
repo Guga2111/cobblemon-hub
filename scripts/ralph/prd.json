@@ -326,8 +326,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 18,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "useStatCalculator in use-stat-calculator.ts uses useMemo + official Pokémon formula (HP: inner+level+10; other: floor((inner+5)*mult)). useEvValidation in use-ev-validation.ts sums all EVs explicitly (no Object.values cast needed since EVSpread is all-numeric). EvSlider uses overlay approach: visual track divs + absolute transparent range input on top; glowing thumb via boxShadow. StatCalculator shows Lv50/Lv100 columns with nature ▲▼ arrows and color-coded values. StoredPokemonData extended with baseStats: StatBlock; persist version bumped to 2 to clear old localStorage without new fields. Training panel is collapsible (Dumbbell icon toggle) at bottom of filled TeamSlot card; resets on pokemon change via useEffect([pokemonData?.id]). EVs reset to 0 and IVs to 31 when new pokemon is selected (in setPokemon action)."
     },
     {
       "id": "US-019",
