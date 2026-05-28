@@ -48,6 +48,9 @@
 - PokemonType tuple `[PokemonType] | [PokemonType, PokemonType]` — use `z.union([z.tuple([...]), z.tuple([..., ...])])`
 - Hono server uses `@hono/node-server` serve() for tsx/Node; route order matters — specific paths (/search) before params (/:id)
 - SQLite TEXT columns (types, base_stats, etc.) stored as JSON strings — parse with JSON.parse() in row-mapping helpers
+- Zustand tuple state: `type SixSlots = [T,T,T,T,T,T]`; use `slots.map(fn) as SixSlots` for updates; define EMPTY array as const outside store to avoid reference issues in clearTeam
+- Multi-dropdown card pattern: single `openDropdown: Id | null` state; `toggle(id)` sets to id or null; click-outside effect only runs when `openDropdown !== null`; `useRef<HTMLInputElement | null>(null)` for React 19 refs
+- `useRef<T>(null)` in React 19 types as `React.RefObject<T | null>` — prop types must use `React.RefObject<T | null>` not `React.RefObject<T>` to match
 
 ---
 
@@ -296,5 +299,21 @@
   - `sortingFn` override in column def handles nullable numerics cleanly (sort null as -1 to push to bottom)
   - Category icon config object keyed by category string avoids switch statements; reusable pattern
   - Method filter state is local — no URL sync needed for detail-page sub-filters
+  - Manual browser verification needed — no browser MCP tools available
+---
+
+## 2026-05-28 - US-017
+- Created `src/features/team-builder/use-team-store.ts` — Zustand store with persist middleware; SixSlots tuple type; patchSlot helper; clearTeam resets to EMPTY_TEAM constant
+- Created `src/components/team/team-slot.tsx` — three-state card (loading/empty/filled); PokemonSearch combobox with 200ms debounce → /api/pokemon/search, then /api/pokemon/:id on select for abilities; NatureSelect with stat indicators (+Spd/-Atk); AbilityCombobox from pokemonData.abilities; ItemCombobox with debounced /api/items search
+- Updated `src/app/routes/team-builder.tsx` — replaced placeholder with 3×2/2×3/1×6 responsive grid; header shows fill count and clear-team button
+- Files changed: src/features/team-builder/use-team-store.ts (new), src/components/team/team-slot.tsx (new), src/app/routes/team-builder.tsx
+- **Learnings for future iterations:**
+  - SixSlots tuple: `slots.map(...) as SixSlots` cast is valid TypeScript for tuple assertions; define EMPTY_TEAM as a const to avoid repeated array literals in clearTeam
+  - Single `openDropdown: DropdownId | null` state manages all dropdowns in a slot — avoids state explosion; toggle(id) returns null if already open (acts as close)
+  - `useRef<HTMLInputElement>(null)` type is `React.RefObject<HTMLInputElement | null>` in React 19 — use `React.RefObject<HTMLInputElement | null>` in prop types, NOT `React.RefObject<HTMLInputElement>`
+  - On pokemon select: close dropdown first, then fetch detail (prevents UI flicker if fetch is fast); update store only on success; clear ability on pokemon change
+  - Click-outside: use `document.addEventListener("mousedown", handler)` inside `useEffect([openDropdown])` — add/remove only when a dropdown is active
+  - Items query `enabled: openDropdown === "item"` — only fetches when dropdown is open, avoiding unnecessary API calls
+  - StoredPokemonData imported as `type` in store is sufficient; component only uses the store's typed actions — no need to re-import the type in the component
   - Manual browser verification needed — no browser MCP tools available
 ---

@@ -307,8 +307,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 17,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Zustand store with persist middleware in src/features/team-builder/use-team-store.ts. TeamSlot in src/components/team/team-slot.tsx — empty/loading/filled states; PokemonSearch combobox (debounced API, fetches full detail for abilities); NatureSelect with stat effect display; AbilityCombobox from pokemon.abilities; ItemCombobox from /api/items. All dropdowns share single openDropdown state; click-outside and Escape close. Team page at src/app/routes/team-builder.tsx with 3×2→2×3→1×6 responsive grid and clear-team button."
     },
     {
       "id": "US-018",
