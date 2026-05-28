@@ -240,8 +240,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 13,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "server/index.ts extended: GET /api/pokemon/:id now returns prevId/nextId via dex_number range queries. EvolutionChain in src/components/pokemon/evolution-chain.tsx shows current → evolutions horizontally with condition labels. $id.tsx: hero with type-adaptive glow + sprite float animation; inline <style> for keyframes; form toggle resets on id change via useEffect; tab strip (Overview | Base Stats | Spawns | Moves) with placeholder content for non-overview tabs; InfoRow + SectionCard sub-components. Manual browser verification needed — no browser MCP tools in environment."
     },
     {
       "id": "US-014",

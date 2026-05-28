@@ -1,4 +1,8 @@
 ## Codebase Patterns
+- Pokémon detail route ($id.tsx): uses useEffect([id]) to reset form/tab state on navigation; inline <style> tag for keyframes since Tailwind v4 can't generate arbitrary animation classes; type-adaptive glow via `rgb(var(--type-${primaryType}) / 0.X)` in inline styles
+- server GET /api/pokemon/:id returns prevId/nextId via: `SELECT id FROM pokemon WHERE dex_number < ? ORDER BY dex_number DESC LIMIT 1` and `dex_number > ? ORDER BY dex_number ASC LIMIT 1`
+- EvolutionChain component receives pokemonName + evolutions[] (what current evolves INTO); full pre-evo chain not available from single API call
+- Pokemon detail types extend the base Pokemon interface: `interface PokemonDetail extends Pokemon { spawns: unknown[]; prevId: string | null; nextId: string | null }`
 - Filter state in URL via useSearchParams (react-router): encode arrays as comma-joined strings (?types=fire,water), delete key when empty, use { replace: true } to avoid polluting history
 - Client-side filtering with applyPokedexFilters(): fetch all 1000 rows once, filter in useMemo — avoids round-trips for facet changes
 - FilterSheet built from @radix-ui/react-dialog primitives (no shadcn CLI needed); same pattern as Sheet component in layout
@@ -226,5 +230,20 @@
   - BiomeCombobox: controlled input + dropdown from filtered array with onBlur setTimeout(150ms) to allow click registration
   - TypeGrid: opacity-35/hover:opacity-65 for inactive; absolute positioned check badge for active — clear visual distinction without modifying TypeBadge itself
   - Weather detection from spawn conditions: json_extract on JSON TEXT column in SQLite works in correlated subqueries
+  - Manual browser verification needed — no browser MCP tools available
+---
+
+## 2026-05-27 - US-013
+- Extended `server/index.ts` — GET /api/pokemon/:id now returns `prevId` and `nextId` via two additional SQLite queries on dex_number (< for prev, > for next)
+- Created `src/components/pokemon/evolution-chain.tsx` — horizontal chain: current pokemon node + arrow + condition label + each evolution target as a clickable Link
+- Implemented `src/app/routes/pokedex/$id.tsx` — full detail page with: type-adaptive hero (radial glow + sprite float animation), prev/next nav buttons, tab strip (Overview | Base Stats | Spawns | Moves), Overview content (info grid, abilities, evolution chain, drops), skeleton loading, error + retry state
+- Files changed: server/index.ts, src/components/pokemon/evolution-chain.tsx (new), src/app/routes/pokedex/$id.tsx
+- **Learnings for future iterations:**
+  - `useEffect([id])` needed to reset form/tab state when navigating between pokemon via prev/next (same component, new route param)
+  - Inline `<style>` tags in React are the right tool for keyframe animations in Tailwind v4 — cannot use arbitrary animation classes
+  - Type-adaptive glow uses `rgb(var(--type-${primaryType}) / 0.X)` in inline styles — Tailwind can't generate dynamic CSS var references
+  - For prev/next navigation, the server approach (SQL subqueries at query time) is cleaner than client-side list lookups; avoids stale data
+  - EvolutionChain only shows current → evolutions (no pre-evo chain) — getting pre-evo would require an extra API call with `SELECT * FROM pokemon WHERE evolutions LIKE ?`
+  - PokemonDetail type extends Pokemon: `interface PokemonDetail extends Pokemon { spawns: unknown[]; prevId: string | null; nextId: string | null }`
   - Manual browser verification needed — no browser MCP tools available
 ---
