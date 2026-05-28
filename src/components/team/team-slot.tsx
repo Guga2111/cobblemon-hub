@@ -7,11 +7,14 @@ import {
   Loader2,
   Search,
   Package,
+  Dumbbell,
 } from "lucide-react";
 import { TypeBadge } from "~/components/pokemon/type-badge";
 import { normalizePokemonName, cn } from "~/lib/utils";
 import { NATURES } from "~/lib/constants";
 import { useTeamStore } from "~/features/team-builder/use-team-store";
+import { EvSlider } from "~/components/team/ev-slider";
+import { StatCalculator } from "~/components/team/stat-calculator";
 import type { PokemonType } from "~/types/pokemon";
 import type { StatBlock } from "~/types/team";
 
@@ -31,6 +34,7 @@ interface PokemonDetailResponse {
   displayName: string;
   types: [PokemonType] | [PokemonType, PokemonType];
   abilities: Array<{ name: string; displayName: string; isHidden: boolean }>;
+  baseStats: StatBlock;
 }
 
 interface ItemResult {
@@ -158,7 +162,7 @@ interface TeamSlotProps {
 
 export function TeamSlot({ slotIndex }: TeamSlotProps) {
   const slot = useTeamStore((s) => s.slots[slotIndex]);
-  const { setPokemon, setNature, setAbility, setHeldItem, clearSlot } =
+  const { setPokemon, setNature, setAbility, setHeldItem, setEvs, setIvs, clearSlot } =
     useTeamStore();
 
   const [openDropdown, setOpenDropdown] = useState<DropdownId | null>(null);
@@ -167,6 +171,7 @@ export function TeamSlot({ slotIndex }: TeamSlotProps) {
   const [itemQuery, setItemQuery] = useState("");
   const [itemQueryDebounced, setItemQueryDebounced] = useState("");
   const [fetchingPokemon, setFetchingPokemon] = useState(false);
+  const [showTrainPanel, setShowTrainPanel] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const pokemonInputRef = useRef<HTMLInputElement>(null);
@@ -222,6 +227,11 @@ export function TeamSlot({ slotIndex }: TeamSlotProps) {
     }
   }, [openDropdown]);
 
+  // Reset training panel when a new pokemon is selected
+  useEffect(() => {
+    setShowTrainPanel(false);
+  }, [slot.pokemonData?.id]);
+
   const toggle = useCallback((id: DropdownId) => {
     setOpenDropdown((cur) => (cur === id ? null : id));
   }, []);
@@ -276,6 +286,7 @@ export function TeamSlot({ slotIndex }: TeamSlotProps) {
           displayName: a.displayName,
           isHidden: a.isHidden,
         })),
+        baseStats: d.baseStats,
       });
     } catch (err) {
       console.error("[TeamSlot] Failed to load pokemon detail:", err);
@@ -285,7 +296,7 @@ export function TeamSlot({ slotIndex }: TeamSlotProps) {
   }
 
   const slotLabel = String(slotIndex + 1).padStart(2, "0");
-  const { pokemonData, nature, ability, heldItem } = slot;
+  const { pokemonData, nature, ability, heldItem, evs, ivs } = slot;
   const selectedNature = NATURES.find((n) => n.name === nature) ?? null;
   const primaryType = pokemonData?.types[0] ?? null;
 
@@ -674,6 +685,60 @@ export function TeamSlot({ slotIndex }: TeamSlotProps) {
           )}
         </div>
       </div>
+
+      {/* Train panel toggle */}
+      <div className="h-px bg-border/20 mx-3" />
+      <button
+        type="button"
+        onClick={() => setShowTrainPanel((prev) => !prev)}
+        className={cn(
+          "w-full flex items-center gap-2 px-3 py-[9px] text-left",
+          "hover:bg-white/[0.03] transition-colors duration-100",
+          showTrainPanel && "bg-white/[0.02]"
+        )}
+      >
+        <Dumbbell
+          className={cn(
+            "h-3 w-3 shrink-0 transition-colors",
+            showTrainPanel ? "text-primary/50" : "text-muted-foreground/25"
+          )}
+        />
+        <span
+          className={cn(
+            "flex-1 text-[9px] font-bold tracking-[0.15em] uppercase transition-colors",
+            showTrainPanel ? "text-primary/55" : "text-muted-foreground/28"
+          )}
+        >
+          EV / IV
+        </span>
+        <ChevronDown
+          className={cn(
+            "h-3 w-3 text-muted-foreground/20 transition-transform duration-150",
+            showTrainPanel && "-rotate-180"
+          )}
+        />
+      </button>
+
+      {/* Train panel content */}
+      {showTrainPanel && (
+        <>
+          <div className="h-px bg-border/15 mx-3" />
+          <EvSlider
+            evs={evs}
+            ivs={ivs}
+            onEvsChange={(newEvs) => setEvs(slotIndex, newEvs)}
+            onIvsChange={(newIvs) => setIvs(slotIndex, newIvs)}
+            natureName={nature}
+          />
+          <div className="h-px bg-border/10 mx-3" />
+          <StatCalculator
+            baseStats={pokemonData.baseStats}
+            evs={evs}
+            ivs={ivs}
+            natureName={nature}
+          />
+        </>
+      )}
     </div>
   );
 }
