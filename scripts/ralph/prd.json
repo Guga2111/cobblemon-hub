@@ -342,8 +342,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 19,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "ExportDialog built from @radix-ui/react-dialog (not AlertDialog — semantically more appropriate for a non-destructive export panel). buildShowdownExport() in use-team-export.ts formats EVs/IVs (only non-zero EVs, only non-31 IVs), nature capitalized, 4 empty move lines. buildShareableUrl() uses encodeURIComponent(JSON.stringify(minimalSlots)) + window.location.origin. CopyButton shows Check icon for 2s with emerald glow. Terminal-aesthetic textarea (dark green background, scanline overlay, Fira Code font). Export button visible only when filledCount > 0."
     },
     {
       "id": "US-020",

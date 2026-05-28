@@ -336,3 +336,18 @@
   - `noUnusedLocals: true` catches destructured-but-unused vars inside components — avoid useless destructuring
   - Manual browser verification needed — no browser MCP tools available
 ---
+
+## 2026-05-28 - US-019
+- Created `src/features/team-builder/use-team-export.ts` — buildShowdownExport() generates Pokémon Showdown-compatible text; buildShareableUrl() encodes team as JSON via encodeURIComponent → query param `?team=`
+- Created `src/components/team/export-dialog.tsx` — ExportDialog with @radix-ui/react-dialog; CopyButton with 2s Check icon feedback; terminal-aesthetic textarea (dark green bg + scanline overlay + monospace font); URL section; self-contained trigger button
+- Updated `src/app/routes/team-builder.tsx` — ExportDialog rendered next to clear-team button in header (only visible when filledCount > 0)
+- Files changed: src/features/team-builder/use-team-export.ts (new), src/components/team/export-dialog.tsx (new), src/app/routes/team-builder.tsx
+- **Learnings for future iterations:**
+  - AlertDialog (Shadcn) doesn't exist in this codebase — use @radix-ui/react-dialog directly (same pattern as Sheet and FilterSheet); build portal + overlay + content manually
+  - Showdown EV line: only include stats with ev > 0; order is hp/atk/def/spa/spd/spe; `const STAT_ORDER: Array<keyof EVSpread> = [...]` avoids Object.keys() ordering uncertainty
+  - Showdown IV line: only include stats where iv !== 31 (31 is the implicit default)
+  - For shareable URL, use `encodeURIComponent(JSON.stringify(data))` not btoa — handles non-ASCII pokemon/item names safely
+  - `useMemo([open, slots])` for shareUrl defers window.location access until dialog opens — avoids any potential RR7 hydration concerns
+  - ExportDialog is self-contained with its own trigger — no prop drilling needed in team-builder.tsx
+  - Manual browser verification needed — no browser MCP tools available
+---
