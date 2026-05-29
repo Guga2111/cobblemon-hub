@@ -1,4 +1,6 @@
 ## Codebase Patterns
+- RR7 ErrorBoundary: export `function ErrorBoundary()` from route files; use `useRouteError()` + `isRouteErrorResponse()` from "react-router" inside; `useNavigate(0)` to soft-reload; all router hooks work inside ErrorBoundary rendered tree
+- Glitch effect pattern: CSS `content: attr(data-text)` on `::before`/`::after` pseudo-elements + clip-path animation for RGB channel split; requires `position: relative` on host; define in `<style>` tag (Tailwind v4 can't generate dynamic pseudo-element animations)
 - EV/IV slider overlay pattern: visual track (two divs: bg track + fill div) with an absolutely-positioned transparent `<input type="range">` on top for interaction; glowing thumb via absolute div at `left: fillPct%` with boxShadow
 - Zustand persist version bump: increment `version` in persist config to clear stale localStorage when store shape changes (e.g., adding required fields to nested objects)
 - StatBar glow pattern: two absolutely-positioned divs inside a relative container (no overflow-hidden on track) — glow layer uses filter:blur + opacity, solid bar overlays it; both transition `width` via CSS
@@ -374,6 +376,18 @@
   - For TanStack Table with no virtualization, `getCoreRowModel() + getSortedRowModel()` is the full setup needed; `getFilteredRowModel()` not needed when server handles filtering
   - `colHelper.display()` for computed/action columns; `colHelper.accessor()` for data columns — consistent pattern with pokedex
   - Category select uses native `<select>` element (not a custom combobox) — appropriate when there are only 7 options and no fuzzy search needed
+  - Manual browser verification needed — no browser MCP tools available
+---
+
+## 2026-05-28 - US-022
+- Created `src/components/layout/route-error-boundary.tsx` — reusable RouteErrorBoundary component with `useRouteError()`, `isRouteErrorResponse()`, `useNavigate`, `useLocation` from react-router; logs error with route name + path via useEffect; gaming terminal glitch aesthetic
+- Added `ErrorBoundary` named export to all 7 route files: _index.tsx (Home), pokedex/index.tsx (Pokédex), pokedex/$id.tsx (Detalhe do Pokémon), team-builder.tsx (Team Builder), items.tsx (Wiki de Itens), guides/index.tsx (Guias), guides/$slug.tsx (Guia)
+- Files changed: src/components/layout/route-error-boundary.tsx (new), src/app/routes/_index.tsx, src/app/routes/pokedex/index.tsx, src/app/routes/pokedex/$id.tsx, src/app/routes/team-builder.tsx, src/app/routes/items.tsx, src/app/routes/guides/index.tsx, src/app/routes/guides/$slug.tsx
+- **Learnings for future iterations:**
+  - RR7 framework mode: export `function ErrorBoundary()` from a route module; call `useRouteError()` anywhere in the rendered tree; `isRouteErrorResponse(error)` distinguishes HTTP errors (404/403/500) from render errors (Error instances)
+  - `useNavigate()(0)` soft-reloads the current route — equivalent to RR7's built-in route refresh; this resets the error boundary
+  - CSS glitch effect: `content: attr(data-text)` + `clip-path: inset()` animation on `::before`/`::after`; define in `<style>` tag inside JSX (established codebase pattern); requires `position: relative` on the host element
+  - All RR7 router hooks (useNavigate, useLocation) work inside ErrorBoundary components — they're rendered inside the router context
   - Manual browser verification needed — no browser MCP tools available
 ---
 

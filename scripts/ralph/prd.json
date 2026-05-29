@@ -394,8 +394,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 22,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Shared RouteErrorBoundary component in src/components/layout/route-error-boundary.tsx uses useRouteError() + isRouteErrorResponse() from react-router. Gaming terminal aesthetic: glitch effect on heading via CSS ::before/::after + data-text attribute, drifting scanline, noise overlay. useEffect logs error with route + path context. Each route exports `ErrorBoundary` that renders `<RouteErrorBoundary routeName=\"...\" />`. Retry uses navigate(0). Stack trace in collapsible details element."
     },
     {
       "id": "US-023",
