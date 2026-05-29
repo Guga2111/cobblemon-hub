@@ -42,7 +42,7 @@ export const GUIDES: Guide[] = [
       "Guia completo para instalar o mod Cobblemon no Minecraft, cobrindo Forge, Fabric e todas as dependências necessárias.",
     difficulty: "Easy",
     tags: ["Instalação"],
-    thumbnail: "⚙️",
+    thumbnail: "https://play.pokemonshowdown.com/sprites/dex/porygon.png",
     estimatedTime: "15 min",
     sections: [
       {
@@ -116,7 +116,7 @@ export const GUIDES: Guide[] = [
       "Aprenda onde cada tipo de Apricorn nasce no mundo, como cultivá-los e quais Poké Balls eles criam.",
     difficulty: "Easy",
     tags: ["Apricorns"],
-    thumbnail: "🌳",
+    thumbnail: "https://play.pokemonshowdown.com/sprites/dex/applin.png",
     estimatedTime: "10 min",
     sections: [
       {
@@ -154,7 +154,7 @@ export const GUIDES: Guide[] = [
       "Descubra onde encontrar os diferentes tipos de Tumblestone e como usá-los na criação de Poké Balls.",
     difficulty: "Easy",
     tags: ["Tumblestones"],
-    thumbnail: "🪨",
+    thumbnail: "https://play.pokemonshowdown.com/sprites/dex/roggenrola.png",
     estimatedTime: "8 min",
     sections: [
       {
@@ -188,7 +188,7 @@ export const GUIDES: Guide[] = [
       "Monte uma fazenda eficiente de Berries para treinar EVs, curar status e preparar seus Pokémon para batalhas.",
     difficulty: "Medium",
     tags: ["Berry Farming"],
-    thumbnail: "🍒",
+    thumbnail: "https://play.pokemonshowdown.com/sprites/dex/cherubi.png",
     estimatedTime: "20 min",
     sections: [
       {
@@ -227,7 +227,7 @@ export const GUIDES: Guide[] = [
       "Onde e como treinar EVs de forma eficiente para cada stat, com os melhores locais de farming por bioma.",
     difficulty: "Medium",
     tags: ["EV Training Spots"],
-    thumbnail: "💪",
+    thumbnail: "https://play.pokemonshowdown.com/sprites/dex/machop.png",
     estimatedTime: "25 min",
     sections: [
       {
@@ -273,7 +273,7 @@ export const GUIDES: Guide[] = [
       "Técnicas avançadas para aumentar suas chances de encontrar Pokémon Shiny, incluindo métodos de chaining e itens especiais.",
     difficulty: "Hard",
     tags: ["Shiny Hunting"],
-    thumbnail: "✨",
+    thumbnail: "https://play.pokemonshowdown.com/sprites/dex/ponyta.png",
     estimatedTime: "45 min",
     sections: [
       {

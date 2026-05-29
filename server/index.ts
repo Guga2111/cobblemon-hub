@@ -117,7 +117,17 @@ app.get("/api/pokemon/search", async (c) => {
   });
 
   return c.json({
-    data: result.rows.map((r) => rowToListItem(r as Record<string, unknown>)),
+    data: result.rows.map((r) => {
+      const row = r as Record<string, unknown>;
+      return {
+        id: row.id as string,
+        dexNumber: row.dex_number as number,
+        name: row.name as string,
+        displayName: row.display_name as string,
+        types: JSON.parse(row.types as string) as unknown,
+        generation: row.generation as number,
+      };
+    }),
   });
 });
 

@@ -51,8 +51,8 @@ const BUCKET_CONFIG: Record<SpawnBucket, { label: string; barColor: string; badg
   {
     common: {
       label: "Common",
-      barColor: "bg-zinc-500",
-      badgeClass: "bg-zinc-700/40 text-zinc-400 border-zinc-600/40",
+      barColor: "bg-muted-foreground/50",
+      badgeClass: "bg-muted/40 text-muted-foreground border-border/40",
     },
     uncommon: {
       label: "Uncommon",
@@ -144,7 +144,7 @@ function ConditionChip({
         "inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-semibold border leading-none",
         forbidden
           ? "bg-red-950/30 text-red-400/80 border-red-900/40"
-          : "bg-zinc-800/60 text-zinc-300 border-zinc-700/50"
+          : "bg-muted/30 text-foreground/80 border-border/50"
       )}
     >
       <Icon className="w-3 h-3 shrink-0" />
@@ -225,7 +225,7 @@ export const SpawnCard = memo(function SpawnCard({ spawn }: { spawn: SpawnEntryD
   const showAntiConditions = hasConditions(spawn.anticonditions);
 
   return (
-    <div className="relative flex rounded-xl overflow-hidden bg-zinc-900/60 border border-zinc-800/50 hover:border-zinc-700/60 transition-colors">
+    <div className="relative flex rounded-xl overflow-hidden bg-card/60 border border-border/50 hover:border-border/60 transition-colors">
       {/* Bucket accent bar */}
       <div className={cn("w-1 shrink-0 self-stretch", bucket.barColor)} />
 
@@ -241,17 +241,17 @@ export const SpawnCard = memo(function SpawnCard({ spawn }: { spawn: SpawnEntryD
             {bucket.label}
           </span>
 
-          <span className="inline-flex items-center gap-1 text-[11px] text-zinc-500 font-medium">
+          <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground/70 font-medium">
             <CtxIcon className="w-3 h-3" />
             {ctxLabel}
           </span>
 
-          <span className="ml-auto flex items-center gap-1 text-[11px] text-zinc-600 font-medium">
+          <span className="ml-auto flex items-center gap-1 text-[11px] text-muted-foreground/50 font-medium">
             <TrendingUp className="w-3 h-3" />
             {spawn.weight % 1 === 0 ? spawn.weight : spawn.weight.toFixed(2)}
           </span>
 
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-violet-900/30 border border-violet-800/40 text-[11px] font-bold text-violet-300 tabular-nums">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-primary/10 border border-primary/40 text-[11px] font-bold text-primary/80 tabular-nums">
             Lv. {spawn.levelMin}–{spawn.levelMax}
           </span>
         </div>
@@ -261,7 +261,7 @@ export const SpawnCard = memo(function SpawnCard({ spawn }: { spawn: SpawnEntryD
           {spawn.biomes.map((biome) => (
             <span
               key={biome}
-              className="text-[11px] text-zinc-400 bg-zinc-800/50 border border-zinc-700/40 px-2 py-0.5 rounded-md font-medium"
+              className="text-[11px] text-muted-foreground bg-muted/25 border border-border/40 px-2 py-0.5 rounded-md font-medium"
             >
               {formatBiomeName(biome)}
             </span>
@@ -271,7 +271,7 @@ export const SpawnCard = memo(function SpawnCard({ spawn }: { spawn: SpawnEntryD
         {/* Conditions */}
         {showConditions && (
           <div className={showAntiConditions ? "mb-2" : undefined}>
-            <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-wider mb-1.5">
+            <p className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-wider mb-1.5">
               Requires
             </p>
             <ConditionsList cond={spawn.conditions} />

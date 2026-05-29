@@ -9,9 +9,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Menu,
-  Hexagon,
 } from "lucide-react";
 import { cn } from "~/lib/utils";
+import { Button } from "~/components/ui/button";
+import { Separator } from "~/components/ui/separator";
 import {
   Sheet,
   SheetTrigger,
@@ -23,12 +24,16 @@ import { CommandSearch } from "~/components/search/command-search";
 
 function RouteSkeleton() {
   return (
-    <div className="flex flex-col gap-4 p-6 animate-pulse">
-      <div className="h-8 w-48 rounded-lg bg-muted/40" />
-      <div className="h-px w-full bg-border/40" />
+    <div className="flex flex-col gap-4 p-6">
+      <div className="h-8 w-48 rounded-lg bg-muted/40 animate-shimmer bg-gradient-to-r from-muted/40 via-muted/20 to-muted/40" />
+      <Separator />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
         {Array.from({ length: 9 }).map((_, i) => (
-          <div key={i} className="h-24 rounded-xl bg-muted/30" />
+          <div
+            key={i}
+            className="h-24 rounded-xl bg-muted/20 animate-shimmer bg-gradient-to-r from-muted/20 via-muted/10 to-muted/20"
+            style={{ animationDelay: `${i * 100}ms` }}
+          />
         ))}
       </div>
     </div>
@@ -44,7 +49,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { to: "/", label: "Home", icon: Home, end: true },
-  { to: "/pokedex", label: "Pokédex", icon: BookOpen, end: false },
+  { to: "/pokedex", label: "Pokedex", icon: BookOpen, end: false },
   { to: "/team-builder", label: "Team Builder", icon: Swords, end: false },
   { to: "/items", label: "Itens", icon: Package, end: false },
   { to: "/guides", label: "Guias", icon: ScrollText, end: false },
@@ -59,8 +64,8 @@ function NavItems({
 }) {
   return (
     <nav
-      className="flex flex-col gap-0.5 px-2"
-      aria-label="Navegação principal"
+      className="flex flex-col gap-1 px-3"
+      aria-label="Navegacao principal"
     >
       {NAV_ITEMS.map((item) => (
         <NavLink
@@ -72,24 +77,24 @@ function NavItems({
           onClick={onItemClick}
           className={({ isActive }) =>
             cn(
-              "group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
+              "group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all duration-200",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background",
-              collapsed && "justify-center",
+              collapsed && "justify-center px-2",
               isActive
-                ? "bg-primary/10 text-primary"
-                : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                ? "bg-primary/12 text-primary shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.2)]"
+                : "text-muted-foreground hover:bg-muted/40 hover:text-foreground"
             )
           }
         >
           {({ isActive }) => (
             <>
               {isActive && !collapsed && (
-                <span className="absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-r-full bg-primary" />
+                <span className="absolute left-0 top-1/2 h-6 w-[3px] -translate-y-1/2 rounded-r-full bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.5)]" />
               )}
               {isActive && collapsed && (
-                <span className="absolute bottom-1 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full bg-primary" />
+                <span className="absolute bottom-0.5 left-1/2 h-[3px] w-5 -translate-x-1/2 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.5)]" />
               )}
-              <item.icon size={18} className="shrink-0" />
+              <item.icon size={18} className={cn("shrink-0", isActive && "drop-shadow-[0_0_4px_hsl(var(--primary)/0.4)]")} />
               {!collapsed && (
                 <span className="truncate">{item.label}</span>
               )}
@@ -105,19 +110,23 @@ function BrandLogo({ collapsed }: { collapsed: boolean }) {
   return (
     <div
       className={cn(
-        "flex items-center gap-3 border-b border-border py-4 px-4",
+        "flex items-center gap-3 border-b border-border/60 py-5 px-4",
         collapsed && "justify-center px-2"
       )}
     >
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/20 ring-1 ring-primary/30">
-        <Hexagon size={16} className="text-primary" fill="currentColor" fillOpacity={0.2} />
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15 ring-1 ring-primary/25 shadow-[0_0_12px_hsl(var(--primary)/0.15)]">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="text-primary">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+          <line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" strokeWidth="2" />
+          <circle cx="12" cy="12" r="3" fill="currentColor" />
+        </svg>
       </div>
       {!collapsed && (
         <div className="min-w-0">
-          <p className="truncate text-sm font-bold leading-tight text-foreground">
+          <p className="truncate text-sm font-extrabold leading-tight text-foreground tracking-tight">
             Cobblemon
           </p>
-          <p className="truncate text-xs leading-tight text-muted-foreground">
+          <p className="truncate text-[11px] font-semibold leading-tight text-primary/70 tracking-wider uppercase">
             Hub
           </p>
         </div>
@@ -149,7 +158,6 @@ export default function AppLayout() {
   return (
     <Sheet open={drawerOpen} onOpenChange={setDrawerOpen}>
       <div className="flex h-screen overflow-hidden bg-background">
-        {/* Accessibility: skip to main content */}
         <a
           href="#main-content"
           className={cn(
@@ -160,14 +168,14 @@ export default function AppLayout() {
             "focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-ring"
           )}
         >
-          Ir para o conteúdo
+          Ir para o conteudo
         </a>
 
-        {/* Desktop Sidebar — hidden below lg */}
+        {/* Desktop Sidebar */}
         <aside
           className={cn(
             "hidden lg:flex flex-col shrink-0 overflow-hidden",
-            "border-r border-border bg-[hsl(var(--sidebar-background))]",
+            "border-r border-border/60 bg-[hsl(var(--sidebar-background))]",
             "transition-[width] duration-300 ease-in-out",
             sidebarCollapsed ? "w-[4.5rem]" : "w-64"
           )}
@@ -175,22 +183,19 @@ export default function AppLayout() {
         >
           <BrandLogo collapsed={sidebarCollapsed} />
 
-          <div className="flex-1 overflow-y-auto py-3">
+          <div className="flex-1 overflow-y-auto py-4">
             <NavItems collapsed={sidebarCollapsed} />
           </div>
 
-          {/* Collapse toggle */}
-          <div className="border-t border-border p-2">
-            <button
+          <Separator className="opacity-60" />
+          <div className="p-2">
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={toggleSidebar}
-              aria-label={
-                sidebarCollapsed ? "Expandir menu" : "Recolher menu"
-              }
+              aria-label={sidebarCollapsed ? "Expandir menu" : "Recolher menu"}
               className={cn(
-                "flex w-full items-center gap-2 rounded-lg px-3 py-2",
-                "text-sm text-muted-foreground transition-colors duration-200",
-                "hover:bg-muted/50 hover:text-foreground",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                "w-full text-muted-foreground hover:text-foreground",
                 sidebarCollapsed && "justify-center"
               )}
             >
@@ -202,33 +207,36 @@ export default function AppLayout() {
                   <span>Recolher</span>
                 </>
               )}
-            </button>
+            </Button>
           </div>
         </aside>
 
         {/* Right column: header + main + bottom-nav */}
         <div className="flex flex-1 flex-col overflow-hidden">
           {/* Header */}
-          <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border bg-background/95 px-4 backdrop-blur-sm">
-            {/* Tablet menu trigger — visible md to lg only */}
-            <SheetTrigger
-              className={cn(
-                "hidden md:flex lg:hidden h-9 w-9 items-center justify-center",
-                "rounded-lg text-muted-foreground transition-colors duration-200",
-                "hover:bg-muted hover:text-foreground",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              )}
-              aria-label="Abrir menu de navegação"
-            >
-              <Menu size={20} />
+          <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border/60 bg-background/80 px-4 backdrop-blur-md">
+            {/* Tablet menu trigger */}
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                className="hidden md:flex lg:hidden text-muted-foreground"
+                aria-label="Abrir menu de navegacao"
+              >
+                <Menu size={20} />
+              </Button>
             </SheetTrigger>
 
-            {/* Brand — hidden on desktop (sidebar has it) */}
-            <div className="flex items-center gap-2 lg:hidden">
-              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary/20 ring-1 ring-primary/30">
-                <Hexagon size={14} className="text-primary" fill="currentColor" fillOpacity={0.2} />
+            {/* Brand — hidden on desktop */}
+            <div className="flex items-center gap-2.5 lg:hidden">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/15 ring-1 ring-primary/25">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="text-primary">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+                  <line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" strokeWidth="2" />
+                  <circle cx="12" cy="12" r="3" fill="currentColor" />
+                </svg>
               </div>
-              <span className="text-sm font-bold text-foreground">
+              <span className="text-sm font-extrabold text-foreground tracking-tight">
                 Cobblemon Hub
               </span>
             </div>
@@ -252,10 +260,10 @@ export default function AppLayout() {
             </Suspense>
           </main>
 
-          {/* Mobile bottom navigation — visible below md only */}
+          {/* Mobile bottom navigation */}
           <nav
-            className="flex md:hidden shrink-0 items-stretch justify-around border-t border-border bg-background/95 backdrop-blur-sm"
-            aria-label="Navegação inferior"
+            className="flex md:hidden shrink-0 items-stretch justify-around border-t border-border/60 bg-background/90 backdrop-blur-md"
+            aria-label="Navegacao inferior"
           >
             {NAV_ITEMS.map((item) => (
               <NavLink
@@ -266,7 +274,7 @@ export default function AppLayout() {
                 className={({ isActive }) =>
                   cn(
                     "relative flex flex-1 flex-col items-center justify-center gap-1 py-3 px-1",
-                    "text-xs font-medium transition-colors duration-200",
+                    "text-[10px] font-bold transition-colors duration-200",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
                     isActive
                       ? "text-primary"
@@ -277,16 +285,16 @@ export default function AppLayout() {
                 {({ isActive }) => (
                   <>
                     {isActive && (
-                      <span className="absolute top-0 left-1/2 h-0.5 w-6 -translate-x-1/2 rounded-b-full bg-primary" />
+                      <span className="absolute top-0 left-1/2 h-[3px] w-7 -translate-x-1/2 rounded-b-full bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.4)]" />
                     )}
                     <item.icon
                       size={20}
                       className={cn(
                         "shrink-0 transition-transform duration-200",
-                        isActive && "scale-110"
+                        isActive && "scale-110 drop-shadow-[0_0_4px_hsl(var(--primary)/0.4)]"
                       )}
                     />
-                    <span className="max-w-[56px] truncate text-center leading-tight">
+                    <span className="max-w-[56px] truncate text-center leading-tight tracking-wide uppercase">
                       {item.label}
                     </span>
                   </>
@@ -297,11 +305,11 @@ export default function AppLayout() {
         </div>
       </div>
 
-      {/* Tablet sidebar drawer — rendered via portal */}
+      {/* Tablet sidebar drawer */}
       <SheetContent>
-        <SheetTitle className="sr-only">Menu de navegação</SheetTitle>
+        <SheetTitle className="sr-only">Menu de navegacao</SheetTitle>
         <BrandLogo collapsed={false} />
-        <div className="flex-1 overflow-y-auto py-3">
+        <div className="flex-1 overflow-y-auto py-4">
           <NavItems onItemClick={() => setDrawerOpen(false)} />
         </div>
       </SheetContent>

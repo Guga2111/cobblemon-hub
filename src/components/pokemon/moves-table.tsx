@@ -40,7 +40,7 @@ const METHOD_CONFIGS: Record<MoveLearnMethod, MethodConfig> = {
     activeBorder: "border-violet-700/80",
     activeText: "text-violet-300",
     activeShadow: "shadow-[0_0_12px_-2px_rgb(139_92_246_/_0.5)]",
-    inactiveText: "text-zinc-500",
+    inactiveText: "text-muted-foreground/70",
   },
   tm: {
     label: "TM",
@@ -48,7 +48,7 @@ const METHOD_CONFIGS: Record<MoveLearnMethod, MethodConfig> = {
     activeBorder: "border-blue-700/80",
     activeText: "text-blue-300",
     activeShadow: "shadow-[0_0_12px_-2px_rgb(59_130_246_/_0.5)]",
-    inactiveText: "text-zinc-500",
+    inactiveText: "text-muted-foreground/70",
   },
   egg: {
     label: "Egg Move",
@@ -56,7 +56,7 @@ const METHOD_CONFIGS: Record<MoveLearnMethod, MethodConfig> = {
     activeBorder: "border-pink-700/80",
     activeText: "text-pink-300",
     activeShadow: "shadow-[0_0_12px_-2px_rgb(236_72_153_/_0.5)]",
-    inactiveText: "text-zinc-500",
+    inactiveText: "text-muted-foreground/70",
   },
   tutor: {
     label: "Tutor",
@@ -64,7 +64,7 @@ const METHOD_CONFIGS: Record<MoveLearnMethod, MethodConfig> = {
     activeBorder: "border-amber-700/80",
     activeText: "text-amber-300",
     activeShadow: "shadow-[0_0_12px_-2px_rgb(245_158_11_/_0.5)]",
-    inactiveText: "text-zinc-500",
+    inactiveText: "text-muted-foreground/70",
   },
 };
 
@@ -84,7 +84,7 @@ const CATEGORY_CONFIG = {
   status: {
     Icon: MinusCircle,
     dotClass: "bg-zinc-500",
-    textClass: "text-zinc-400",
+    textClass: "text-muted-foreground",
     label: "Status",
   },
 };
@@ -100,11 +100,11 @@ const ALL_FILTERS: { id: MoveFilter; label: string }[] = [
 // ── Helpers ────────────────────────────────────────────────────────────────
 
 function getPowerColor(power: number | null): string {
-  if (power === null) return "text-zinc-600";
+  if (power === null) return "text-muted-foreground/50";
   if (power >= 120) return "text-red-400";
   if (power >= 90) return "text-orange-400";
   if (power >= 60) return "text-yellow-400";
-  return "text-zinc-300";
+  return "text-foreground/80";
 }
 
 function formatLevelMethod(move: LearnableMove): {
@@ -142,10 +142,10 @@ const columns = [
         if (isLevel) {
           return (
             <div className="flex items-baseline gap-0.5 tabular-nums">
-              <span className="text-[9px] text-zinc-600 font-semibold tracking-wide">
+              <span className="text-[9px] text-muted-foreground/50 font-semibold tracking-wide">
                 {label}
               </span>
-              <span className="text-sm font-bold text-zinc-200">{primary}</span>
+              <span className="text-sm font-bold text-foreground/90">{primary}</span>
             </div>
           );
         }
@@ -161,7 +161,7 @@ const columns = [
     enableSorting: true,
     size: 180,
     cell: ({ getValue }) => (
-      <span className="text-sm font-medium text-zinc-200">{getValue()}</span>
+      <span className="text-sm font-medium text-foreground/90">{getValue()}</span>
     ),
   }),
 
@@ -216,7 +216,7 @@ const columns = [
     cell: ({ getValue }) => {
       const val = getValue();
       return (
-        <span className="text-sm tabular-nums text-zinc-400">
+        <span className="text-sm tabular-nums text-muted-foreground">
           {val !== null ? `${val}%` : "—"}
         </span>
       );
@@ -228,7 +228,7 @@ const columns = [
     enableSorting: false,
     size: 52,
     cell: ({ getValue }) => (
-      <span className="text-sm tabular-nums text-zinc-500">{getValue() ?? "—"}</span>
+      <span className="text-sm tabular-nums text-muted-foreground/70">{getValue() ?? "—"}</span>
     ),
   }),
 ];
@@ -240,20 +240,20 @@ function TableSkeleton() {
     <div className="animate-pulse">
       <div className="flex gap-2 mb-4">
         {Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="h-7 w-20 bg-zinc-800 rounded-full" />
+          <div key={i} className="h-7 w-20 bg-muted rounded-full" />
         ))}
       </div>
-      <div className="rounded-xl border border-zinc-800 overflow-hidden">
-        <div className="h-9 bg-zinc-800/80" />
+      <div className="rounded-xl border border-border overflow-hidden">
+        <div className="h-9 bg-muted/40" />
         {Array.from({ length: 8 }).map((_, i) => (
           <div
             key={i}
-            className={cn("h-11 flex items-center gap-3 px-4", i % 2 === 0 ? "bg-zinc-900/30" : "bg-zinc-900/60")}
+            className={cn("h-11 flex items-center gap-3 px-4", i % 2 === 0 ? "bg-muted/10" : "bg-muted/20")}
           >
-            <div className="h-4 w-8 bg-zinc-800 rounded" />
-            <div className="h-4 w-32 bg-zinc-800 rounded" />
-            <div className="h-4 w-14 bg-zinc-800 rounded" />
-            <div className="h-4 w-10 bg-zinc-800 rounded ml-auto" />
+            <div className="h-4 w-8 bg-muted rounded" />
+            <div className="h-4 w-32 bg-muted rounded" />
+            <div className="h-4 w-14 bg-muted rounded" />
+            <div className="h-4 w-10 bg-muted rounded ml-auto" />
           </div>
         ))}
       </div>
@@ -316,14 +316,14 @@ export function MovesTable({ moves, isLoading = false }: MovesTableProps) {
                 "px-3 py-1 rounded-full text-xs font-semibold border transition-all",
                 isActive
                   ? f.id === "all"
-                    ? "bg-zinc-700/60 border-zinc-600 text-zinc-200 shadow-[0_0_12px_-2px_rgb(161_161_170_/_0.3)]"
+                    ? "bg-muted/40 border-border text-foreground/90 shadow-[0_0_12px_-2px_rgb(161_161_170_/_0.3)]"
                     : cn(
                         methodCfg!.activeBg,
                         methodCfg!.activeBorder,
                         methodCfg!.activeText,
                         methodCfg!.activeShadow
                       )
-                  : "bg-zinc-900/40 border-zinc-800 text-zinc-500 hover:text-zinc-300 hover:border-zinc-700"
+                  : "bg-muted/15 border-border text-muted-foreground/70 hover:text-foreground hover:border-border"
               )}
             >
               {f.label}
@@ -336,7 +336,7 @@ export function MovesTable({ moves, isLoading = false }: MovesTableProps) {
           );
         })}
         {activeFilter === "all" && (
-          <span className="ml-auto text-[11px] text-zinc-600 tabular-nums">
+          <span className="ml-auto text-[11px] text-muted-foreground/50 tabular-nums">
             {moves.length} moves
           </span>
         )}
@@ -345,27 +345,27 @@ export function MovesTable({ moves, isLoading = false }: MovesTableProps) {
       {/* ── Table ──────────────────────────────────────────────── */}
       {rows.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
-          <div className="w-11 h-11 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-3">
-            <Swords className="w-5 h-5 text-zinc-700" />
+          <div className="w-11 h-11 rounded-xl bg-card border border-border flex items-center justify-center mb-3">
+            <Swords className="w-5 h-5 text-muted-foreground/30" />
           </div>
-          <p className="text-sm font-semibold text-zinc-500">
+          <p className="text-sm font-semibold text-muted-foreground/70">
             Nenhum move por este método
           </p>
           {activeFilter !== "all" && (
             <button
               onClick={() => setActiveFilter("all")}
-              className="mt-2 text-xs text-zinc-600 hover:text-zinc-400 underline underline-offset-2 transition-colors"
+              className="mt-2 text-xs text-muted-foreground/50 hover:text-muted-foreground underline underline-offset-2 transition-colors"
             >
               Ver todos os métodos
             </button>
           )}
         </div>
       ) : (
-        <div className="rounded-xl border border-zinc-800/70 overflow-hidden">
+        <div className="rounded-xl border border-border/70 overflow-hidden">
           <table className="w-full border-separate border-spacing-0 text-left">
             <thead>
               {table.getHeaderGroups().map((hg) => (
-                <tr key={hg.id} className="bg-zinc-800/60">
+                <tr key={hg.id} className="bg-muted/30">
                   {hg.headers.map((header) => {
                     const canSort = header.column.getCanSort();
                     const sorted = header.column.getIsSorted();
@@ -374,8 +374,8 @@ export function MovesTable({ moves, isLoading = false }: MovesTableProps) {
                         key={header.id}
                         style={{ width: header.getSize() }}
                         className={cn(
-                          "px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider text-zinc-500 border-b border-zinc-800 first:pl-4 last:pr-4",
-                          canSort && "cursor-pointer select-none hover:text-zinc-300 transition-colors"
+                          "px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70 border-b border-border first:pl-4 last:pr-4",
+                          canSort && "cursor-pointer select-none hover:text-foreground transition-colors"
                         )}
                         onClick={canSort ? header.column.getToggleSortingHandler() : undefined}
                       >
@@ -395,14 +395,14 @@ export function MovesTable({ moves, isLoading = false }: MovesTableProps) {
                   key={row.id}
                   className={cn(
                     "group transition-colors",
-                    rowIdx % 2 === 0 ? "bg-zinc-900/30" : "bg-zinc-900/60",
-                    "hover:bg-zinc-800/40"
+                    rowIdx % 2 === 0 ? "bg-muted/10" : "bg-muted/20",
+                    "hover:bg-muted/20"
                   )}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className="px-3 py-2.5 border-b border-zinc-800/40 group-last:border-0 first:pl-4 last:pr-4"
+                      className="px-3 py-2.5 border-b border-border/40 group-last:border-0 first:pl-4 last:pr-4"
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>

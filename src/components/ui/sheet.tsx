@@ -13,7 +13,7 @@ const SheetOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Overlay
     className={cn(
-      "fixed inset-0 z-50 bg-black/60 backdrop-blur-sm",
+      "fixed inset-0 z-50 bg-black/60",
       className
     )}
     {...props}
@@ -22,20 +22,26 @@ const SheetOverlay = React.forwardRef<
 ));
 SheetOverlay.displayName = "SheetOverlay";
 
+interface SheetContentProps
+  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
+  side?: "left" | "right";
+}
+
 const SheetContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+  SheetContentProps
+>(({ className, children, side = "left", ...props }, ref) => (
   <SheetPortal>
     <SheetOverlay />
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed inset-y-0 left-0 z-50 flex h-full w-72 flex-col",
-        "bg-[hsl(var(--sidebar-background))] shadow-2xl border-r border-border",
+        "fixed inset-y-0 z-50 flex h-full flex-col",
+        "bg-background shadow-2xl border-border",
         "transition-transform duration-300 ease-in-out",
-        "data-[state=closed]:-translate-x-full data-[state=open]:translate-x-0",
         "focus-visible:outline-none",
+        side === "left" && "left-0 w-72 border-r data-[state=closed]:-translate-x-full data-[state=open]:translate-x-0",
+        side === "right" && "right-0 w-[340px] sm:w-[380px] border-l data-[state=closed]:translate-x-full data-[state=open]:translate-x-0",
         className
       )}
       {...props}

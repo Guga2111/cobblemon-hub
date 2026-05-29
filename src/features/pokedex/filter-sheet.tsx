@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import * as DialogPrimitive from "@radix-ui/react-dialog";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import {
   X,
@@ -13,6 +12,12 @@ import {
 } from "lucide-react";
 import { TypeBadge } from "~/components/pokemon/type-badge";
 import { cn } from "~/lib/utils";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetClose,
+} from "~/components/ui/sheet";
 import {
   POKEMON_TYPES,
   TYPE_DISPLAY_NAMES,
@@ -28,44 +33,6 @@ import {
   type PokedexFilters,
   type SpawnWeather,
 } from "./use-pokedex-filters";
-
-// ── Right-side sheet primitives ───────────────────────────────────────
-
-function FilterSheetRoot({
-  open,
-  onOpenChange,
-  children,
-}: {
-  open: boolean;
-  onOpenChange: (o: boolean) => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
-      {children}
-    </DialogPrimitive.Root>
-  );
-}
-
-function FilterSheetContent({ children }: { children: React.ReactNode }) {
-  return (
-    <DialogPrimitive.Portal>
-      <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-[2px] data-[state=closed]:animate-[fadeOut_0.2s_ease] data-[state=open]:animate-[fadeIn_0.2s_ease]" />
-      <DialogPrimitive.Content
-        className={cn(
-          "fixed inset-y-0 right-0 z-50 flex h-full flex-col",
-          "w-[340px] sm:w-[380px]",
-          "bg-[hsl(224_71.4%_5.5%)] border-l border-border shadow-2xl",
-          "transition-transform duration-300 ease-in-out",
-          "data-[state=closed]:translate-x-full data-[state=open]:translate-x-0",
-          "focus-visible:outline-none overflow-hidden"
-        )}
-      >
-        {children}
-      </DialogPrimitive.Content>
-    </DialogPrimitive.Portal>
-  );
-}
 
 // ── Section heading ───────────────────────────────────────────────────
 
@@ -301,7 +268,7 @@ function BiomeCombobox({
         )}
       </div>
       {open && filtered.length > 0 && (
-        <div className="absolute top-full mt-1 w-full z-10 rounded-md border border-border bg-popover shadow-xl overflow-hidden max-h-[180px] overflow-y-auto">
+        <div className="absolute top-full mt-1 w-full z-[60] rounded-md border border-border bg-popover shadow-xl overflow-hidden max-h-[180px] overflow-y-auto">
           {filtered.map((biome) => (
             <button
               key={biome}
@@ -395,15 +362,15 @@ export function FilterSheet({
   biomeOptions,
 }: FilterSheetProps) {
   return (
-    <FilterSheetRoot open={open} onOpenChange={onOpenChange}>
-      <FilterSheetContent>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="right" className="overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3.5 border-b border-border shrink-0">
           <div className="flex items-center gap-2">
             <SlidersHorizontal size={15} className="text-primary" />
-            <span className="text-sm font-semibold text-foreground">
+            <SheetTitle className="text-sm font-semibold text-foreground">
               Filtros
-            </span>
+            </SheetTitle>
             {activeFilterCount > 0 && (
               <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">
                 {activeFilterCount}
@@ -420,9 +387,9 @@ export function FilterSheet({
                 Limpar tudo
               </button>
             )}
-            <DialogPrimitive.Close className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+            <SheetClose className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
               <X size={15} />
-            </DialogPrimitive.Close>
+            </SheetClose>
           </div>
         </div>
 
@@ -528,7 +495,7 @@ export function FilterSheet({
             </button>
           </div>
         )}
-      </FilterSheetContent>
-    </FilterSheetRoot>
+      </SheetContent>
+    </Sheet>
   );
 }

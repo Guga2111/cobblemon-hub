@@ -75,7 +75,7 @@ function DropdownPanel({
       className={cn(
         "absolute left-0 right-0 top-full z-50 mt-1",
         "rounded-lg border border-border/70",
-        "bg-[hsl(222_60%_5%)] shadow-2xl overflow-hidden",
+        "bg-popover shadow-2xl overflow-hidden",
         className
       )}
     >
@@ -101,8 +101,8 @@ function AttrButton({
       onClick={onClick}
       className={cn(
         "w-full flex items-center gap-2 px-3 py-[9px] text-left",
-        "hover:bg-white/[0.04] transition-colors duration-100",
-        open && "bg-white/[0.03]"
+        "hover:bg-muted/30 transition-colors duration-100",
+        open && "bg-muted/20"
       )}
     >
       <span className="w-14 shrink-0 text-[10px] font-bold tracking-[0.12em] uppercase text-muted-foreground/50 select-none">
@@ -136,7 +136,7 @@ function SearchInputRow({
 }) {
   return (
     <div className="p-2 border-b border-border/40">
-      <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-white/[0.05] ring-1 ring-border/30">
+      <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-muted/30 ring-1 ring-border/30">
         <Search className="h-3 w-3 shrink-0 text-muted-foreground/40" />
         <input
           ref={inputRef}
@@ -322,7 +322,7 @@ export const TeamSlot = memo(function TeamSlot({ slotIndex }: TeamSlotProps) {
               key={r.id}
               type="button"
               onClick={() => selectPokemon(r)}
-              className="w-full flex items-center gap-3 px-3 py-2 hover:bg-white/[0.06] transition-colors"
+              className="w-full flex items-center gap-3 px-3 py-2 hover:bg-muted/30 transition-colors"
             >
               <img
                 src={getPokemonSprite(r.name)}
@@ -352,7 +352,7 @@ export const TeamSlot = memo(function TeamSlot({ slotIndex }: TeamSlotProps) {
 
   if (fetchingPokemon) {
     return (
-      <div className="relative flex flex-col items-center justify-center rounded-xl border border-border bg-[hsl(224_71.4%_3.5%)] min-h-[240px] gap-3 text-muted-foreground/40">
+      <div className="relative flex flex-col items-center justify-center rounded-xl border border-border bg-card min-h-[240px] gap-3 text-muted-foreground/40">
         <span className="absolute top-3 left-3 font-mono text-[9px] tracking-[0.2em] font-bold text-muted-foreground/25 select-none">
           {slotLabel}
         </span>
@@ -370,9 +370,9 @@ export const TeamSlot = memo(function TeamSlot({ slotIndex }: TeamSlotProps) {
         ref={containerRef}
         className={cn(
           "relative flex flex-col rounded-xl border-2 border-dashed min-h-[240px]",
-          "bg-[hsl(224_71.4%_3%)] transition-colors duration-200",
+          "bg-card/80 transition-colors duration-200",
           openDropdown
-            ? "border-primary/40 bg-[hsl(224_71.4%_4%)]"
+            ? "border-primary/40 bg-card"
             : "border-border/40 hover:border-border/70"
         )}
       >
@@ -419,7 +419,7 @@ export const TeamSlot = memo(function TeamSlot({ slotIndex }: TeamSlotProps) {
   return (
     <div
       ref={containerRef}
-      className="relative flex flex-col rounded-xl border border-border/70 overflow-hidden bg-[hsl(224_71.4%_3.5%)]"
+      className="relative flex flex-col rounded-xl border border-border/70 overflow-hidden bg-card"
     >
       {/* Type accent bar */}
       {primaryType && (
@@ -434,7 +434,7 @@ export const TeamSlot = memo(function TeamSlot({ slotIndex }: TeamSlotProps) {
         <button
           type="button"
           onClick={() => clearSlot(slotIndex)}
-          className="absolute top-2 right-2 p-1 rounded-md text-muted-foreground/30 hover:text-foreground hover:bg-white/[0.08] transition-colors z-10"
+          className="absolute top-2 right-2 p-1 rounded-md text-muted-foreground/30 hover:text-foreground hover:bg-muted/40 transition-colors z-10"
           aria-label="Remover Pokémon"
         >
           <X className="h-3.5 w-3.5" />
@@ -528,8 +528,8 @@ export const TeamSlot = memo(function TeamSlot({ slotIndex }: TeamSlotProps) {
                       setOpenDropdown(null);
                     }}
                     className={cn(
-                      "w-full flex items-center gap-2 px-3 py-2 text-left text-xs hover:bg-white/[0.06] transition-colors",
-                      nature === n.name && "bg-white/[0.07]"
+                      "w-full flex items-center gap-2 px-3 py-2 text-left text-xs hover:bg-muted/30 transition-colors",
+                      nature === n.name && "bg-muted/40"
                     )}
                   >
                     <span className="flex-1 font-medium text-foreground/80">
@@ -589,8 +589,8 @@ export const TeamSlot = memo(function TeamSlot({ slotIndex }: TeamSlotProps) {
                         setOpenDropdown(null);
                       }}
                       className={cn(
-                        "w-full flex items-center gap-2 px-3 py-2 text-left text-xs hover:bg-white/[0.06] transition-colors",
-                        ability === a.name && "bg-white/[0.07]"
+                        "w-full flex items-center gap-2 px-3 py-2 text-left text-xs hover:bg-muted/30 transition-colors",
+                        ability === a.name && "bg-muted/40"
                       )}
                     >
                       <span className="flex-1 font-medium text-foreground/80">
@@ -643,7 +643,7 @@ export const TeamSlot = memo(function TeamSlot({ slotIndex }: TeamSlotProps) {
                     setHeldItem(slotIndex, null);
                     setOpenDropdown(null);
                   }}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-left text-xs hover:bg-white/[0.06] transition-colors text-muted-foreground/60"
+                  className="w-full flex items-center gap-2 px-3 py-2 text-left text-xs hover:bg-muted/30 transition-colors text-muted-foreground/60"
                 >
                   <Package className="h-3 w-3 shrink-0" />
                   <span>Sem item</span>
@@ -660,8 +660,8 @@ export const TeamSlot = memo(function TeamSlot({ slotIndex }: TeamSlotProps) {
                       setOpenDropdown(null);
                     }}
                     className={cn(
-                      "w-full flex items-center gap-2 px-3 py-2 text-left text-xs hover:bg-white/[0.06] transition-colors",
-                      heldItem === item.displayName && "bg-white/[0.07]"
+                      "w-full flex items-center gap-2 px-3 py-2 text-left text-xs hover:bg-muted/30 transition-colors",
+                      heldItem === item.displayName && "bg-muted/40"
                     )}
                   >
                     <span className="flex-1 font-medium text-foreground/80 truncate">
@@ -693,8 +693,8 @@ export const TeamSlot = memo(function TeamSlot({ slotIndex }: TeamSlotProps) {
         onClick={() => setShowTrainPanel((prev) => !prev)}
         className={cn(
           "w-full flex items-center gap-2 px-3 py-[9px] text-left",
-          "hover:bg-white/[0.03] transition-colors duration-100",
-          showTrainPanel && "bg-white/[0.02]"
+          "hover:bg-muted/20 transition-colors duration-100",
+          showTrainPanel && "bg-muted/15"
         )}
       >
         <Dumbbell

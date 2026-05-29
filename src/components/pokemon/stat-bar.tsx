@@ -36,7 +36,7 @@ function StatRow({ label, value, animated }: StatRowProps) {
       className="grid items-center gap-3"
       style={{ gridTemplateColumns: "88px 44px 1fr" }}
     >
-      <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider truncate">
+      <span className="text-[11px] font-semibold text-muted-foreground/70 uppercase tracking-wider truncate">
         {label}
       </span>
       <span
@@ -46,7 +46,7 @@ function StatRow({ label, value, animated }: StatRowProps) {
         {value}
       </span>
       {/* Bar track — no overflow-hidden so glow bleeds outside */}
-      <div className="relative h-2 rounded-full bg-zinc-800/80">
+      <div className="relative h-2 rounded-full bg-muted/40">
         {/* Glow layer */}
         <div
           className="absolute left-0 rounded-full transition-all duration-700 ease-out"
@@ -104,16 +104,16 @@ export function StatBar({ stats }: StatBarProps) {
 
       {/* BST total */}
       <div
-        className="mt-1 pt-4 border-t border-zinc-800/60 grid items-center gap-3"
+        className="mt-1 pt-4 border-t border-border/60 grid items-center gap-3"
         style={{ gridTemplateColumns: "88px 44px 1fr" }}
       >
-        <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">
+        <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
           BST
         </span>
-        <span className="text-sm font-black tabular-nums text-right text-zinc-200">
+        <span className="text-sm font-black tabular-nums text-right text-foreground/90">
           {bst}
         </span>
-        <span className="text-[10px] text-zinc-600 font-medium">
+        <span className="text-[10px] text-muted-foreground/50 font-medium">
           Base Stat Total
         </span>
       </div>

@@ -58,7 +58,7 @@ function PokemonNode({
           }}
         />
       </div>
-      <span className="text-xs text-zinc-300 font-medium text-center leading-tight max-w-[80px]">
+      <span className="text-xs text-foreground/80 font-medium text-center leading-tight max-w-[80px]">
         {displayName}
       </span>
     </div>
@@ -87,7 +87,7 @@ export function EvolutionChain({
 }: EvolutionChainProps) {
   if (evolutions.length === 0) {
     return (
-      <p className="text-sm text-zinc-600 italic">
+      <p className="text-sm text-muted-foreground/50 italic">
         This Pokémon does not evolve.
       </p>
     );
@@ -110,12 +110,12 @@ export function EvolutionChain({
           <div key={evo.to} className="flex items-start gap-3">
             {/* Arrow + condition */}
             <div className="flex flex-col items-center justify-start pt-4 gap-1 min-w-[64px]">
-              <div className="flex items-center gap-0.5 text-zinc-600">
-                <div className="h-px w-4 bg-zinc-700" />
+              <div className="flex items-center gap-0.5 text-muted-foreground/50">
+                <div className="h-px w-4 bg-border" />
                 <ChevronRight className="w-3.5 h-3.5 shrink-0" />
-                <div className="h-px w-4 bg-zinc-700" />
+                <div className="h-px w-4 bg-border" />
               </div>
-              <span className="text-[10px] text-zinc-500 text-center leading-tight max-w-[64px]">
+              <span className="text-[10px] text-muted-foreground/70 text-center leading-tight max-w-[64px]">
                 {label}
               </span>
             </div>

@@ -36,6 +36,9 @@ import {
   SPAWN_BUCKET_DISPLAY_NAMES,
   SPAWN_CONTEXT_DISPLAY_NAMES,
 } from "~/lib/constants";
+import { Button } from "~/components/ui/button";
+import { Badge } from "~/components/ui/badge";
+import { Card, CardContent } from "~/components/ui/card";
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -94,7 +97,7 @@ export function formatBiome(biome: string): string {
 const BUCKET_CONFIG: Record<string, { label: string; className: string }> = {
   common: {
     label: "Common",
-    className: "bg-zinc-700/40 text-zinc-400 border-zinc-600/40",
+    className: "bg-muted/50 text-muted-foreground border-border/50",
   },
   uncommon: {
     label: "Uncommon",
@@ -106,7 +109,7 @@ const BUCKET_CONFIG: Record<string, { label: string; className: string }> = {
   },
   "ultra-rare": {
     label: "Ultra Rare",
-    className: "bg-amber-400/10 text-amber-300 border-amber-400/25",
+    className: "bg-primary/10 text-primary border-primary/25",
   },
 };
 
@@ -115,15 +118,15 @@ function BucketBadge({ bucket }: { bucket: string | null }) {
     return <span className="text-muted-foreground text-sm">—</span>;
   const config = BUCKET_CONFIG[bucket] ?? BUCKET_CONFIG["common"];
   return (
-    <span
+    <Badge
+      variant="outline"
       className={cn(
-        "inline-flex items-center rounded border px-1.5 py-0.5",
-        "text-[10px] font-bold uppercase tracking-widest whitespace-nowrap",
+        "text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded",
         config!.className
       )}
     >
       {config!.label}
-    </span>
+    </Badge>
   );
 }
 
@@ -150,7 +153,10 @@ function FilterChip({
   children: React.ReactNode;
 }) {
   return (
-    <span className="inline-flex items-center gap-1 pl-0.5 pr-1 py-0.5 rounded-full border border-primary/25 bg-primary/8 text-xs text-foreground shrink-0">
+    <Badge
+      variant="outline"
+      className="gap-1 pl-1 pr-1 py-0.5 rounded-full border-primary/25 bg-primary/8 text-foreground shrink-0"
+    >
       {children}
       <button
         type="button"
@@ -160,7 +166,7 @@ function FilterChip({
       >
         <X size={9} strokeWidth={2.5} />
       </button>
-    </span>
+    </Badge>
   );
 }
 
@@ -190,13 +196,8 @@ function ActiveFiltersStrip({
 
   if (filters.generation !== null) {
     chips.push(
-      <FilterChip
-        key="gen"
-        onRemove={() => onUpdate({ generation: null })}
-      >
-        <span className="px-1 text-xs text-foreground/80">
-          Gen {filters.generation}
-        </span>
+      <FilterChip key="gen" onRemove={() => onUpdate({ generation: null })}>
+        <span className="px-1 text-xs text-foreground/80">Gen {filters.generation}</span>
       </FilterChip>
     );
   }
@@ -215,13 +216,9 @@ function ActiveFiltersStrip({
     chips.push(
       <FilterChip
         key={`bucket-${bucket}`}
-        onRemove={() =>
-          onUpdate({ buckets: filters.buckets.filter((b) => b !== bucket) })
-        }
+        onRemove={() => onUpdate({ buckets: filters.buckets.filter((b) => b !== bucket) })}
       >
-        <span className="px-1 text-xs text-foreground/80">
-          {SPAWN_BUCKET_DISPLAY_NAMES[bucket]}
-        </span>
+        <span className="px-1 text-xs text-foreground/80">{SPAWN_BUCKET_DISPLAY_NAMES[bucket]}</span>
       </FilterChip>
     );
   });
@@ -230,28 +227,18 @@ function ActiveFiltersStrip({
     chips.push(
       <FilterChip
         key={`ctx-${ctx}`}
-        onRemove={() =>
-          onUpdate({ contexts: filters.contexts.filter((c) => c !== ctx) })
-        }
+        onRemove={() => onUpdate({ contexts: filters.contexts.filter((c) => c !== ctx) })}
       >
-        <span className="px-1 text-xs text-foreground/80">
-          {SPAWN_CONTEXT_DISPLAY_NAMES[ctx]}
-        </span>
+        <span className="px-1 text-xs text-foreground/80">{SPAWN_CONTEXT_DISPLAY_NAMES[ctx]}</span>
       </FilterChip>
     );
   });
 
   if (filters.weather) {
-    const WEATHER_PT: Record<string, string> = {
-      clear: "Limpo",
-      rain: "Chuva",
-      thunderstorm: "Tempestade",
-    };
+    const WEATHER_PT: Record<string, string> = { clear: "Limpo", rain: "Chuva", thunderstorm: "Tempestade" };
     chips.push(
       <FilterChip key="weather" onRemove={() => onUpdate({ weather: null })}>
-        <span className="px-1 text-xs text-foreground/80">
-          {WEATHER_PT[filters.weather] ?? filters.weather}
-        </span>
+        <span className="px-1 text-xs text-foreground/80">{WEATHER_PT[filters.weather] ?? filters.weather}</span>
       </FilterChip>
     );
   }
@@ -259,20 +246,14 @@ function ActiveFiltersStrip({
   if (chips.length === 0) return null;
 
   return (
-    <div className="flex items-center gap-2 px-4 py-2 border-b border-border/40 bg-muted/5 shrink-0 overflow-x-auto">
-      <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50 shrink-0">
+    <div className="flex items-center gap-2 px-4 py-2 border-b border-border/40 bg-card/30 shrink-0 overflow-x-auto">
+      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/50 shrink-0">
         Filtros:
       </span>
-      <div className="flex items-center gap-1.5 flex-nowrap overflow-x-auto">
-        {chips}
-      </div>
-      <button
-        type="button"
-        onClick={onClearAll}
-        className="ml-auto shrink-0 text-[11px] text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
-      >
+      <div className="flex items-center gap-1.5 flex-nowrap overflow-x-auto">{chips}</div>
+      <Button variant="ghost" size="xs" onClick={onClearAll} className="ml-auto shrink-0 text-muted-foreground">
         Limpar todos
-      </button>
+      </Button>
     </div>
   );
 }
@@ -283,37 +264,29 @@ function LoadingSkeleton() {
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center gap-3 px-6 py-5 border-b border-border shrink-0">
-        <div className="h-9 w-9 rounded-lg bg-muted/50 animate-pulse" />
+        <div className="h-9 w-9 rounded-xl bg-muted/50 animate-pulse" />
         <div>
           <div className="h-6 w-32 rounded-md bg-muted/50 animate-pulse mb-1.5" />
           <div className="h-3.5 w-20 rounded bg-muted/35 animate-pulse" />
         </div>
       </div>
       <div className="overflow-hidden flex-1">
-        <div className="flex items-center h-10 px-3 border-b border-border bg-muted/20 gap-4">
+        <div className="flex items-center h-10 px-3 border-b border-border bg-muted/10 gap-4">
           {[44, 68, 36, 36, 48, 62, 40].map((w, i) => (
-            <div
-              key={i}
-              style={{ width: w }}
-              className="h-2.5 rounded bg-muted/50 animate-pulse shrink-0"
-            />
+            <div key={i} style={{ width: w }} className="h-2.5 rounded bg-muted/40 animate-pulse shrink-0" />
           ))}
         </div>
         {Array.from({ length: 20 }, (_, i) => (
-          <div
-            key={i}
-            className="flex items-center h-[52px] px-3 border-b border-border/40 gap-4"
-          >
-            <div className="w-8 h-8 rounded bg-muted/40 animate-pulse shrink-0" style={{ animationDelay: `${i * 25}ms` }} />
-            <div className="w-14 h-3 rounded bg-muted/35 animate-pulse shrink-0" style={{ animationDelay: `${i * 25}ms` }} />
-            <div className="w-28 h-3.5 rounded bg-muted/45 animate-pulse shrink-0" style={{ animationDelay: `${i * 25}ms` }} />
+          <div key={i} className="flex items-center h-[52px] px-3 border-b border-border/40 gap-4">
+            <div className="w-8 h-8 rounded bg-muted/30 animate-pulse shrink-0" style={{ animationDelay: `${i * 25}ms` }} />
+            <div className="w-14 h-3 rounded bg-muted/25 animate-pulse shrink-0" style={{ animationDelay: `${i * 25}ms` }} />
+            <div className="w-28 h-3.5 rounded bg-muted/35 animate-pulse shrink-0" style={{ animationDelay: `${i * 25}ms` }} />
             <div className="flex gap-1.5 shrink-0">
-              <div className="w-14 h-5 rounded-full bg-muted/35 animate-pulse" style={{ animationDelay: `${i * 25 + 50}ms` }} />
-              <div className="w-14 h-5 rounded-full bg-muted/25 animate-pulse" style={{ animationDelay: `${i * 25 + 75}ms` }} />
+              <div className="w-14 h-5 rounded-full bg-muted/25 animate-pulse" style={{ animationDelay: `${i * 25 + 50}ms` }} />
             </div>
-            <div className="w-20 h-3 rounded bg-muted/30 animate-pulse shrink-0" style={{ animationDelay: `${i * 25}ms` }} />
-            <div className="w-16 h-5 rounded bg-muted/35 animate-pulse shrink-0" style={{ animationDelay: `${i * 25}ms` }} />
-            <div className="w-9 h-3 rounded bg-muted/25 animate-pulse shrink-0" style={{ animationDelay: `${i * 25}ms` }} />
+            <div className="w-20 h-3 rounded bg-muted/20 animate-pulse shrink-0" style={{ animationDelay: `${i * 25}ms` }} />
+            <div className="w-16 h-5 rounded bg-muted/25 animate-pulse shrink-0" style={{ animationDelay: `${i * 25}ms` }} />
+            <div className="w-9 h-3 rounded bg-muted/20 animate-pulse shrink-0" style={{ animationDelay: `${i * 25}ms` }} />
           </div>
         ))}
       </div>
@@ -325,31 +298,25 @@ function LoadingSkeleton() {
 
 function ErrorState({ onRetry }: { onRetry: () => void }) {
   return (
-    <div className="flex flex-col items-center justify-center h-full gap-4 p-8">
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-destructive/10 border border-destructive/20">
-        <AlertTriangle size={28} className="text-destructive" />
-      </div>
-      <div className="text-center">
-        <h2 className="text-lg font-semibold text-foreground mb-1">
-          Falha ao carregar Pokédex
-        </h2>
-        <p className="text-sm text-muted-foreground max-w-xs">
-          Não foi possível conectar à API. Verifique se o servidor está rodando
-          em{" "}
-          <code className="text-primary text-xs font-mono">localhost:3001</code>
-        </p>
-      </div>
-      <button
-        onClick={onRetry}
-        className={cn(
-          "flex items-center gap-2 px-4 py-2 rounded-lg",
-          "bg-destructive/10 border border-destructive/20 text-destructive",
-          "text-sm font-medium hover:bg-destructive/20 transition-colors"
-        )}
-      >
-        <RefreshCw size={14} />
-        Tentar novamente
-      </button>
+    <div className="flex flex-col items-center justify-center h-full gap-5 p-8">
+      <Card className="border-destructive/20 bg-destructive/5 max-w-sm py-8">
+        <CardContent className="flex flex-col items-center gap-4 text-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-destructive/10 border border-destructive/20">
+            <AlertTriangle size={24} className="text-destructive" />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-foreground mb-1">Falha ao carregar Pokedex</h2>
+            <p className="text-sm text-muted-foreground">
+              Nao foi possivel conectar a API. Verifique se o servidor esta rodando em{" "}
+              <code className="text-primary text-xs font-mono">localhost:3001</code>
+            </p>
+          </div>
+          <Button variant="outline" size="sm" onClick={onRetry} className="border-destructive/30 text-destructive hover:bg-destructive/10">
+            <RefreshCw size={14} />
+            Tentar novamente
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
 }
@@ -359,19 +326,21 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
 function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center flex-1 py-20 text-center px-6">
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/30 border border-border mb-4">
-        <BookOpen size={28} className="text-muted-foreground/50" />
-      </div>
-      <h3 className="text-lg font-semibold text-foreground mb-1">
-        Pokédex vazia
-      </h3>
-      <p className="text-sm text-muted-foreground max-w-sm">
-        Nenhum Pokémon encontrado. Execute{" "}
-        <code className="text-primary text-xs font-mono">
-          npm run extract && npm run seed
-        </code>{" "}
-        para popular o banco de dados.
-      </p>
+      <Card className="border-dashed max-w-sm py-8">
+        <CardContent className="flex flex-col items-center gap-4">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted/30 border border-border">
+            <BookOpen size={24} className="text-muted-foreground/50" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-foreground mb-1">Pokedex vazia</h3>
+            <p className="text-sm text-muted-foreground">
+              Nenhum Pokemon encontrado. Execute{" "}
+              <code className="text-primary text-xs font-mono">npm run extract && npm run seed</code>{" "}
+              para popular o banco de dados.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
@@ -379,27 +348,23 @@ function EmptyState() {
 function FilterEmptyState({ onClear }: { onClear: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center flex-1 py-20 text-center px-6">
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/30 border border-border mb-4">
-        <SearchX size={28} className="text-muted-foreground/50" />
-      </div>
-      <h3 className="text-lg font-semibold text-foreground mb-1">
-        Nenhum Pokémon encontrado
-      </h3>
-      <p className="text-sm text-muted-foreground max-w-xs mb-4">
-        Nenhum Pokémon encontrado com esses filtros. Tente ajustar os critérios
-        de busca.
-      </p>
-      <button
-        onClick={onClear}
-        className={cn(
-          "flex items-center gap-2 px-4 py-2 rounded-lg",
-          "bg-primary/10 border border-primary/25 text-primary",
-          "text-sm font-medium hover:bg-primary/20 transition-colors"
-        )}
-      >
-        <X size={14} />
-        Limpar filtros
-      </button>
+      <Card className="border-dashed max-w-sm py-8">
+        <CardContent className="flex flex-col items-center gap-4">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted/30 border border-border">
+            <SearchX size={24} className="text-muted-foreground/50" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-foreground mb-1">Nenhum Pokemon encontrado</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Nenhum Pokemon encontrado com esses filtros. Tente ajustar os criterios de busca.
+            </p>
+          </div>
+          <Button variant="outline" size="sm" onClick={onClear}>
+            <X size={14} />
+            Limpar filtros
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
 }
@@ -412,12 +377,13 @@ const MobileCard = memo(function MobileCard({ pokemon }: { pokemon: PokemonListI
       to={`/pokedex/${pokemon.id}`}
       className={cn(
         "flex items-center gap-3 p-3 rounded-xl",
-        "border border-border bg-card",
-        "hover:bg-muted/25 hover:border-primary/20",
-        "transition-all duration-150"
+        "border border-border/50 bg-card/60",
+        "hover:bg-card hover:border-primary/20",
+        "hover:shadow-[0_0_16px_-4px_hsl(var(--primary)/0.15)]",
+        "transition-all duration-200"
       )}
     >
-      <div className="flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-lg bg-muted/40">
+      <div className="flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-lg bg-muted/30">
         <img
           src={getSpriteUrl(pokemon.name)}
           alt={pokemon.displayName}
@@ -446,9 +412,7 @@ const MobileCard = memo(function MobileCard({ pokemon }: { pokemon: PokemonListI
           <span className="font-mono text-[11px] text-muted-foreground shrink-0">
             #{String(pokemon.dexNumber).padStart(4, "0")}
           </span>
-          <span className="font-semibold text-sm text-foreground truncate">
-            {pokemon.displayName}
-          </span>
+          <span className="font-bold text-sm text-foreground truncate">{pokemon.displayName}</span>
         </div>
         <div className="flex items-center gap-1 flex-wrap">
           {pokemon.types.map((t) => (
@@ -459,9 +423,7 @@ const MobileCard = memo(function MobileCard({ pokemon }: { pokemon: PokemonListI
       <div className="shrink-0 text-right flex flex-col items-end gap-1">
         <BucketBadge bucket={pokemon.primaryBucket} />
         {pokemon.bst > 0 && (
-          <span className="text-[11px] text-muted-foreground font-mono">
-            {pokemon.bst}
-          </span>
+          <span className="text-[11px] text-muted-foreground font-mono">{pokemon.bst}</span>
         )}
       </div>
     </Link>
@@ -537,7 +499,7 @@ const columns = [
     cell: ({ row }) => (
       <Link
         to={`/pokedex/${row.original.id}`}
-        className="font-medium text-sm text-foreground hover:text-primary transition-colors duration-150"
+        className="font-semibold text-sm text-foreground hover:text-primary transition-colors duration-150"
       >
         {row.original.displayName}
       </Link>
@@ -564,16 +526,9 @@ const columns = [
     cell: ({ row }) => {
       const biomes = row.original.primaryBiomes;
       if (!biomes || biomes.length === 0)
-        return (
-          <span className="text-muted-foreground/50 text-sm select-none">
-            —
-          </span>
-        );
+        return <span className="text-muted-foreground/50 text-sm select-none">—</span>;
       return (
-        <span
-          className="text-[13px] text-muted-foreground truncate block max-w-[136px]"
-          title={biomes[0]}
-        >
+        <span className="text-[13px] text-muted-foreground truncate block max-w-[136px]" title={biomes[0]}>
           {formatBiome(biomes[0]!)}
         </span>
       );
@@ -593,9 +548,7 @@ const columns = [
     cell: (info) => {
       const val = info.getValue();
       return val > 0 ? (
-        <span className="font-mono text-sm text-foreground/65 tabular-nums">
-          {val}
-        </span>
+        <span className="font-mono text-sm text-foreground/65 tabular-nums">{val}</span>
       ) : (
         <span className="text-muted-foreground/40 select-none">—</span>
       );
@@ -611,14 +564,8 @@ export default function Pokedex() {
   const [filterOpen, setFilterOpen] = useState(false);
 
   const {
-    filters,
-    activeFilterCount,
-    hasFilters,
-    update,
-    toggleType,
-    toggleBucket,
-    toggleContext,
-    clearFilters,
+    filters, activeFilterCount, hasFilters,
+    update, toggleType, toggleBucket, toggleContext, clearFilters,
   } = usePokedexFilters();
 
   const sorting: SortingState = useMemo(
@@ -628,16 +575,13 @@ export default function Pokedex() {
 
   const handleSortingChange = useCallback(
     (updater: Updater<SortingState>) => {
-      const next =
-        typeof updater === "function" ? updater(sorting) : updater;
+      const next = typeof updater === "function" ? updater(sorting) : updater;
       if (next.length === 0) {
         update({ sort: "dexNumber", dir: "asc" });
       } else {
-        update({
-          sort: next[0]!.id,
-          dir: next[0]!.desc ? "desc" : "asc",
-        });
+        update({ sort: next[0]!.id, dir: next[0]!.desc ? "desc" : "asc" });
       }
+      parentRef.current?.scrollTo({ top: 0 });
     },
     [sorting, update]
   );
@@ -645,10 +589,8 @@ export default function Pokedex() {
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["pokemon-list"],
     queryFn: async () => {
-      const res = await fetch(
-        "http://localhost:3001/api/pokemon?limit=1000&page=1"
-      );
-      if (!res.ok) throw new Error("Failed to fetch Pokémon");
+      const res = await fetch("http://localhost:3001/api/pokemon?limit=1000&page=1");
+      if (!res.ok) throw new Error("Failed to fetch Pokemon");
       const json = (await res.json()) as { data: RawPokemonListItem[] };
       return json.data;
     },
@@ -659,22 +601,12 @@ export default function Pokedex() {
     if (!data) return [];
     return data.map((item) => {
       const bs = item.baseStats;
-      const bst = bs
-        ? bs.hp +
-          bs.attack +
-          bs.defense +
-          bs.specialAttack +
-          bs.specialDefense +
-          bs.speed
-        : 0;
+      const bst = bs ? bs.hp + bs.attack + bs.defense + bs.specialAttack + bs.specialDefense + bs.speed : 0;
       return { ...item, bst };
     });
   }, [data]);
 
-  const filteredData = useMemo(
-    () => applyPokedexFilters(processedData, filters),
-    [processedData, filters]
-  );
+  const filteredData = useMemo(() => applyPokedexFilters(processedData, filters), [processedData, filters]);
 
   const biomeOptions = useMemo(() => {
     const seen = new Set<string>();
@@ -683,10 +615,7 @@ export default function Pokedex() {
       if (p.primaryBiomes) {
         for (const b of p.primaryBiomes) {
           const formatted = formatBiome(b);
-          if (!seen.has(formatted)) {
-            seen.add(formatted);
-            result.push(formatted);
-          }
+          if (!seen.has(formatted)) { seen.add(formatted); result.push(formatted); }
         }
       }
     }
@@ -700,6 +629,7 @@ export default function Pokedex() {
     onSortingChange: handleSortingChange,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    enableSortingRemoval: false,
   });
 
   const { rows } = table.getRowModel();
@@ -714,14 +644,12 @@ export default function Pokedex() {
   if (isLoading) return <LoadingSkeleton />;
   if (isError) return <ErrorState onRetry={() => void refetch()} />;
 
-  const useVirtualization = rows.length > 50;
+  const useVirt = rows.length > 50;
   const virtualItems = rowVirtualizer.getVirtualItems();
   const totalVirtualSize = rowVirtualizer.getTotalSize();
-  const paddingTop = useVirtualization ? (virtualItems[0]?.start ?? 0) : 0;
+  const paddingTop = useVirt ? (virtualItems[0]?.start ?? 0) : 0;
   const lastItem = virtualItems[virtualItems.length - 1];
-  const paddingBottom = useVirtualization
-    ? lastItem ? totalVirtualSize - lastItem.end : 0
-    : 0;
+  const paddingBottom = useVirt ? (lastItem ? totalVirtualSize - lastItem.end : 0) : 0;
 
   const isDataEmpty = processedData.length === 0;
   const isFilteredEmpty = filteredData.length === 0 && !isDataEmpty;
@@ -730,67 +658,49 @@ export default function Pokedex() {
     <>
       <div className="flex flex-col h-full">
         {/* Page header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border/60 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 border border-primary/20">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/12 border border-primary/20 shadow-[0_0_10px_-2px_hsl(var(--primary)/0.15)]">
               <BookOpen size={16} className="text-primary" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-foreground leading-tight">
-                Pokédex
-              </h1>
-              <p className="text-xs text-muted-foreground leading-tight">
+              <h1 className="text-xl font-extrabold text-foreground leading-tight tracking-tight">Pokedex</h1>
+              <p className="text-xs text-muted-foreground leading-tight font-medium">
                 {isDataEmpty
-                  ? "Nenhum Pokémon"
+                  ? "Nenhum Pokemon"
                   : hasFilters
-                  ? `${filteredData.length} de ${processedData.length} Pokémon`
-                  : `${processedData.length} Pokémon`}
+                  ? `${filteredData.length} de ${processedData.length} Pokemon`
+                  : `${processedData.length} Pokemon`}
               </p>
             </div>
           </div>
 
-          {/* Filter button */}
-          <button
-            type="button"
+          <Button
+            variant={activeFilterCount > 0 ? "outline" : "outline"}
+            size="sm"
             onClick={() => setFilterOpen(true)}
             className={cn(
-              "flex items-center gap-2 px-3 py-2 rounded-lg text-sm",
-              "border transition-all duration-150",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
-              activeFilterCount > 0
-                ? "border-primary/40 bg-primary/10 text-primary hover:bg-primary/15"
-                : "border-border bg-muted/20 text-muted-foreground hover:text-foreground hover:border-border/80"
+              activeFilterCount > 0 && "border-primary/40 bg-primary/10 text-primary hover:bg-primary/15"
             )}
             aria-label={`Filtros${activeFilterCount > 0 ? ` (${activeFilterCount} ativos)` : ""}`}
           >
             <SlidersHorizontal size={15} />
             <span className="hidden sm:inline">Filtros</span>
             {activeFilterCount > 0 && (
-              <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-bold px-1">
-                {activeFilterCount}
-              </span>
+              <Badge className="h-5 min-w-5 px-1 text-[10px] font-bold">{activeFilterCount}</Badge>
             )}
-          </button>
+          </Button>
         </div>
 
-        {/* Active filter chips strip */}
-        {hasFilters && (
-          <ActiveFiltersStrip
-            filters={filters}
-            onUpdate={update}
-            onClearAll={clearFilters}
-          />
-        )}
+        {hasFilters && <ActiveFiltersStrip filters={filters} onUpdate={update} onClearAll={clearFilters} />}
 
         {isDataEmpty ? (
           <EmptyState />
         ) : isFilteredEmpty ? (
           <FilterEmptyState onClear={clearFilters} />
         ) : (
-          /* Scrollable container */
           <div ref={parentRef} className="flex-1 overflow-auto">
             {!isMobile ? (
-              /* ── Desktop table ── */
               <table className="w-full border-separate border-spacing-0 min-w-[700px]">
                 <thead className="sticky top-0 z-10">
                   {table.getHeaderGroups().map((headerGroup) => (
@@ -801,26 +711,17 @@ export default function Pokedex() {
                           style={{ width: header.getSize() }}
                           className={cn(
                             "h-10 px-3 text-left",
-                            "text-[11px] font-semibold uppercase tracking-widest text-muted-foreground",
-                            "border-b border-border",
-                            "bg-background/95 backdrop-blur-sm",
+                            "text-[11px] font-bold uppercase tracking-widest text-muted-foreground",
+                            "border-b border-border/60",
+                            "bg-background/95 backdrop-blur-md",
                             header.column.getCanSort() &&
-                              "cursor-pointer select-none group hover:text-foreground/80 transition-colors duration-150"
+                              "cursor-pointer select-none group hover:text-foreground transition-colors duration-150"
                           )}
                           onClick={header.column.getToggleSortingHandler()}
                         >
                           <span className="inline-flex items-center">
-                            {header.isPlaceholder
-                              ? null
-                              : flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext()
-                                )}
-                            {header.column.getCanSort() && (
-                              <SortIcon
-                                state={header.column.getIsSorted()}
-                              />
-                            )}
+                            {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                            {header.column.getCanSort() && <SortIcon state={header.column.getIsSorted()} />}
                           </span>
                         </th>
                       ))}
@@ -830,35 +731,24 @@ export default function Pokedex() {
 
                 <tbody>
                   {paddingTop > 0 && (
-                    <tr aria-hidden>
-                      <td
-                        colSpan={columns.length}
-                        style={{ height: `${paddingTop}px`, padding: 0, border: 0 }}
-                      />
-                    </tr>
+                    <tr aria-hidden><td colSpan={columns.length} style={{ height: `${paddingTop}px`, padding: 0, border: 0 }} /></tr>
                   )}
 
-                  {(useVirtualization ? virtualItems.map((vr) => ({ index: vr.index, id: rows[vr.index]!.id, virtualRow: vr })) : rows.map((r, i) => ({ index: i, id: r.id, virtualRow: null }))).map(({ index, id, virtualRow }) => {
+                  {(useVirt
+                    ? virtualItems.map((vr) => ({ index: vr.index, id: rows[vr.index]!.id, virtualRow: vr }))
+                    : rows.map((r, i) => ({ index: i, id: r.id, virtualRow: null }))
+                  ).map(({ index, id, virtualRow }) => {
                     const row = rows[index]!;
                     return (
                       <tr
                         key={id}
                         data-index={index}
                         ref={virtualRow ? rowVirtualizer.measureElement : undefined}
-                        className={cn(
-                          "group border-b border-border/40",
-                          "hover:bg-muted/20 transition-colors duration-100"
-                        )}
+                        className="group border-b border-border/30 hover:bg-primary/4 transition-colors duration-100"
                       >
                         {row.getVisibleCells().map((cell) => (
-                          <td
-                            key={cell.id}
-                            className="px-3 h-[52px] align-middle"
-                          >
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
+                          <td key={cell.id} className="px-3 h-[52px] align-middle">
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
                           </td>
                         ))}
                       </tr>
@@ -866,58 +756,44 @@ export default function Pokedex() {
                   })}
 
                   {paddingBottom > 0 && (
-                    <tr aria-hidden>
-                      <td
-                        colSpan={columns.length}
-                        style={{ height: `${paddingBottom}px`, padding: 0, border: 0 }}
-                      />
-                    </tr>
+                    <tr aria-hidden><td colSpan={columns.length} style={{ height: `${paddingBottom}px`, padding: 0, border: 0 }} /></tr>
                   )}
                 </tbody>
               </table>
+            ) : useVirt ? (
+              <div style={{ height: `${totalVirtualSize + 24}px`, position: "relative" }}>
+                {virtualItems.map((virtualRow) => {
+                  const row = rows[virtualRow.index]!;
+                  return (
+                    <div
+                      key={row.id}
+                      data-index={virtualRow.index}
+                      ref={rowVirtualizer.measureElement}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: "12px",
+                        right: "12px",
+                        transform: `translateY(${virtualRow.start + 12}px)`,
+                        paddingBottom: "8px",
+                      }}
+                    >
+                      <MobileCard pokemon={row.original} />
+                    </div>
+                  );
+                })}
+              </div>
             ) : (
-              /* ── Mobile card list ── */
-              useVirtualization ? (
-                <div
-                  style={{
-                    height: `${totalVirtualSize + 24}px`,
-                    position: "relative",
-                  }}
-                >
-                  {virtualItems.map((virtualRow) => {
-                    const row = rows[virtualRow.index]!;
-                    return (
-                      <div
-                        key={row.id}
-                        data-index={virtualRow.index}
-                        ref={rowVirtualizer.measureElement}
-                        style={{
-                          position: "absolute",
-                          top: 0,
-                          left: "12px",
-                          right: "12px",
-                          transform: `translateY(${virtualRow.start + 12}px)`,
-                          paddingBottom: "8px",
-                        }}
-                      >
-                        <MobileCard pokemon={row.original} />
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="flex flex-col gap-2 p-3">
-                  {rows.map((row) => (
-                    <MobileCard key={row.id} pokemon={row.original} />
-                  ))}
-                </div>
-              )
+              <div className="flex flex-col gap-2 p-3">
+                {rows.map((row) => (
+                  <MobileCard key={row.id} pokemon={row.original} />
+                ))}
+              </div>
             )}
           </div>
         )}
       </div>
 
-      {/* Filter sheet (outside main div to avoid stacking context issues) */}
       <FilterSheet
         open={filterOpen}
         onOpenChange={setFilterOpen}
@@ -935,5 +811,5 @@ export default function Pokedex() {
 }
 
 export function ErrorBoundary() {
-  return <RouteErrorBoundary routeName="Pokédex" />;
+  return <RouteErrorBoundary routeName="Pokedex" />;
 }

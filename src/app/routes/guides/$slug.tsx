@@ -17,54 +17,23 @@ import {
   type GuideSection,
   type Difficulty,
 } from "~/content/guides/index";
+import { Card, CardContent } from "~/components/ui/card";
+import { Button } from "~/components/ui/button";
+import { Badge } from "~/components/ui/badge";
+import { Separator } from "~/components/ui/separator";
 
-// Re-export DIFFICULTY_CONFIG is not in content file yet — define locally
 const DIFF_CONFIG: Record<Difficulty, { label: string; className: string }> = {
-  Easy: {
-    label: "Fácil",
-    className: "bg-emerald-500/15 text-emerald-300 border-emerald-400/30",
-  },
-  Medium: {
-    label: "Médio",
-    className: "bg-amber-400/15 text-amber-300 border-amber-400/30",
-  },
-  Hard: {
-    label: "Difícil",
-    className: "bg-rose-500/15 text-rose-300 border-rose-400/30",
-  },
+  Easy: { label: "Facil", className: "bg-emerald-500/15 text-emerald-400 border-emerald-400/30" },
+  Medium: { label: "Medio", className: "bg-primary/15 text-primary border-primary/30" },
+  Hard: { label: "Dificil", className: "bg-rose-500/15 text-rose-400 border-rose-400/30" },
 };
-
-// ── Google Fonts ───────────────────────────────────────────────────────────
-
-export function links() {
-  return [
-    { rel: "preconnect", href: "https://fonts.googleapis.com" },
-    {
-      rel: "preconnect",
-      href: "https://fonts.gstatic.com",
-      crossOrigin: "anonymous" as const,
-    },
-    {
-      rel: "stylesheet",
-      href: "https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&display=swap",
-    },
-  ];
-}
-
-// ── Sub-components ─────────────────────────────────────────────────────────
 
 function DifficultyBadge({ difficulty }: { difficulty: Difficulty }) {
   const cfg = DIFF_CONFIG[difficulty];
   return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded border px-2 py-0.5",
-        "text-[11px] font-bold uppercase tracking-widest",
-        cfg.className
-      )}
-    >
+    <Badge variant="outline" className={cn("text-[11px] font-bold uppercase tracking-widest px-2 py-0.5 rounded", cfg.className)}>
       {cfg.label}
-    </span>
+    </Badge>
   );
 }
 
@@ -72,12 +41,7 @@ function Section({ section }: { section: GuideSection }) {
   return (
     <div className="space-y-3">
       {section.heading && (
-        <h2
-          className="text-base font-semibold text-foreground/90"
-          style={{ fontFamily: "'Cinzel', Georgia, serif" }}
-        >
-          {section.heading}
-        </h2>
+        <h2 className="text-base font-bold text-foreground/90">{section.heading}</h2>
       )}
 
       <p className="text-sm text-muted-foreground leading-relaxed">{section.body}</p>
@@ -86,10 +50,7 @@ function Section({ section }: { section: GuideSection }) {
         <ul className="space-y-1.5 pl-1">
           {section.list.map((item, i) => (
             <li key={i} className="flex gap-2.5 text-sm text-muted-foreground">
-              <List
-                size={13}
-                className="mt-0.5 shrink-0 text-primary/50"
-              />
+              <List size={13} className="mt-0.5 shrink-0 text-primary/50" />
               <span className="leading-relaxed">{item}</span>
             </li>
           ))}
@@ -97,53 +58,40 @@ function Section({ section }: { section: GuideSection }) {
       )}
 
       {section.tip && (
-        <div className="flex gap-2.5 rounded-lg border border-emerald-500/20 bg-emerald-500/8 px-3.5 py-3">
-          <Lightbulb
-            size={14}
-            className="mt-0.5 shrink-0 text-emerald-400"
-            strokeWidth={1.5}
-          />
-          <p className="text-xs text-emerald-300/80 leading-relaxed">
-            <strong className="text-emerald-300 font-semibold">Dica: </strong>
-            {section.tip}
-          </p>
-        </div>
+        <Card className="border-emerald-500/20 bg-emerald-500/5 py-3">
+          <CardContent className="flex gap-2.5 px-3.5 py-0">
+            <Lightbulb size={14} className="mt-0.5 shrink-0 text-emerald-400" strokeWidth={1.5} />
+            <p className="text-xs text-emerald-300/80 leading-relaxed">
+              <strong className="text-emerald-300 font-bold">Dica: </strong>
+              {section.tip}
+            </p>
+          </CardContent>
+        </Card>
       )}
 
       {section.warning && (
-        <div className="flex gap-2.5 rounded-lg border border-rose-500/20 bg-rose-500/8 px-3.5 py-3">
-          <AlertTriangle
-            size={14}
-            className="mt-0.5 shrink-0 text-rose-400"
-            strokeWidth={1.5}
-          />
-          <p className="text-xs text-rose-300/80 leading-relaxed">
-            <strong className="text-rose-300 font-semibold">Atenção: </strong>
-            {section.warning}
-          </p>
-        </div>
+        <Card className="border-rose-500/20 bg-rose-500/5 py-3">
+          <CardContent className="flex gap-2.5 px-3.5 py-0">
+            <AlertTriangle size={14} className="mt-0.5 shrink-0 text-rose-400" strokeWidth={1.5} />
+            <p className="text-xs text-rose-300/80 leading-relaxed">
+              <strong className="text-rose-300 font-bold">Atencao: </strong>
+              {section.warning}
+            </p>
+          </CardContent>
+        </Card>
       )}
     </div>
   );
 }
 
-function FaqAccordion({
-  items,
-}: {
-  items: NonNullable<ReturnType<typeof getGuideBySlug>>["faq"];
-}) {
+function FaqAccordion({ items }: { items: NonNullable<ReturnType<typeof getGuideBySlug>>["faq"] }) {
   if (!items || items.length === 0) return null;
 
   return (
     <div className="mt-8 space-y-3">
       <div className="flex items-center gap-2.5 mb-4">
         <HelpCircle size={16} className="text-primary/60" strokeWidth={1.5} />
-        <h2
-          className="text-base font-semibold text-foreground/90"
-          style={{ fontFamily: "'Cinzel', Georgia, serif" }}
-        >
-          Perguntas Frequentes
-        </h2>
+        <h2 className="text-base font-bold text-foreground/90">Perguntas Frequentes</h2>
       </div>
 
       <Accordion.Root type="multiple" className="space-y-2">
@@ -152,8 +100,8 @@ function FaqAccordion({
             key={item.id}
             value={item.id}
             className={cn(
-              "rounded-lg border border-border/40 bg-card/20 overflow-hidden",
-              "data-[state=open]:border-primary/30 data-[state=open]:bg-card/40",
+              "rounded-xl border border-border/40 bg-card/30 overflow-hidden",
+              "data-[state=open]:border-primary/25 data-[state=open]:bg-card/50",
               "transition-colors duration-200"
             )}
           >
@@ -161,7 +109,7 @@ function FaqAccordion({
               <Accordion.Trigger
                 className={cn(
                   "group flex w-full items-center justify-between gap-3",
-                  "px-4 py-3 text-left text-sm font-medium text-foreground/80",
+                  "px-4 py-3 text-left text-sm font-semibold text-foreground/80",
                   "hover:text-foreground transition-colors duration-200",
                   "data-[state=open]:text-foreground"
                 )}
@@ -195,31 +143,24 @@ function FaqAccordion({
   );
 }
 
-// ── Not found state ────────────────────────────────────────────────────────
-
 function GuideNotFound() {
   return (
-    <div className="flex flex-col items-center gap-4 py-20 text-center">
-      <BookOpen size={40} className="text-muted-foreground/20" strokeWidth={1} />
-      <div className="space-y-1">
-        <p className="text-base font-medium text-foreground/60">
-          Guia não encontrado
-        </p>
-        <p className="text-sm text-muted-foreground">
-          O guia que você procura não existe ou foi movido.
-        </p>
-      </div>
-      <Link
-        to="/guides"
-        className="inline-flex items-center gap-1.5 text-sm text-primary/70 hover:text-primary underline underline-offset-2 transition-colors"
-      >
-        <ArrowLeft size={13} /> Voltar aos guias
-      </Link>
-    </div>
+    <Card className="border-dashed py-20 max-w-sm mx-auto">
+      <CardContent className="flex flex-col items-center gap-4 text-center">
+        <BookOpen size={40} className="text-muted-foreground/20" strokeWidth={1} />
+        <div className="space-y-1">
+          <p className="text-base font-bold text-foreground/60">Guia nao encontrado</p>
+          <p className="text-sm text-muted-foreground">O guia que voce procura nao existe ou foi movido.</p>
+        </div>
+        <Button variant="link" size="sm" asChild className="text-primary">
+          <Link to="/guides">
+            <ArrowLeft size={13} /> Voltar aos guias
+          </Link>
+        </Button>
+      </CardContent>
+    </Card>
   );
 }
-
-// ── Page component ─────────────────────────────────────────────────────────
 
 export default function GuideDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -235,61 +176,37 @@ export default function GuideDetail() {
 
   return (
     <div className="relative min-h-[calc(100vh-4rem)] px-4 py-6 md:px-6 lg:px-8">
-      {/* Subtle background texture */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.015]"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Ccircle cx='30' cy='30' r='28' fill='none' stroke='%23ffffff' stroke-width='0.5'/%3E%3Ccircle cx='30' cy='30' r='14' fill='none' stroke='%23ffffff' stroke-width='0.5'/%3E%3C/svg%3E")`,
-          backgroundSize: "60px 60px",
-        }}
-      />
-
       <div className="relative max-w-2xl mx-auto">
         {/* Back nav */}
-        <Link
-          to="/guides"
-          className={cn(
-            "mb-6 inline-flex items-center gap-1.5 text-xs text-muted-foreground/60",
-            "hover:text-muted-foreground transition-colors uppercase tracking-wider"
-          )}
-        >
-          <ArrowLeft size={12} />
-          Compêndio de Guias
-        </Link>
+        <Button variant="ghost" size="xs" asChild className="mb-6 text-muted-foreground/60 hover:text-muted-foreground uppercase tracking-wider font-bold">
+          <Link to="/guides">
+            <ArrowLeft size={12} />
+            Compendio de Guias
+          </Link>
+        </Button>
 
         {/* Header */}
         <div className="mb-8 space-y-3">
           <div className="flex items-start justify-between gap-3">
-            <div className="flex items-center gap-2 text-4xl select-none" role="img" aria-hidden>
-              {guide.thumbnail}
-            </div>
+            <img src={guide.thumbnail} alt="" className="w-12 h-12 object-contain" style={{ imageRendering: "pixelated" }} aria-hidden />
             <DifficultyBadge difficulty={guide.difficulty} />
           </div>
 
-          <h1
-            className="text-2xl font-bold text-foreground/95 leading-tight"
-            style={{ fontFamily: "'Cinzel', Georgia, serif" }}
-          >
+          <h1 className="text-2xl font-extrabold text-foreground/95 leading-tight tracking-tight">
             {guide.title}
           </h1>
 
-          <p
-            className="text-sm text-muted-foreground/70 leading-relaxed"
-            style={{
-              fontFamily: "'IM Fell English', Georgia, serif",
-              fontStyle: "italic",
-            }}
-          >
+          <p className="text-sm text-muted-foreground/70 leading-relaxed">
             {guide.description}
           </p>
 
           <div className="flex items-center gap-4 pt-1">
-            <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground/50 uppercase tracking-wider">
+            <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground/50 uppercase tracking-wider font-bold">
               <Clock size={11} strokeWidth={1.5} />
               {guide.estimatedTime}
             </span>
-            <div className="h-3 w-px bg-border/40" />
-            <span className="text-[11px] text-muted-foreground/40 uppercase tracking-wider">
+            <Separator orientation="vertical" className="h-3" />
+            <span className="text-[11px] text-muted-foreground/40 uppercase tracking-wider font-semibold">
               {guide.tags.join(" · ")}
             </span>
           </div>
@@ -304,23 +221,17 @@ export default function GuideDetail() {
           ))}
         </div>
 
-        {/* FAQ Accordion (if present) */}
-        {guide.faq && guide.faq.length > 0 && (
-          <FaqAccordion items={guide.faq} />
-        )}
+        {/* FAQ */}
+        {guide.faq && guide.faq.length > 0 && <FaqAccordion items={guide.faq} />}
 
         {/* Footer nav */}
         <div className="mt-10 pt-6 border-t border-border/20">
-          <Link
-            to="/guides"
-            className={cn(
-              "inline-flex items-center gap-1.5 text-xs text-primary/60",
-              "hover:text-primary transition-colors uppercase tracking-wider"
-            )}
-          >
-            <ArrowLeft size={12} />
-            Voltar ao Compêndio
-          </Link>
+          <Button variant="ghost" size="xs" asChild className="text-primary/60 hover:text-primary uppercase tracking-wider font-bold">
+            <Link to="/guides">
+              <ArrowLeft size={12} />
+              Voltar ao Compendio
+            </Link>
+          </Button>
         </div>
       </div>
     </div>

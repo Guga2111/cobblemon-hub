@@ -5,13 +5,14 @@
  * Writes data/items.json.
  */
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
 import { itemSchema } from "../src/lib/schemas";
 import type { Item, ItemCategory } from "../src/types/item";
 import type { Pokemon } from "../src/types/pokemon";
 
 const POKEMON_JSON = "./data/pokemon.json";
 const OUTPUT_PATH = "./data/items.json";
+const SPRITES_DIR = "./public/sprites/items";
 
 // ── Category detection ────────────────────────────────────────────────────────
 
@@ -38,6 +39,19 @@ function formatDisplayName(name: string): string {
     .join(" ");
 }
 
+// ── Sprite resolution ─────────────────────────────────────────────────────────
+
+function buildSpriteIndex(): Set<string> {
+  if (!existsSync(SPRITES_DIR)) return new Set();
+  return new Set(readdirSync(SPRITES_DIR).filter((f) => f.endsWith(".png")));
+}
+
+function resolveSprite(itemName: string, spriteIndex: Set<string>): string | null {
+  const filename = `${itemName}.png`;
+  if (spriteIndex.has(filename)) return `/sprites/items/${filename}`;
+  return null;
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 function main() {
@@ -53,6 +67,9 @@ function main() {
 
   const pokemon = JSON.parse(readFileSync(POKEMON_JSON, "utf-8")) as Pokemon[];
   console.log(`[info] Scanning drops from ${pokemon.length} pokemon`);
+
+  const spriteIndex = buildSpriteIndex();
+  console.log(`[info] Sprite index: ${spriteIndex.size} textures available`);
 
   // Build item map: item name → {item data + which pokemon drop it}
   const itemMap = new Map<string, { item: Item; pokemonSet: Set<string> }>();
@@ -70,7 +87,7 @@ function main() {
             displayName: drop.displayName || formatDisplayName(drop.item),
             category: detectCategory(drop.item),
             description: "",
-            sprite: null,
+            sprite: resolveSprite(drop.item, spriteIndex),
             droppedBy: [],
           },
           pokemonSet: new Set([poke.id]),
