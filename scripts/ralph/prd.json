@@ -379,8 +379,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 21,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Static TypeScript guide data in src/content/guides/index.ts (no MDX renderer needed). Guides index at src/app/routes/guides/index.tsx with Cinzel/IM Fell English fonts, category filter pills, card grid (thumbnail emoji + difficulty badge + tags + time). GuideDetail at guides/$slug.tsx renders Section components (heading/body/list/tip/warning) + FaqAccordion via @radix-ui/react-accordion. Accordion animations (accordion-down/up) added as @keyframes + @layer utilities in globals.css. Installation guide has 5 FAQ entries covering Forge, Fabric, RAM config, configs, server install."
     },
     {
       "id": "US-022",

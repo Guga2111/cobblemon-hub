@@ -53,6 +53,9 @@
 - Zustand tuple state: `type SixSlots = [T,T,T,T,T,T]`; use `slots.map(fn) as SixSlots` for updates; define EMPTY array as const outside store to avoid reference issues in clearTeam
 - Multi-dropdown card pattern: single `openDropdown: Id | null` state; `toggle(id)` sets to id or null; click-outside effect only runs when `openDropdown !== null`; `useRef<HTMLInputElement | null>(null)` for React 19 refs
 - `useRef<T>(null)` in React 19 types as `React.RefObject<T | null>` — prop types must use `React.RefObject<T | null>` not `React.RefObject<T>` to match
+- Radix Accordion: `@radix-ui/react-accordion` already installed; use Root → Item → Header → Trigger → Content primitives; `--radix-accordion-content-height` CSS var enables smooth height animation in @keyframes
+- Static content as TypeScript objects: prefer typed TS data modules over MDX for guide content — no extra renderer dep, full type safety, tree-shakeable
+- Accordion keyframes: define in globals.css as `@keyframes accordion-down/up` with `var(--radix-accordion-content-height)`, expose via `@layer utilities .animate-accordion-down/up`
 
 ---
 
@@ -371,5 +374,21 @@
   - For TanStack Table with no virtualization, `getCoreRowModel() + getSortedRowModel()` is the full setup needed; `getFilteredRowModel()` not needed when server handles filtering
   - `colHelper.display()` for computed/action columns; `colHelper.accessor()` for data columns — consistent pattern with pokedex
   - Category select uses native `<select>` element (not a custom combobox) — appropriate when there are only 7 options and no fuzzy search needed
+  - Manual browser verification needed — no browser MCP tools available
+---
+
+## 2026-05-28 - US-021
+- Created `src/content/guides/index.ts` — static TypeScript guide data (no MDX renderer); 6 guides: Instalação, Apricorns, Tumblestones, Berry Farming, EV Training, Shiny Hunting; each with sections (heading/body/list/tip/warning) and the Installation guide has a 5-item FAQ array
+- Updated `src/app/routes/guides/index.tsx` — full guides listing page with Cinzel + IM Fell English fonts, rune circle background texture, category filter pills, responsive 3-col card grid, GridSkeleton; each card shows emoji thumbnail + DifficultyBadge + CategoryTags + estimated time
+- Updated `src/app/routes/guides/$slug.tsx` — guide detail page with Section renderer (heading/body/list/tip/warning blocks), FaqAccordion using @radix-ui/react-accordion (already installed), back navigation, 404 state; limited to max-w-2xl for readability
+- Updated `src/styles/globals.css` — added @keyframes accordion-down/accordion-up using `var(--radix-accordion-content-height)` CSS variable provided by Radix; added as @layer utilities classes `animate-accordion-down` and `animate-accordion-up`
+- Files changed: src/content/guides/index.ts (new), src/app/routes/guides/index.tsx, src/app/routes/guides/$slug.tsx, src/styles/globals.css
+- **Learnings for future iterations:**
+  - Radix Accordion provides `--radix-accordion-content-height` CSS variable on the Content element — use it in @keyframes for smooth height animation without JS
+  - `@radix-ui/react-accordion` was already installed (in package.json) — no npm install needed; same pattern: build from primitives (Root → Item → Header → Trigger → Content)
+  - Static guide content as TypeScript objects (not MDX) avoids adding a markdown renderer dependency; still fully typesafe with interfaces
+  - Route `links()` export for Google Fonts: both guides/index.tsx and guides/$slug.tsx can export their own `links()` function — RR7 merges them correctly
+  - `DIFFICULTY_CONFIG` type constants should live in the route/component file, not the content file — content files should export data types and pure data only
+  - `useParams<{ slug: string }>()` in RR7 to get typed params without Route type generation
   - Manual browser verification needed — no browser MCP tools available
 ---
