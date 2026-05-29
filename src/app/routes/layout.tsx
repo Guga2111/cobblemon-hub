@@ -1,5 +1,5 @@
 import { Outlet, NavLink } from "react-router";
-import { useState, useCallback } from "react";
+import { useState, useCallback, Suspense } from "react";
 import {
   Home,
   BookOpen,
@@ -20,6 +20,20 @@ import {
 } from "~/components/ui/sheet";
 import { ThemeToggle } from "~/components/layout/theme-toggle";
 import { CommandSearch } from "~/components/search/command-search";
+
+function RouteSkeleton() {
+  return (
+    <div className="flex flex-col gap-4 p-6 animate-pulse">
+      <div className="h-8 w-48 rounded-lg bg-muted/40" />
+      <div className="h-px w-full bg-border/40" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
+        {Array.from({ length: 9 }).map((_, i) => (
+          <div key={i} className="h-24 rounded-xl bg-muted/30" />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 interface NavItem {
   to: string;
@@ -53,6 +67,7 @@ function NavItems({
           key={item.to}
           to={item.to}
           end={item.end}
+          prefetch="intent"
           title={collapsed ? item.label : undefined}
           onClick={onItemClick}
           className={({ isActive }) =>
@@ -232,7 +247,9 @@ export default function AppLayout() {
             tabIndex={-1}
             className="flex-1 overflow-auto focus-visible:outline-none"
           >
-            <Outlet />
+            <Suspense fallback={<RouteSkeleton />}>
+              <Outlet />
+            </Suspense>
           </main>
 
           {/* Mobile bottom navigation — visible below md only */}
@@ -245,6 +262,7 @@ export default function AppLayout() {
                 key={item.to}
                 to={item.to}
                 end={item.end}
+                prefetch="intent"
                 className={({ isActive }) =>
                   cn(
                     "relative flex flex-1 flex-col items-center justify-center gap-1 py-3 px-1",

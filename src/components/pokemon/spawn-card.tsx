@@ -1,3 +1,4 @@
+import { memo } from "react";
 import {
   Sun,
   Moon,
@@ -216,7 +217,7 @@ function ConditionsList({
 
 // ── SpawnCard ─────────────────────────────────────────────────────────────
 
-export function SpawnCard({ spawn }: { spawn: SpawnEntryData }) {
+export const SpawnCard = memo(function SpawnCard({ spawn }: { spawn: SpawnEntryData }) {
   const bucket = BUCKET_CONFIG[spawn.bucket];
   const CtxIcon = CONTEXT_ICONS[spawn.context] ?? Footprints;
   const ctxLabel = CONTEXT_LABELS[spawn.context] ?? spawn.context;
@@ -289,4 +290,4 @@ export function SpawnCard({ spawn }: { spawn: SpawnEntryData }) {
       </div>
     </div>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useRef, useState, useMemo, useEffect, useCallback } from "react";
+import { useRef, useState, useMemo, useEffect, useCallback, memo } from "react";
 import { Link } from "react-router";
 import { RouteErrorBoundary } from "~/components/layout/route-error-boundary";
 import { useQuery } from "@tanstack/react-query";
@@ -406,7 +406,7 @@ function FilterEmptyState({ onClear }: { onClear: () => void }) {
 
 // ── Mobile card ──────────────────────────────────────────────────────
 
-function MobileCard({ pokemon }: { pokemon: PokemonListItem }) {
+const MobileCard = memo(function MobileCard({ pokemon }: { pokemon: PokemonListItem }) {
   return (
     <Link
       to={`/pokedex/${pokemon.id}`}
@@ -424,9 +424,20 @@ function MobileCard({ pokemon }: { pokemon: PokemonListItem }) {
           loading="lazy"
           width={40}
           height={40}
-          className="w-10 h-10 object-contain"
+          className="w-10 h-10 object-contain opacity-0 blur-sm transition-[opacity,filter] duration-300"
+          onLoad={(e) => {
+            const img = e.target as HTMLImageElement;
+            img.classList.remove("opacity-0", "blur-sm");
+          }}
           onError={(e) => {
-            (e.target as HTMLImageElement).style.opacity = "0";
+            const img = e.target as HTMLImageElement;
+            if (!img.dataset.fallback) {
+              img.dataset.fallback = "1";
+              img.src = `https://play.pokemonshowdown.com/sprites/gen5/${normalizePokemonName(pokemon.name)}.png`;
+            } else {
+              img.style.opacity = "0";
+              img.classList.remove("blur-sm");
+            }
           }}
         />
       </div>
@@ -455,7 +466,7 @@ function MobileCard({ pokemon }: { pokemon: PokemonListItem }) {
       </div>
     </Link>
   );
-}
+});
 
 // ── useIsMobile ──────────────────────────────────────────────────────
 
@@ -490,9 +501,20 @@ const columns = [
           loading="lazy"
           width={32}
           height={32}
-          className="w-8 h-8 object-contain drop-shadow-sm"
+          className="w-8 h-8 object-contain drop-shadow-sm opacity-0 blur-sm transition-[opacity,filter] duration-300"
+          onLoad={(e) => {
+            const img = e.target as HTMLImageElement;
+            img.classList.remove("opacity-0", "blur-sm");
+          }}
           onError={(e) => {
-            (e.target as HTMLImageElement).style.opacity = "0.15";
+            const img = e.target as HTMLImageElement;
+            if (!img.dataset.fallback) {
+              img.dataset.fallback = "1";
+              img.src = `https://play.pokemonshowdown.com/sprites/gen5/${normalizePokemonName(row.original.name)}.png`;
+            } else {
+              img.style.opacity = "0.15";
+              img.classList.remove("blur-sm");
+            }
           }}
         />
       </div>
@@ -692,11 +714,14 @@ export default function Pokedex() {
   if (isLoading) return <LoadingSkeleton />;
   if (isError) return <ErrorState onRetry={() => void refetch()} />;
 
+  const useVirtualization = rows.length > 50;
   const virtualItems = rowVirtualizer.getVirtualItems();
   const totalVirtualSize = rowVirtualizer.getTotalSize();
-  const paddingTop = virtualItems[0]?.start ?? 0;
+  const paddingTop = useVirtualization ? (virtualItems[0]?.start ?? 0) : 0;
   const lastItem = virtualItems[virtualItems.length - 1];
-  const paddingBottom = lastItem ? totalVirtualSize - lastItem.end : 0;
+  const paddingBottom = useVirtualization
+    ? lastItem ? totalVirtualSize - lastItem.end : 0
+    : 0;
 
   const isDataEmpty = processedData.length === 0;
   const isFilteredEmpty = filteredData.length === 0 && !isDataEmpty;
@@ -813,13 +838,13 @@ export default function Pokedex() {
                     </tr>
                   )}
 
-                  {virtualItems.map((virtualRow) => {
-                    const row = rows[virtualRow.index]!;
+                  {(useVirtualization ? virtualItems.map((vr) => ({ index: vr.index, id: rows[vr.index]!.id, virtualRow: vr })) : rows.map((r, i) => ({ index: i, id: r.id, virtualRow: null }))).map(({ index, id, virtualRow }) => {
+                    const row = rows[index]!;
                     return (
                       <tr
-                        key={row.id}
-                        data-index={virtualRow.index}
-                        ref={rowVirtualizer.measureElement}
+                        key={id}
+                        data-index={index}
+                        ref={virtualRow ? rowVirtualizer.measureElement : undefined}
                         className={cn(
                           "group border-b border-border/40",
                           "hover:bg-muted/20 transition-colors duration-100"
@@ -852,33 +877,41 @@ export default function Pokedex() {
               </table>
             ) : (
               /* ── Mobile card list ── */
-              <div
-                style={{
-                  height: `${totalVirtualSize + 24}px`,
-                  position: "relative",
-                }}
-              >
-                {virtualItems.map((virtualRow) => {
-                  const row = rows[virtualRow.index]!;
-                  return (
-                    <div
-                      key={row.id}
-                      data-index={virtualRow.index}
-                      ref={rowVirtualizer.measureElement}
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: "12px",
-                        right: "12px",
-                        transform: `translateY(${virtualRow.start + 12}px)`,
-                        paddingBottom: "8px",
-                      }}
-                    >
-                      <MobileCard pokemon={row.original} />
-                    </div>
-                  );
-                })}
-              </div>
+              useVirtualization ? (
+                <div
+                  style={{
+                    height: `${totalVirtualSize + 24}px`,
+                    position: "relative",
+                  }}
+                >
+                  {virtualItems.map((virtualRow) => {
+                    const row = rows[virtualRow.index]!;
+                    return (
+                      <div
+                        key={row.id}
+                        data-index={virtualRow.index}
+                        ref={rowVirtualizer.measureElement}
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: "12px",
+                          right: "12px",
+                          transform: `translateY(${virtualRow.start + 12}px)`,
+                          paddingBottom: "8px",
+                        }}
+                      >
+                        <MobileCard pokemon={row.original} />
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2 p-3">
+                  {rows.map((row) => (
+                    <MobileCard key={row.id} pokemon={row.original} />
+                  ))}
+                </div>
+              )
             )}
           </div>
         )}

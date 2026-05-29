@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   Plus,
@@ -160,7 +160,7 @@ interface TeamSlotProps {
   slotIndex: number;
 }
 
-export function TeamSlot({ slotIndex }: TeamSlotProps) {
+export const TeamSlot = memo(function TeamSlot({ slotIndex }: TeamSlotProps) {
   const slot = useTeamStore((s) => s.slots[slotIndex]);
   const { setPokemon, setNature, setAbility, setHeldItem, setEvs, setIvs, clearSlot } =
     useTeamStore();
@@ -741,4 +741,4 @@ export function TeamSlot({ slotIndex }: TeamSlotProps) {
       )}
     </div>
   );
-}
+});
