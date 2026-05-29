@@ -360,8 +360,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 20,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "TanStack Table v8 + TanStack Query v5. links() export adds Cinzel + Oxanium Google Fonts. CATEGORY_CONFIG maps 7 ItemCategory values to colored badges (cyan/rose/emerald/violet/amber/orange/zinc). useDebounce hook (useState+useEffect+setTimeout) for 200ms debounce. ItemSprite with pixelated rendering + violet drop-shadow + fallback Package icon. Table columns: icon (display), displayName (sortable, Oxanium font), category (CategoryBadge, no sort), droppedBy (shows 'Dropped by N Pokémon'), description (line-clamp-2). TableSkeleton: 8 rows with staggered animation-delay. Empty state: dynamic message for search vs. category filters. Hex grid CSS background via data: URI SVG. Cinzel serif title ('Item Codex'). Footer shows item count."
     },
     {
       "id": "US-021",

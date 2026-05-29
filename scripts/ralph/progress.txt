@@ -351,3 +351,25 @@
   - ExportDialog is self-contained with its own trigger — no prop drilling needed in team-builder.tsx
   - Manual browser verification needed — no browser MCP tools available
 ---
+
+## 2026-05-28 - US-020
+- Created `src/app/routes/items.tsx` — full Items Wiki page with TanStack Table v8 + TanStack Query v5
+- `links()` route export adds Cinzel (title serif) + Oxanium (item name monospace-adjacent) Google Fonts
+- `CATEGORY_CONFIG` maps 7 ItemCategory values to colored badges: cyan (ball), rose (medicine), emerald (berry), violet (held-item), amber (evolution-item), orange (ingredient), zinc (other)
+- `useDebounce` hook (useState+useEffect+setTimeout, 200ms) for search input
+- `ItemSprite` component: pixelated rendering via inline style, violet drop-shadow, Package icon fallback
+- TanStack Table columns: icon (display, no sort), displayName (sortable, Oxanium font), category (CategoryBadge), droppedBy ("Dropped by N Pokémon"), description (line-clamp-2)
+- `TableSkeleton`: 8 rows with staggered `animationDelay` per row
+- Empty state: dynamic message ("Nenhum item encontrado para X" / "Nenhum item na categoria Y") + clear button
+- Hex grid CSS background texture via inline data: URI SVG for arcane codex aesthetic
+- Footer shows live item count
+- Files changed: src/app/routes/items.tsx
+- **Learnings for future iterations:**
+  - Route `links()` export (no type annotation needed) adds `<link>` tags to `<head>` via React Router v7's `<Links />` in root — use for per-page fonts
+  - `useDebounce` inline hook (useState+useEffect) is the project's consistent debounce pattern — no library needed
+  - `image-rendering: pixelated` must be applied via inline `style` — Tailwind v4 doesn't generate this arbitrary CSS property
+  - For TanStack Table with no virtualization, `getCoreRowModel() + getSortedRowModel()` is the full setup needed; `getFilteredRowModel()` not needed when server handles filtering
+  - `colHelper.display()` for computed/action columns; `colHelper.accessor()` for data columns — consistent pattern with pokedex
+  - Category select uses native `<select>` element (not a custom combobox) — appropriate when there are only 7 options and no fuzzy search needed
+  - Manual browser verification needed — no browser MCP tools available
+---
