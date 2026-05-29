@@ -411,8 +411,8 @@
         "Typecheck passes"
       ],
       "priority": 23,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Suspense boundary around Outlet in layout.tsx with RouteSkeleton fallback (card grid shimmer). prefetch='intent' on all NavLink components in both sidebar and mobile bottom nav. React.memo applied to SpawnCard (spawn-card.tsx), TeamSlot (team-slot.tsx), and MobileCard (pokedex/index.tsx). Sprite images get blur-sm + opacity-0 on load with transition-[opacity,filter] + onLoad removes classes; onError tries fallback gen5 URL via dataset.fallback guard before hiding. TanStack Virtual conditioned on rows.length > 50 — both desktop table rows and mobile card list fall back to direct rendering when filtered list is small."
     }
   ]
 }

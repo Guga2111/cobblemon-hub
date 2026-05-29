@@ -406,3 +406,18 @@
   - `useParams<{ slug: string }>()` in RR7 to get typed params without Route type generation
   - Manual browser verification needed — no browser MCP tools available
 ---
+
+## 2026-05-28 - US-023
+- Added `<Suspense fallback={<RouteSkeleton />}>` around `<Outlet />` in layout.tsx — RouteSkeleton shows card-grid shimmer during route chunk loading
+- Added `prefetch="intent"` to all NavLink components (sidebar NavItems + mobile bottom nav) for predictive route prefetching
+- Applied `React.memo` to `SpawnCard` (src/components/pokemon/spawn-card.tsx), `TeamSlot` (src/components/team/team-slot.tsx), and `MobileCard` (src/app/routes/pokedex/index.tsx)
+- Sprite images now start with `opacity-0 blur-sm` + `transition-[opacity,filter]`; `onLoad` removes those classes for a fade-in reveal; `onError` tries fallback gen5 URL via `dataset.fallback` guard before hiding the image
+- TanStack Virtual conditioned on `rows.length > 50`: when filtered list is ≤50 items, renders all rows directly (desktop table rows + mobile card flex list); virtualizer hook still called unconditionally for rule-of-hooks compliance
+- Files changed: src/app/routes/layout.tsx, src/app/routes/pokedex/index.tsx, src/components/pokemon/spawn-card.tsx, src/components/team/team-slot.tsx
+- **Learnings for future iterations:**
+  - `memo()` wrapping pitfall: when multiple components in a file share a closing `}` pattern, use unique surrounding context as `old_string` to avoid replacing the wrong one
+  - RR7 framework mode auto-splits routes — adding `<Suspense>` around `<Outlet />` is sufficient to show skeleton during lazy chunk load; no manual `React.lazy()` calls needed for route files
+  - Conditional virtualization: always call `useVirtualizer` (React hook rules), use a `useVirtualization = rows.length > 50` flag to branch rendering; for mobile card fallback use a simple `flex-col gap-2` div
+  - Sprite blur-to-reveal: CSS classes `opacity-0 blur-sm transition-[opacity,filter]` + `onLoad` class removal gives a clean fade; `dataset.fallback` guard on `onError` prevents infinite error loop on fallback images
+  - Manual browser verification needed — no browser MCP tools available
+---
