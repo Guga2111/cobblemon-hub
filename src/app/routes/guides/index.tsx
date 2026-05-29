@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
+import { RouteErrorBoundary } from "~/components/layout/route-error-boundary";
 import {
   ScrollText,
   Clock,
@@ -330,4 +331,8 @@ export default function Guides() {
       )}
     </div>
   );
+}
+
+export function ErrorBoundary() {
+  return <RouteErrorBoundary routeName="Guias" />;
 }

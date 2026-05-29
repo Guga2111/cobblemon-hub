@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router";
+import { RouteErrorBoundary } from "~/components/layout/route-error-boundary";
 import { useQuery } from "@tanstack/react-query";
 import {
   ChevronLeft,
@@ -539,4 +540,8 @@ export default function PokemonDetailPage() {
       </div>
     </>
   );
+}
+
+export function ErrorBoundary() {
+  return <RouteErrorBoundary routeName="Detalhe do Pokémon" />;
 }

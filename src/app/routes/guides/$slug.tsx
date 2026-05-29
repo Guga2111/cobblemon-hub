@@ -1,4 +1,5 @@
 import { Link, useParams } from "react-router";
+import { RouteErrorBoundary } from "~/components/layout/route-error-boundary";
 import * as Accordion from "@radix-ui/react-accordion";
 import {
   ArrowLeft,
@@ -324,4 +325,8 @@ export default function GuideDetail() {
       </div>
     </div>
   );
+}
+
+export function ErrorBoundary() {
+  return <RouteErrorBoundary routeName="Guia" />;
 }

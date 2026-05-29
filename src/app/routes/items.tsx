@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { RouteErrorBoundary } from "~/components/layout/route-error-boundary";
 import { useQuery } from "@tanstack/react-query";
 import {
   createColumnHelper,
@@ -610,4 +611,8 @@ export default function Items() {
       )}
     </div>
   );
+}
+
+export function ErrorBoundary() {
+  return <RouteErrorBoundary routeName="Wiki de Itens" />;
 }

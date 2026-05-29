@@ -1,9 +1,14 @@
 import type { MetaFunction } from "react-router";
+import { RouteErrorBoundary } from "~/components/layout/route-error-boundary";
 
 export const meta: MetaFunction = () => [
   { title: "Cobblemon Hub" },
   { name: "description", content: "Plataforma para jogadores do mod Cobblemon" },
 ];
+
+export function ErrorBoundary() {
+  return <RouteErrorBoundary routeName="Home" />;
+}
 
 export default function Index() {
   return (

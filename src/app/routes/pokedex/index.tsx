@@ -1,5 +1,6 @@
 import { useRef, useState, useMemo, useEffect, useCallback } from "react";
 import { Link } from "react-router";
+import { RouteErrorBoundary } from "~/components/layout/route-error-boundary";
 import { useQuery } from "@tanstack/react-query";
 import {
   createColumnHelper,
@@ -898,4 +899,8 @@ export default function Pokedex() {
       />
     </>
   );
+}
+
+export function ErrorBoundary() {
+  return <RouteErrorBoundary routeName="Pokédex" />;
 }

@@ -2,6 +2,7 @@ import { Swords, Trash2 } from "lucide-react";
 import { TeamSlot } from "~/components/team/team-slot";
 import { useTeamStore } from "~/features/team-builder/use-team-store";
 import { ExportDialog } from "~/components/team/export-dialog";
+import { RouteErrorBoundary } from "~/components/layout/route-error-boundary";
 
 export default function TeamBuilderPage() {
   const slots = useTeamStore((s) => s.slots);
@@ -48,4 +49,8 @@ export default function TeamBuilderPage() {
       </div>
     </div>
   );
+}
+
+export function ErrorBoundary() {
+  return <RouteErrorBoundary routeName="Team Builder" />;
 }
