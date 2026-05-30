@@ -47,6 +47,12 @@ const REGION_LABELS: Record<string, string> = {
   johto: "Johto",
   hoenn: "Hoenn",
   sinnoh: "Sinnoh",
+  unova: "Unova",
+  kalos: "Kalos",
+  alola: "Alola",
+  galar: "Galar",
+  hisui: "Hisui",
+  paldea: "Paldea",
 };
 
 const DIMENSION_COLORS: Record<string, string> = {
@@ -59,6 +65,7 @@ const DIMENSION_COLORS: Record<string, string> = {
 
 interface Legendary {
   id: string;
+  pokemonId?: string;
   displayName: string;
   dexNumber: number;
   types: string[];
@@ -66,9 +73,14 @@ interface Legendary {
   category: string;
   region: string;
   obtainMethod: string;
+  spawnMethod?: string;
   biome: string | null;
+  location?: string | null;
   dimension: string;
+  conditions?: { timeRange?: string | null; isThundering?: boolean | null } | null;
+  rarity?: string | null;
   description: string;
+  sourceFile?: string;
 }
 
 function LegendaryCard({ pokemon }: { pokemon: Legendary }) {

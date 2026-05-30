@@ -8,7 +8,7 @@
     "server": "tsx watch server/index.ts",
     "build": "react-router build",
     "typecheck": "tsc --noEmit",
-    "extract": "tsx scripts/extract-pokemon.ts && tsx scripts/extract-spawns.ts && tsx scripts/extract-items.ts && tsx scripts/extract-moves.ts",
+    "extract": "tsx scripts/extract-pokemon.ts && tsx scripts/extract-spawns.ts && tsx scripts/extract-items.ts && tsx scripts/extract-moves.ts && tsx scripts/extract-legendaries.ts",
     "seed": "tsx scripts/seed-db.ts"
   },
   "dependencies": {
