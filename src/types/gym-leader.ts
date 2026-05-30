@@ -5,10 +5,13 @@ export type Region = "kanto" | "johto" | "hoenn" | "sinnoh";
 export type TrainerRole = "gym-leader" | "elite-four" | "champion";
 
 export interface TrainerPokemon {
-  species: string;
+  pokemon: string;
   displayName: string;
   level: number;
   types: [PokemonType] | [PokemonType, PokemonType];
+  moves: string[];
+  heldItem: string | null;
+  ability: string | null;
 }
 
 export interface GymLeader {

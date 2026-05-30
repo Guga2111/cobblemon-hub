@@ -186,11 +186,11 @@ function GymLeaderCard({
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {leader.team.map((mon, i) => (
                 <div
-                  key={`${mon.species}-${i}`}
+                  key={`${mon.pokemon}-${i}`}
                   className="flex items-center gap-2 rounded-lg border border-border/30 bg-muted/10 px-2.5 py-2"
                 >
                   <img
-                    src={`${SHOWDOWN_SPRITE_BASE}${mon.species}.png`}
+                    src={`${SHOWDOWN_SPRITE_BASE}${mon.pokemon}.png`}
                     alt={mon.displayName}
                     className="w-8 h-8 object-contain shrink-0"
                     loading="lazy"
