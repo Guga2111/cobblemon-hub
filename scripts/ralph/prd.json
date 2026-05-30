@@ -148,8 +148,8 @@
         "Verify in browser using dev-browser skill — navegar para /battle-mechanics e confirmar que a página renderiza sem erros ou dados incorretos visíveis"
       ],
       "priority": 9,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Inspected mechanics/ (berries, potions, remedies, aprijuices, slowpoke_tails — item-use mechanics, NOT battle transformation mechanics). Inspected species_features/: mega_evolution (46 species → 48 Mega forms; charizard and mewtwo have X+Y), dynamax_form (33 species → 32 G-Max + 1 Eternamax), tera_form (only Terapagos visual form, not general battle mechanic). No Z-Crystal items found anywhere in the datapack. Corrections: fixed '93 Mega Evolucoes' → '48 formas Mega / 46 especies'; fixed G-Max count to '32 + Eternamax'; added TODO to Z-Moves (no Z-Crystals in datapack); added TODO to Terastallization (tera_form only for Terapagos, general battle mechanic not confirmed); updated footer note to clarify Mega and Dynamax are confirmed core Cobblemon features while Z-Moves and Tera need manual verification. Typecheck passes. Browser verification requires manual testing."
     }
   ]
 }

@@ -1,3 +1,22 @@
+## 2026-05-30 - US-009
+- Inspected all files in `data/datapack/data/cobblemon/mechanics/` (berries.json, potions.json, remedies.json, aprijuices.json, slowpoke_tails.json) — these are item-use mechanics (HP restore amounts, friendship effects, aprijuice stat effects), NOT battle transformation mechanics like Mega/Z-Move/Dynamax/Tera
+- Inspected `species_features/` for battle mechanic features: mega_evolution, dynamax_form, tera_form; and `species_feature_assignments/` for species counts
+- **Mega Evolution**: species_feature_assignments/mega_evolution.json lists 46 species; Python analysis found 48 total Mega forms (charizard has Mega-X+Y, mewtwo has Mega-X+Y, all others have 1 form). Fixed "93 Mega Evolucoes" → "48 formas Mega / 46 especies"
+- **Dynamax/Gigantamax**: species_feature_assignments/dynamax_form.json lists 33 species; 32 have G-Max forms + Eternatus has Eternamax. Fixed "G-Max Forms: Varios" → "32 + Eternamax"
+- **Z-Moves**: No Z-Crystal items found anywhere in the datapack (held_items/, bag_items/, recipe/, species_features/). Added TODO marker — may require a separate mod or not be implemented in Cobblemon 1.7.3
+- **Terastallization**: tera_form species feature exists ONLY for Terapagos (visual form: Normal/Terastal/Stellar), NOT a general battle mechanic. Added TODO marker — general Terastallization battle mechanic not confirmed in Cobblemon 1.7.3 datapack
+- Updated footer note: Mega and Dynamax are confirmed core Cobblemon features; Z-Moves and Tera need manual verification
+- Files changed: src/app/routes/battle-mechanics.tsx
+- `npm run typecheck` passes; browser verification requires manual testing (no browser MCP tool available)
+- **Learnings for future iterations:**
+  - `mechanics/` directory in cobblemon datapack covers item-use effects (HP restore, friendship changes), NOT battle transformation mechanics
+  - Mega Evolution and Dynamax/Gigantamax ARE native Cobblemon 1.7.3 features (defined in species_features/ and assigned via species_feature_assignments/)
+  - species_feature_assignments/mega_evolution.json: 46 species; charizard and mewtwo have both X and Y forms = 48 total Mega forms
+  - species_feature_assignments/dynamax_form.json: 33 species; 32 G-Max + Eternatus (Eternamax)
+  - tera_form species feature is ONLY for Terapagos's visual form (Normal/Terastal/Stellar) — NOT a general battle mechanic
+  - Z-Crystals are NOT in the Cobblemon 1.7.3 datapack (no items, no features, no assignments)
+---
+
 ## 2026-05-30 - US-008
 - Audited all 6 guides in `src/content/guides/index.ts` against the datapack and mod integrations
 - **instalacao-cobblemon**: Updated MC version 1.20.1→1.21.1; Fabric Loader 0.15.x→0.16.x; Java 17→21; added integrated mod dependencies (BotanyPots, Adorn, CarryOn); removed Forge section (Cobbleverse is Fabric-only)
@@ -103,6 +122,10 @@
 - BotanyPots and Adorn ARE integrated in the datapack (namespaces botanypots/, adorn/). Adorn adds apricorn furniture; BotanyPots enables automated crop growing of Berries and Apricorns.
 - Shiny Charm and Macho Brace are NOT in the Cobblemon 1.7.3 datapack — mark as TODO if referenced in guides.
 - EV yields are in species JSON under `evYield` key: e.g. `{'speed': 2}` for Jolteon. Always verify from datapack rather than relying on general Pokémon knowledge.
+- `mechanics/` directory covers item-use effects (HP restore, friendship, etc.) — NOT battle transformation mechanics (Mega/Z/Dynamax/Tera).
+- Mega Evolution (48 forms / 46 species) and Dynamax/Gigantamax (33 species) ARE native Cobblemon 1.7.3 features — defined in species_features/ and assigned via species_feature_assignments/.
+- `tera_form` species feature is ONLY for Terapagos's visual form (Normal/Terastal/Stellar) — NOT a general Terastallization battle mechanic for all Pokémon.
+- Z-Crystals are NOT in the Cobblemon 1.7.3 datapack. Z-Moves may require a separate mod or not be implemented.
 
 ---
 
