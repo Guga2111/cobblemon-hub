@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { db } from "./db/client.ts";
 import { pokemonSchema, itemSchema, spawnEntrySchema } from "../src/lib/schemas.ts";
+import { authApp } from "./auth/routes.ts";
 
 const app = new Hono();
 
@@ -10,10 +11,14 @@ app.use(
   "/api/*",
   cors({
     origin: "http://localhost:5173",
-    allowMethods: ["GET"],
+    allowMethods: ["GET", "POST"],
     allowHeaders: ["Content-Type"],
+    credentials: true,
   })
 );
+
+// ── Auth routes ───────────────────────────────────────────────────
+app.route("/api/auth", authApp);
 
 // ── Helpers ─────────────────────────────────────────────────────────
 
@@ -309,6 +314,59 @@ app.get("/api/items/:id", async (c) => {
   }
 
   return c.json({ data: item });
+});
+
+// ── Gym Leader routes ───────────────────────────────────────────────
+
+function rowToGymLeader(row: Record<string, unknown>) {
+  return {
+    id: row.id as string,
+    name: row.name as string,
+    region: row.region as string,
+    role: row.role as string,
+    typeSpecialty: row.type_specialty as string,
+    badgeName: row.badge_name as string | null,
+    levelCap: row.level_cap as number,
+    orderInRegion: row.order_in_region as number,
+    biome: row.biome as string | null,
+    team: JSON.parse(row.team as string) as unknown,
+    rewards: JSON.parse(row.rewards as string) as unknown,
+    unlockRequirement: row.unlock_requirement as string | null,
+    locateCommand: row.locate_command as string | null,
+  };
+}
+
+// GET /api/gym-leaders — all gym leaders, optionally filtered by region
+app.get("/api/gym-leaders", async (c) => {
+  const region = (c.req.query("region") ?? "").trim();
+
+  let sql = "SELECT * FROM gym_leaders";
+  const args: string[] = [];
+
+  if (region) {
+    sql += " WHERE region = ?";
+    args.push(region);
+  }
+
+  sql += " ORDER BY CASE region WHEN 'kanto' THEN 1 WHEN 'johto' THEN 2 WHEN 'hoenn' THEN 3 WHEN 'sinnoh' THEN 4 END, order_in_region";
+
+  const result = await db.execute({ sql, args });
+  return c.json({ data: result.rows.map((r) => rowToGymLeader(r as Record<string, unknown>)) });
+});
+
+// GET /api/gym-leaders/:id — single gym leader detail
+app.get("/api/gym-leaders/:id", async (c) => {
+  const id = c.req.param("id");
+  const result = await db.execute({
+    sql: "SELECT * FROM gym_leaders WHERE id = ?",
+    args: [id],
+  });
+
+  if (result.rows.length === 0) {
+    return c.json({ error: "Gym leader not found" }, 404);
+  }
+
+  return c.json({ data: rowToGymLeader(result.rows[0] as Record<string, unknown>) });
 });
 
 // ── Health ──────────────────────────────────────────────────────────

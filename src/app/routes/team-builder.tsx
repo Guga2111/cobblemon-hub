@@ -15,7 +15,7 @@ export default function TeamBuilderPage() {
   const filledCount = slots.filter((s) => s.pokemonData !== null).length;
 
   return (
-    <div className="max-w-[1100px] mx-auto px-4 py-8 space-y-6">
+    <div className="max-w-[1100px] mx-auto px-4 py-8 pb-64 space-y-6">
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex flex-col gap-1.5">
@@ -135,7 +135,7 @@ export default function TeamBuilderPage() {
         {slots.map((_, i) => (
           <div
             key={i}
-            className="animate-fade-in"
+            className="relative animate-fade-in [&:has(>.z-40)]:z-40"
             style={{ animationDelay: `${i * 75}ms`, animationFillMode: "both" }}
           >
             <TeamSlot slotIndex={i} />

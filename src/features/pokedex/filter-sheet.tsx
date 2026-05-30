@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import {
   X,
@@ -12,12 +12,6 @@ import {
 } from "lucide-react";
 import { TypeBadge } from "~/components/pokemon/type-badge";
 import { cn } from "~/lib/utils";
-import {
-  Sheet,
-  SheetContent,
-  SheetTitle,
-  SheetClose,
-} from "~/components/ui/sheet";
 import {
   POKEMON_TYPES,
   TYPE_DISPLAY_NAMES,
@@ -361,16 +355,49 @@ export function FilterSheet({
   activeFilterCount,
   biomeOptions,
 }: FilterSheetProps) {
+  const close = useCallback(() => onOpenChange(false), [onOpenChange]);
+
+  // Close on Escape
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [open, close]);
+
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="overflow-hidden">
+    <>
+      {/* Backdrop */}
+      <div
+        className={cn(
+          "fixed inset-0 z-50 bg-black/60 transition-opacity duration-200",
+          open ? "opacity-100" : "opacity-0 pointer-events-none"
+        )}
+        onClick={close}
+        aria-hidden="true"
+      />
+
+      {/* Panel */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Filtros"
+        className={cn(
+          "fixed inset-y-0 right-0 z-50 flex h-full w-[340px] sm:w-[380px] flex-col",
+          "bg-background shadow-2xl border-l border-border",
+          "transition-transform duration-200 ease-out",
+          open ? "translate-x-0" : "translate-x-full"
+        )}
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3.5 border-b border-border shrink-0">
           <div className="flex items-center gap-2">
             <SlidersHorizontal size={15} className="text-primary" />
-            <SheetTitle className="text-sm font-semibold text-foreground">
+            <h2 className="text-sm font-semibold text-foreground">
               Filtros
-            </SheetTitle>
+            </h2>
             {activeFilterCount > 0 && (
               <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground">
                 {activeFilterCount}
@@ -387,9 +414,13 @@ export function FilterSheet({
                 Limpar tudo
               </button>
             )}
-            <SheetClose className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+            <button
+              type="button"
+              onClick={close}
+              className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
               <X size={15} />
-            </SheetClose>
+            </button>
           </div>
         </div>
 
@@ -495,7 +526,7 @@ export function FilterSheet({
             </button>
           </div>
         )}
-      </SheetContent>
-    </Sheet>
+      </div>
+    </>
   );
 }

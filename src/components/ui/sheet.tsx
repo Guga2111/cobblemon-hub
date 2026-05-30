@@ -38,7 +38,7 @@ const SheetContent = React.forwardRef<
       className={cn(
         "fixed inset-y-0 z-50 flex h-full flex-col",
         "bg-background shadow-2xl border-border",
-        "transition-transform duration-300 ease-in-out",
+        "transition-transform duration-200 ease-out",
         "focus-visible:outline-none",
         side === "left" && "left-0 w-72 border-r data-[state=closed]:-translate-x-full data-[state=open]:translate-x-0",
         side === "right" && "right-0 w-[340px] sm:w-[380px] border-l data-[state=closed]:translate-x-full data-[state=open]:translate-x-0",

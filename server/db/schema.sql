@@ -41,6 +41,32 @@ CREATE TABLE IF NOT EXISTS items (
   dropped_by TEXT NOT NULL     -- JSON: string[] of pokemon IDs
 );
 
+CREATE TABLE IF NOT EXISTS users (
+  id TEXT PRIMARY KEY,
+  email TEXT NOT NULL UNIQUE,
+  display_name TEXT NOT NULL,
+  password_hash TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+
+CREATE TABLE IF NOT EXISTS gym_leaders (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  region TEXT NOT NULL,
+  role TEXT NOT NULL,              -- gym-leader, elite-four, champion
+  type_specialty TEXT NOT NULL,
+  badge_name TEXT,                 -- nullable for E4
+  level_cap INTEGER NOT NULL,
+  order_in_region INTEGER NOT NULL,
+  biome TEXT,
+  team TEXT NOT NULL,              -- JSON: TrainerPokemon[]
+  rewards TEXT NOT NULL,           -- JSON: string[]
+  unlock_requirement TEXT,
+  locate_command TEXT
+);
+
 CREATE TABLE IF NOT EXISTS moves (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,

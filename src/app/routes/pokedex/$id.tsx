@@ -17,7 +17,8 @@ import { EvolutionChain } from "~/components/pokemon/evolution-chain";
 import { StatBar } from "~/components/pokemon/stat-bar";
 import { SpawnCard, type SpawnEntryData } from "~/components/pokemon/spawn-card";
 import { MovesTable } from "~/components/pokemon/moves-table";
-import { normalizePokemonName, cn } from "~/lib/utils";
+import { cn } from "~/lib/utils";
+import { getPokemonSprite, getPokemonSpriteFallback } from "~/lib/sprites";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent } from "~/components/ui/card";
@@ -161,11 +162,8 @@ export default function PokemonDetailPage() {
   const activeForm: PokemonForm | null =
     activeFormIndex >= 0 ? (pokemon.forms[activeFormIndex] ?? null) : null;
   const displayTypes = activeForm?.types ?? pokemon.types;
-  const spriteName = activeForm
-    ? normalizePokemonName(activeForm.name)
-    : normalizePokemonName(pokemon.name);
-  const spriteUrl = `https://play.pokemonshowdown.com/sprites/dex/${spriteName}.png`;
-  const spriteFallback = `https://play.pokemonshowdown.com/sprites/gen5/${spriteName}.png`;
+  const spriteUrl = getPokemonSprite(pokemon.dexNumber);
+  const spriteFallback = getPokemonSpriteFallback(pokemon.dexNumber);
 
   return (
     <>
@@ -302,7 +300,10 @@ export default function PokemonDetailPage() {
                   }}
                   onError={(e) => {
                     const t = e.currentTarget;
-                    if (!t.src.includes("gen5")) t.src = spriteFallback;
+                    if (!t.dataset.fallback) {
+                      t.dataset.fallback = "1";
+                      t.src = spriteFallback;
+                    }
                   }}
                   loading="eager"
                 />
@@ -368,6 +369,7 @@ export default function PokemonDetailPage() {
                       pokemonId={pokemon.id}
                       pokemonName={pokemon.name}
                       displayName={pokemon.displayName}
+                      dexNumber={pokemon.dexNumber}
                       evolutions={pokemon.evolutions}
                     />
                   </SectionCard>

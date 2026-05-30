@@ -25,7 +25,8 @@ import {
 } from "lucide-react";
 import type { PokemonType } from "~/types/pokemon";
 import { TypeBadge } from "~/components/pokemon/type-badge";
-import { normalizePokemonName, cn } from "~/lib/utils";
+import { cn } from "~/lib/utils";
+import { getPokemonSprite, getPokemonSpriteFallback } from "~/lib/sprites";
 import {
   usePokedexFilters,
   applyPokedexFilters,
@@ -82,9 +83,6 @@ interface RawPokemonListItem {
 
 // ── Helpers ──────────────────────────────────────────────────────────
 
-function getSpriteUrl(name: string): string {
-  return `https://play.pokemonshowdown.com/sprites/dex/${normalizePokemonName(name)}.png`;
-}
 
 export function formatBiome(biome: string): string {
   const name = biome.replace(/^[^:]+:/, "");
@@ -385,7 +383,7 @@ const MobileCard = memo(function MobileCard({ pokemon }: { pokemon: PokemonListI
     >
       <div className="flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-lg bg-muted/30">
         <img
-          src={getSpriteUrl(pokemon.name)}
+          src={getPokemonSprite(pokemon.dexNumber)}
           alt={pokemon.displayName}
           loading="lazy"
           width={40}
@@ -399,7 +397,7 @@ const MobileCard = memo(function MobileCard({ pokemon }: { pokemon: PokemonListI
             const img = e.target as HTMLImageElement;
             if (!img.dataset.fallback) {
               img.dataset.fallback = "1";
-              img.src = `https://play.pokemonshowdown.com/sprites/gen5/${normalizePokemonName(pokemon.name)}.png`;
+              img.src = getPokemonSpriteFallback(pokemon.dexNumber);
             } else {
               img.style.opacity = "0";
               img.classList.remove("blur-sm");
@@ -458,7 +456,7 @@ const columns = [
     cell: ({ row }) => (
       <div className="flex items-center justify-center">
         <img
-          src={getSpriteUrl(row.original.name)}
+          src={getPokemonSprite(row.original.dexNumber)}
           alt={row.original.displayName}
           loading="lazy"
           width={32}
@@ -472,7 +470,7 @@ const columns = [
             const img = e.target as HTMLImageElement;
             if (!img.dataset.fallback) {
               img.dataset.fallback = "1";
-              img.src = `https://play.pokemonshowdown.com/sprites/gen5/${normalizePokemonName(row.original.name)}.png`;
+              img.src = getPokemonSpriteFallback(row.original.dexNumber);
             } else {
               img.style.opacity = "0.15";
               img.classList.remove("blur-sm");
@@ -659,24 +657,19 @@ export default function Pokedex() {
       <div className="flex flex-col h-full">
         {/* Page header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border/60 shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/12 border border-primary/20 shadow-[0_0_10px_-2px_hsl(var(--primary)/0.15)]">
-              <BookOpen size={16} className="text-primary" />
-            </div>
-            <div>
-              <h1 className="text-xl font-extrabold text-foreground leading-tight tracking-tight">Pokedex</h1>
-              <p className="text-xs text-muted-foreground leading-tight font-medium">
-                {isDataEmpty
-                  ? "Nenhum Pokemon"
-                  : hasFilters
-                  ? `${filteredData.length} de ${processedData.length} Pokemon`
-                  : `${processedData.length} Pokemon`}
-              </p>
-            </div>
+          <div className="flex items-baseline gap-3">
+            <h1 className="text-xl font-extrabold text-foreground tracking-tight">Pokedex</h1>
+            <span className="text-xs text-muted-foreground/50 font-mono tabular-nums">
+              {isDataEmpty
+                ? "0"
+                : hasFilters
+                ? `${filteredData.length}/${processedData.length}`
+                : processedData.length}
+            </span>
           </div>
 
           <Button
-            variant={activeFilterCount > 0 ? "outline" : "outline"}
+            variant="outline"
             size="sm"
             onClick={() => setFilterOpen(true)}
             className={cn(

@@ -1,12 +1,14 @@
 import { Link } from "react-router";
 import type { Evolution } from "~/types/pokemon";
 import { normalizePokemonName } from "~/lib/utils";
+import { getPokemonSprite, getPokemonSpriteFallback } from "~/lib/sprites";
 import { ChevronRight } from "lucide-react";
 
 interface EvolutionChainProps {
   pokemonId: string;
   pokemonName: string;
   displayName: string;
+  dexNumber: number;
   evolutions: Evolution[];
 }
 
@@ -35,14 +37,21 @@ function conditionLabel(evo: Evolution): string {
 function PokemonNode({
   name,
   displayName,
+  dexNumber,
   isLink,
 }: {
   name: string;
   displayName: string;
+  dexNumber?: number;
   isLink: boolean;
 }) {
-  const sprite = `https://play.pokemonshowdown.com/sprites/dex/${normalizePokemonName(name)}.png`;
-  const fallback = `https://play.pokemonshowdown.com/sprites/gen5/${normalizePokemonName(name)}.png`;
+  // Use official artwork when dexNumber is available, fallback to Showdown for evolution targets
+  const sprite = dexNumber
+    ? getPokemonSprite(dexNumber)
+    : `https://play.pokemonshowdown.com/sprites/dex/${normalizePokemonName(name)}.png`;
+  const fallback = dexNumber
+    ? getPokemonSpriteFallback(dexNumber)
+    : `https://play.pokemonshowdown.com/sprites/gen5/${normalizePokemonName(name)}.png`;
 
   const inner = (
     <div className="flex flex-col items-center gap-1.5">
@@ -83,6 +92,7 @@ export function EvolutionChain({
   pokemonId: _pokemonId,
   pokemonName,
   displayName,
+  dexNumber,
   evolutions,
 }: EvolutionChainProps) {
   if (evolutions.length === 0) {
@@ -96,7 +106,7 @@ export function EvolutionChain({
   return (
     <div className="flex items-start gap-3 flex-wrap">
       {/* Current pokemon */}
-      <PokemonNode name={pokemonName} displayName={displayName} isLink={false} />
+      <PokemonNode name={pokemonName} displayName={displayName} dexNumber={dexNumber} isLink={false} />
 
       {/* Each evolution branch */}
       {evolutions.map((evo) => {

@@ -104,13 +104,13 @@ function StatRow({
         <div className="w-full h-[3px] rounded-full bg-white/[0.06]" />
         {/* Fill */}
         <div
-          className="absolute left-0 h-[3px] rounded-full pointer-events-none transition-all duration-100"
+          className="absolute left-0 h-[3px] rounded-full pointer-events-none"
           style={{ width: `${fillPct}%`, backgroundColor: barColor, opacity: 0.9 }}
         />
         {/* Glowing thumb */}
         {value > 0 && (
           <div
-            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-2 rounded-full pointer-events-none transition-all duration-100"
+            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-2 rounded-full pointer-events-none"
             style={{
               left: `${fillPct}%`,
               backgroundColor: barColor,

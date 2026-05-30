@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { TypeBadge } from "~/components/pokemon/type-badge";
 import { cn } from "~/lib/utils";
+import { getPokemonSprite, getPokemonSpriteFallback } from "~/lib/sprites";
 import type { PokemonType } from "~/types/pokemon";
 
 // ── Types ────────────────────────────────────────────────────────────
@@ -79,15 +80,6 @@ function saveToHistory(item: PokemonSearchResult): void {
   }
 }
 
-// ── Sprite URL ───────────────────────────────────────────────────────
-
-function spriteUrl(name: string): string {
-  return `https://play.pokemonshowdown.com/sprites/dex/${name}.png`;
-}
-
-function spriteFallbackUrl(name: string): string {
-  return `https://play.pokemonshowdown.com/sprites/gen5/${name}.png`;
-}
 
 // ── Preview Panel ────────────────────────────────────────────────────
 
@@ -112,8 +104,8 @@ function PreviewPanel({ pokemon }: { pokemon: PokemonSearchResult }) {
   const currentSrc = imgError
     ? ""
     : useFallback
-      ? spriteFallbackUrl(pokemon.name)
-      : spriteUrl(pokemon.name);
+      ? getPokemonSpriteFallback(pokemon.dexNumber)
+      : getPokemonSprite(pokemon.dexNumber);
 
   return (
     <div className="relative flex h-full flex-col overflow-hidden">
@@ -166,7 +158,7 @@ function PreviewPanel({ pokemon }: { pokemon: PokemonSearchResult }) {
               width={112}
               height={112}
               onError={handleImgError}
-              className="relative z-10 h-28 w-28 object-contain drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)] [image-rendering:pixelated]"
+              className="relative z-10 h-28 w-28 object-contain drop-shadow-[0_4px_16px_rgba(0,0,0,0.6)]"
               style={{
                 filter: `drop-shadow(0 0 12px rgb(var(--type-${primaryType}) / 0.5))`,
               }}
@@ -262,12 +254,12 @@ function PokemonRow({ pokemon }: { pokemon: PokemonSearchResult }) {
     <div className="flex items-center gap-3 py-0.5">
       <div className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded">
         <img
-          src={spriteUrl(pokemon.name)}
+          src={getPokemonSprite(pokemon.dexNumber)}
           alt=""
           width={28}
           height={28}
           loading="lazy"
-          className="h-7 w-7 object-contain [image-rendering:pixelated]"
+          className="h-7 w-7 object-contain"
         />
       </div>
       <div className="flex min-w-0 flex-1 flex-col">

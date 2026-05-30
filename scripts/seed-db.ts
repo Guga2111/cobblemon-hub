@@ -6,6 +6,7 @@ import type { Pokemon } from "../src/types/pokemon";
 import type { SpawnEntry } from "../src/types/spawn";
 import type { Item } from "../src/types/item";
 import type { Move } from "../src/types/move";
+import type { GymLeader } from "../src/types/gym-leader";
 
 const url = process.env.TURSO_DATABASE_URL ?? "file:./data/cobblemon.db";
 const authToken = process.env.TURSO_AUTH_TOKEN;
@@ -149,6 +150,30 @@ async function seedMoves(): Promise<void> {
   console.log(`[seed] moves: ${ok} inserted, ${skip} skipped`);
 }
 
+async function seedGymLeaders(): Promise<void> {
+  const rows = readJson<GymLeader>("gym-leaders.json");
+  let ok = 0;
+  for (const g of rows) {
+    await db.execute({
+      sql: `INSERT OR REPLACE INTO gym_leaders
+        (id, name, region, role, type_specialty, badge_name, level_cap,
+         order_in_region, biome, team, rewards, unlock_requirement, locate_command)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+      args: [
+        g.id, g.name, g.region, g.role, g.typeSpecialty,
+        g.badgeName ?? null, g.levelCap, g.orderInRegion,
+        g.biome ?? null,
+        JSON.stringify(g.team),
+        JSON.stringify(g.rewards),
+        g.unlockRequirement ?? null,
+        g.locateCommand ?? null,
+      ],
+    });
+    ok++;
+  }
+  console.log(`[seed] gym_leaders: ${ok} inserted`);
+}
+
 async function main(): Promise<void> {
   console.log(`[seed] Connecting to: ${url}`);
   await applySchema();
@@ -156,6 +181,7 @@ async function main(): Promise<void> {
   await seedSpawns();
   await seedItems();
   await seedMoves();
+  await seedGymLeaders();
   console.log("[seed] Done");
   db.close();
 }

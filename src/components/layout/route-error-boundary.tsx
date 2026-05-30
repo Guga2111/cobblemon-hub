@@ -153,7 +153,7 @@ export function RouteErrorBoundary({ routeName }: RouteErrorBoundaryProps) {
         <div className="flex items-center gap-2 rounded-t-lg border border-b-0 border-destructive/25 bg-destructive/[0.04] px-4 py-2">
           <Terminal size={11} className="text-destructive/60" />
           <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-destructive/50">
-            cobblemon_hub &gt; {terminalPath}
+            cobbleverse_hub &gt; {terminalPath}
             <span className="eb-cursor ml-px">█</span>
           </span>
           <div className="ml-auto flex gap-1.5">

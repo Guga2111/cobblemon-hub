@@ -5,6 +5,7 @@ import type { EVSpread, IVSpread, StatBlock } from "~/types/team";
 
 export interface StoredPokemonData {
   id: string;
+  dexNumber: number;
   name: string;
   displayName: string;
   types: [PokemonType] | [PokemonType, PokemonType];
@@ -117,6 +118,6 @@ export const useTeamStore = create<TeamStore>()(
         })),
       clearTeam: () => set(() => ({ slots: EMPTY_TEAM })),
     }),
-    { name: "cobblemon-team", version: 2 }
+    { name: "cobbleverse-team", version: 2 }
   )
 );

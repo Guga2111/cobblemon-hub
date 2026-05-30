@@ -10,7 +10,8 @@ import {
   Dumbbell,
 } from "lucide-react";
 import { TypeBadge } from "~/components/pokemon/type-badge";
-import { normalizePokemonName, cn } from "~/lib/utils";
+import { cn } from "~/lib/utils";
+import { getPokemonSprite } from "~/lib/sprites";
 import { NATURES } from "~/lib/constants";
 import { useTeamStore } from "~/features/team-builder/use-team-store";
 import { EvSlider } from "~/components/team/ev-slider";
@@ -57,9 +58,6 @@ const STAT_LABELS: Record<keyof StatBlock, string> = {
   speed: "Spd",
 };
 
-function getPokemonSprite(name: string) {
-  return `https://play.pokemonshowdown.com/sprites/dex/${normalizePokemonName(name)}.png`;
-}
 
 // ── Sub-components ────────────────────────────────────────────────────
 
@@ -278,6 +276,7 @@ export const TeamSlot = memo(function TeamSlot({ slotIndex }: TeamSlotProps) {
       const d = json.data;
       setPokemon(slotIndex, {
         id: d.id,
+        dexNumber: result.dexNumber,
         name: d.name,
         displayName: d.displayName,
         types: d.types,
@@ -325,7 +324,7 @@ export const TeamSlot = memo(function TeamSlot({ slotIndex }: TeamSlotProps) {
               className="w-full flex items-center gap-3 px-3 py-2 hover:bg-muted/30 transition-colors"
             >
               <img
-                src={getPokemonSprite(r.name)}
+                src={getPokemonSprite(r.dexNumber)}
                 alt={r.displayName}
                 className="w-8 h-8 object-contain shrink-0"
                 loading="lazy"
@@ -372,7 +371,7 @@ export const TeamSlot = memo(function TeamSlot({ slotIndex }: TeamSlotProps) {
           "relative flex flex-col rounded-xl border-2 border-dashed min-h-[240px]",
           "bg-card/80 transition-colors duration-200",
           openDropdown
-            ? "border-primary/40 bg-card"
+            ? "border-primary/40 bg-card z-40"
             : "border-border/40 hover:border-border/70"
         )}
       >
@@ -419,7 +418,10 @@ export const TeamSlot = memo(function TeamSlot({ slotIndex }: TeamSlotProps) {
   return (
     <div
       ref={containerRef}
-      className="relative flex flex-col rounded-xl border border-border/70 overflow-hidden bg-card"
+      className={cn(
+        "relative flex flex-col rounded-xl border border-border/70 bg-card",
+        openDropdown ? "z-40 overflow-visible" : "overflow-hidden"
+      )}
     >
       {/* Type accent bar */}
       {primaryType && (
@@ -452,7 +454,7 @@ export const TeamSlot = memo(function TeamSlot({ slotIndex }: TeamSlotProps) {
           }
         >
           <img
-            src={getPokemonSprite(pokemonData.name)}
+            src={getPokemonSprite(pokemonData.dexNumber)}
             alt={pokemonData.displayName}
             className="w-14 h-14 object-contain drop-shadow-sm"
             loading="lazy"

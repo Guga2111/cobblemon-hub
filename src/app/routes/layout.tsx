@@ -9,6 +9,14 @@ import {
   ChevronLeft,
   ChevronRight,
   Menu,
+  LogOut,
+  Map,
+  Trophy,
+  ShoppingCart,
+  Star,
+  Crosshair,
+  Sparkles,
+  Route,
 } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { Button } from "~/components/ui/button";
@@ -19,8 +27,20 @@ import {
   SheetContent,
   SheetTitle,
 } from "~/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import { ThemeToggle } from "~/components/layout/theme-toggle";
 import { CommandSearch } from "~/components/search/command-search";
+import { ScrollArea } from "~/components/ui/scroll-area";
+import { ProtectedRoute } from "~/components/auth/protected-route";
+import { useAuthStore } from "~/features/auth/use-auth-store";
+import { useLogout } from "~/features/auth/auth-queries";
 
 function RouteSkeleton() {
   return (
@@ -45,15 +65,109 @@ interface NavItem {
   label: string;
   icon: React.ElementType;
   end: boolean;
+  disabled?: boolean;
 }
 
-const NAV_ITEMS: NavItem[] = [
-  { to: "/", label: "Home", icon: Home, end: true },
-  { to: "/pokedex", label: "Pokedex", icon: BookOpen, end: false },
-  { to: "/team-builder", label: "Team Builder", icon: Swords, end: false },
-  { to: "/items", label: "Itens", icon: Package, end: false },
-  { to: "/guides", label: "Guias", icon: ScrollText, end: false },
+interface NavGroup {
+  label: string;
+  items: NavItem[];
+}
+
+const NAV_GROUPS: NavGroup[] = [
+  {
+    label: "Plataforma",
+    items: [
+      { to: "/home", label: "Home", icon: Home, end: true },
+      { to: "/pokedex", label: "Pokedex", icon: BookOpen, end: false },
+      { to: "/team-builder", label: "Team Builder", icon: Swords, end: false },
+      { to: "/items", label: "Itens", icon: Package, end: false },
+      { to: "/guides", label: "Guias", icon: ScrollText, end: false },
+    ],
+  },
+  {
+    label: "Cobbleverse",
+    items: [
+      { to: "/gym-leaders", label: "Gym Leaders", icon: Trophy, end: false },
+      { to: "/raids", label: "Raids", icon: Crosshair, end: false },
+      { to: "/shops", label: "Lojas", icon: ShoppingCart, end: false },
+      { to: "/battle-mechanics", label: "Mecanicas", icon: Sparkles, end: false },
+      { to: "/legendaries", label: "Lendarios", icon: Star, end: false },
+      { to: "/map", label: "Mapa", icon: Map, end: false },
+      { to: "/progression", label: "Progressao", icon: Route, end: false },
+    ],
+  },
 ];
+
+// Flat list for bottom nav (mobile) — only enabled items
+const NAV_ITEMS_FLAT = NAV_GROUPS.flatMap((g) => g.items).filter((i) => !i.disabled);
+
+function NavLinkItem({
+  item,
+  collapsed = false,
+  onItemClick,
+}: {
+  item: NavItem;
+  collapsed?: boolean;
+  onItemClick?: () => void;
+}) {
+  if (item.disabled) {
+    return (
+      <span
+        title={collapsed ? item.label : undefined}
+        className={cn(
+          "group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold",
+          "text-muted-foreground/25 cursor-not-allowed select-none",
+          collapsed && "justify-center px-2"
+        )}
+      >
+        <item.icon size={18} className="shrink-0" />
+        {!collapsed && (
+          <>
+            <span className="truncate">{item.label}</span>
+            <span className="ml-auto text-[9px] font-bold uppercase tracking-wider text-muted-foreground/20">
+              Em breve
+            </span>
+          </>
+        )}
+      </span>
+    );
+  }
+
+  return (
+    <NavLink
+      to={item.to}
+      end={item.end}
+      prefetch="intent"
+      title={collapsed ? item.label : undefined}
+      onClick={onItemClick}
+      className={({ isActive }) =>
+        cn(
+          "group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all duration-200",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background",
+          collapsed && "justify-center px-2",
+          isActive
+            ? "bg-primary/12 text-primary shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.2)]"
+            : "text-muted-foreground hover:bg-muted/40 hover:text-foreground"
+        )
+      }
+    >
+      {({ isActive }) => (
+        <>
+          {isActive && !collapsed && (
+            <span className="absolute left-0 top-1/2 h-6 w-[3px] -translate-y-1/2 rounded-r-full bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.5)]" />
+          )}
+          {isActive && collapsed && (
+            <span className="absolute bottom-0.5 left-1/2 h-[3px] w-5 -translate-x-1/2 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.5)]" />
+          )}
+          <item.icon size={18} className={cn("shrink-0", isActive && "drop-shadow-[0_0_4px_hsl(var(--primary)/0.4)]")} />
+          {!collapsed && (
+            <span className="truncate">{item.label}</span>
+          )}
+        </>
+      )}
+    </NavLink>
+  );
+}
 
 function NavItems({
   collapsed = false,
@@ -64,43 +178,28 @@ function NavItems({
 }) {
   return (
     <nav
-      className="flex flex-col gap-1 px-3"
+      className="flex flex-col gap-4 px-3"
       aria-label="Navegacao principal"
     >
-      {NAV_ITEMS.map((item) => (
-        <NavLink
-          key={item.to}
-          to={item.to}
-          end={item.end}
-          prefetch="intent"
-          title={collapsed ? item.label : undefined}
-          onClick={onItemClick}
-          className={({ isActive }) =>
-            cn(
-              "group relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all duration-200",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background",
-              collapsed && "justify-center px-2",
-              isActive
-                ? "bg-primary/12 text-primary shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.2)]"
-                : "text-muted-foreground hover:bg-muted/40 hover:text-foreground"
-            )
-          }
-        >
-          {({ isActive }) => (
-            <>
-              {isActive && !collapsed && (
-                <span className="absolute left-0 top-1/2 h-6 w-[3px] -translate-y-1/2 rounded-r-full bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.5)]" />
-              )}
-              {isActive && collapsed && (
-                <span className="absolute bottom-0.5 left-1/2 h-[3px] w-5 -translate-x-1/2 rounded-full bg-primary shadow-[0_0_8px_hsl(var(--primary)/0.5)]" />
-              )}
-              <item.icon size={18} className={cn("shrink-0", isActive && "drop-shadow-[0_0_4px_hsl(var(--primary)/0.4)]")} />
-              {!collapsed && (
-                <span className="truncate">{item.label}</span>
-              )}
-            </>
+      {NAV_GROUPS.map((group) => (
+        <div key={group.label} className="flex flex-col gap-1">
+          {!collapsed && (
+            <span className="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground/40">
+              {group.label}
+            </span>
           )}
-        </NavLink>
+          {collapsed && (
+            <Separator className="mx-auto w-6 opacity-30" />
+          )}
+          {group.items.map((item) => (
+            <NavLinkItem
+              key={item.to}
+              item={item}
+              collapsed={collapsed}
+              onItemClick={onItemClick}
+            />
+          ))}
+        </div>
       ))}
     </nav>
   );
@@ -110,7 +209,7 @@ function BrandLogo({ collapsed }: { collapsed: boolean }) {
   return (
     <div
       className={cn(
-        "flex items-center gap-3 border-b border-border/60 py-5 px-4",
+        "flex h-14 items-center gap-3 border-b border-border/60 px-4",
         collapsed && "justify-center px-2"
       )}
     >
@@ -124,7 +223,7 @@ function BrandLogo({ collapsed }: { collapsed: boolean }) {
       {!collapsed && (
         <div className="min-w-0">
           <p className="truncate text-sm font-extrabold leading-tight text-foreground tracking-tight">
-            Cobblemon
+            Cobbleverse
           </p>
           <p className="truncate text-[11px] font-semibold leading-tight text-primary/70 tracking-wider uppercase">
             Hub
@@ -132,6 +231,51 @@ function BrandLogo({ collapsed }: { collapsed: boolean }) {
         </div>
       )}
     </div>
+  );
+}
+
+function UserMenu() {
+  const { user } = useAuthStore();
+  const logout = useLogout();
+
+  if (!user) return null;
+
+  const initials = user.displayName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          className="rounded-full bg-primary/10 text-primary hover:bg-primary/20"
+          aria-label="Menu do usuario"
+        >
+          <span className="text-xs font-bold">{initials}</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-48">
+        <DropdownMenuLabel className="font-normal">
+          <div className="flex flex-col gap-0.5">
+            <p className="text-sm font-medium">{user.displayName}</p>
+            <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+          </div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onClick={() => logout.mutate()}
+          className="text-destructive focus:text-destructive cursor-pointer"
+        >
+          <LogOut size={14} />
+          Sair
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
@@ -237,7 +381,7 @@ export default function AppLayout() {
                 </svg>
               </div>
               <span className="text-sm font-extrabold text-foreground tracking-tight">
-                Cobblemon Hub
+                Cobbleverse Hub
               </span>
             </div>
 
@@ -246,26 +390,31 @@ export default function AppLayout() {
             <div id="header-actions" className="flex items-center gap-2">
               <CommandSearch />
               <ThemeToggle />
+              <UserMenu />
             </div>
           </header>
 
           {/* Main content area */}
-          <main
-            id="main-content"
-            tabIndex={-1}
-            className="flex-1 overflow-auto focus-visible:outline-none"
-          >
-            <Suspense fallback={<RouteSkeleton />}>
-              <Outlet />
-            </Suspense>
-          </main>
+          <ScrollArea className="flex-1">
+            <main
+              id="main-content"
+              tabIndex={-1}
+              className="focus-visible:outline-none"
+            >
+              <ProtectedRoute>
+                <Suspense fallback={<RouteSkeleton />}>
+                  <Outlet />
+                </Suspense>
+              </ProtectedRoute>
+            </main>
+          </ScrollArea>
 
           {/* Mobile bottom navigation */}
           <nav
             className="flex md:hidden shrink-0 items-stretch justify-around border-t border-border/60 bg-background/90 backdrop-blur-md"
             aria-label="Navegacao inferior"
           >
-            {NAV_ITEMS.map((item) => (
+            {NAV_ITEMS_FLAT.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}

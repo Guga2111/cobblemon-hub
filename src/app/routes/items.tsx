@@ -31,7 +31,8 @@ import {
   Loader2,
 } from "lucide-react";
 import { TypeBadge } from "~/components/pokemon/type-badge";
-import { cn, normalizePokemonName } from "~/lib/utils";
+import { cn } from "~/lib/utils";
+import { getPokemonSprite } from "~/lib/sprites";
 import type { ItemCategory } from "~/types/item";
 import type { PokemonType } from "~/types/pokemon";
 import { Button } from "~/components/ui/button";
@@ -178,9 +179,6 @@ interface PokemonDropInfo {
   dexNumber: number;
 }
 
-function getPokemonSprite(name: string) {
-  return `https://play.pokemonshowdown.com/sprites/dex/${normalizePokemonName(name)}.png`;
-}
 
 function ItemDetailDialog({ item, onClose }: { item: ItemData | null; onClose: () => void }) {
   const navigate = useNavigate();
@@ -261,7 +259,7 @@ function ItemDetailDialog({ item, onClose }: { item: ItemData | null; onClose: (
                         onClick={() => { onClose(); navigate(`/pokedex/${poke.id}`); }}
                         className="flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-primary/8 transition-colors text-left group"
                       >
-                        <img src={getPokemonSprite(poke.name)} alt={poke.displayName} className="w-9 h-9 object-contain shrink-0" loading="lazy" />
+                        <img src={getPokemonSprite(poke.dexNumber)} alt={poke.displayName} className="w-9 h-9 object-contain shrink-0" loading="lazy" />
                         <div className="flex-1 min-w-0">
                           <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors block truncate">{poke.displayName}</span>
                           <span className="text-[10px] font-mono text-muted-foreground/50">#{String(poke.dexNumber).padStart(3, "0")}</span>
