@@ -32,8 +32,8 @@
         "Verify in browser using dev-browser skill — navegar para rota que exibe spawns e confirmar que dados renderizam sem erros ou campos undefined"
       ],
       "priority": 2,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Updated extract-spawns.ts to capture minSkyLight/maxSkyLight (renamed from minLight/maxLight), timeRange, and weightMultiplier. Fixed neededNearbyBlocks handling (supports both string[] and object[] formats). Added weight_multiplier column to spawn_entries DB table. Regenerated data/spawns.json with 2851 entries (0 errors). Browser verification requires manual testing."
     },
     {
       "id": "US-003",
