@@ -54,6 +54,9 @@ async function applySchema(): Promise<void> {
     "ALTER TABLE spawn_entries ADD COLUMN source_file TEXT",
     "ALTER TABLE spawn_entries ADD COLUMN weight_multiplier TEXT",
     "ALTER TABLE items ADD COLUMN source_file TEXT",
+    "ALTER TABLE items ADD COLUMN obtain_method TEXT",
+    "ALTER TABLE items ADD COLUMN recipe TEXT",
+    "ALTER TABLE items ADD COLUMN effect TEXT",
     "ALTER TABLE moves ADD COLUMN source_file TEXT",
   ];
   for (const stmt of alterStmts) {
@@ -158,12 +161,15 @@ async function seedItems(): Promise<void> {
     const it = result.data;
     await db.execute({
       sql: `INSERT OR REPLACE INTO items
-        (id, name, display_name, category, description, sprite, dropped_by, source_file)
-        VALUES (?,?,?,?,?,?,?,?)`,
+        (id, name, display_name, category, description, sprite, dropped_by, obtain_method, recipe, effect, source_file)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
       args: [
         it.id, it.name, it.displayName, it.category,
         it.description, it.sprite ?? null,
         JSON.stringify(it.droppedBy),
+        it.obtainMethod ?? null,
+        it.recipe !== null ? JSON.stringify(it.recipe) : null,
+        it.effect ?? null,
         it.sourceFile ?? datapackVersion,
       ],
     });

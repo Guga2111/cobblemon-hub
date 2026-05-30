@@ -262,6 +262,9 @@ function rowToItem(row: Record<string, unknown>) {
     description: row.description as string,
     sprite: row.sprite as string | null,
     droppedBy: JSON.parse(row.dropped_by as string) as string[],
+    obtainMethod: (row.obtain_method as string | null) ?? null,
+    recipe: row.recipe ? JSON.parse(row.recipe as string) as unknown : null,
+    effect: (row.effect as string | null) ?? null,
   };
 }
 

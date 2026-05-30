@@ -42,6 +42,9 @@ CREATE TABLE IF NOT EXISTS items (
   description TEXT NOT NULL,
   sprite TEXT,                 -- nullable
   dropped_by TEXT NOT NULL,    -- JSON: string[] of pokemon IDs
+  obtain_method TEXT,          -- primary obtain method
+  recipe TEXT,                 -- JSON: ItemRecipe | null
+  effect TEXT,                 -- effect description | null
   source_file TEXT             -- datapack source file for traceability
 );
 

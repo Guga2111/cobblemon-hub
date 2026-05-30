@@ -186,6 +186,22 @@ const itemCategorySchema = z.enum([
   "ball", "medicine", "berry", "held-item", "evolution-item", "ingredient", "other",
 ]);
 
+const obtainMethodSchema = z.enum([
+  "crafting", "brewing_stand", "campfire_pot", "smelting", "stonecutting", "drop", "held", "bag",
+]).nullable();
+
+const recipeIngredientSchema = z.object({
+  type: z.enum(["item", "tag"]),
+  id: z.string(),
+});
+
+const itemRecipeSchema = z.object({
+  type: z.string(),
+  ingredients: z.array(recipeIngredientSchema),
+  resultCount: z.number().int().min(1),
+  sourceFile: z.string(),
+});
+
 export const itemSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -194,6 +210,9 @@ export const itemSchema = z.object({
   description: z.string(),
   sprite: z.string().nullable(),
   droppedBy: z.array(z.string()),
+  obtainMethod: obtainMethodSchema,
+  recipe: itemRecipeSchema.nullable(),
+  effect: z.string().nullable(),
   sourceFile: z.string().optional(),
 });
 
