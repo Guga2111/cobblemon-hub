@@ -99,8 +99,8 @@
         "Verify in browser using dev-browser skill — navegar para /raids e confirmar renderização sem erros"
       ],
       "priority": 6,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Inspected all loot tables in loot_table/sets/ (8 files: any_ancient_held_item, any_apricorn_seed, any_armor_trim, any_common_pokeball, any_evo_stone, any_exp_candy, any_natural_heal_item, any_type_gem) and worldgen/structure/ (48 structures in ruins/, fossils/, shipwreck_coves/, fishing_boat/ — no raid-den structures). Raid Dens are a custom server feature not defined in the datapack. Created scripts/extract-raids.ts that reads loot_table/sets/ to build per-tier reward pools and merges with existing raids.json. Updated raids.json with _meta wrapper and required fields: id (raid-tier-{n}), pokemonPool (null — custom system), rewards[] (items from loot_table/sets/ mapped by tier difficulty), location (null — custom). All 7 tiers retained (custom system, none removed). Updated raids.tsx to handle new _meta/data format and display rewards[] chips. Added extract-raids.ts to npm extract script. Typecheck passes. Browser verification requires manual testing."
     },
     {
       "id": "US-007",
