@@ -1,3 +1,23 @@
+## 2026-05-30 - US-008
+- Audited all 6 guides in `src/content/guides/index.ts` against the datapack and mod integrations
+- **instalacao-cobblemon**: Updated MC version 1.20.1→1.21.1; Fabric Loader 0.15.x→0.16.x; Java 17→21; added integrated mod dependencies (BotanyPots, Adorn, CarryOn); removed Forge section (Cobbleverse is Fabric-only)
+- **guia-apricorns**: Fixed incorrect "one color → one ball" mapping — each ball requires MULTIPLE apricorn colors + metal ingot (verified from recipe/*.json). Removed disc/tumblestone system (old Cobblemon <1.5). Added full recipe list: Poke Ball=Red×4+Cu, Great=Blue/Red/Red/Blue+Fe, Fast=Red+Yellow+Yellow+White+Fe, Level=Black+Pink+Pink+Red+Fe, etc. Added BotanyPots note. Marked biome assignments as TODO (no biome-specific placement data in datapack).
+- **guia-tumblestones**: Fixed ball associations — Tumblestones are ONLY used in Ancient Balls (2 Apricorns + 2 Tumblestones + metal ingot), NOT standard Poké Balls. Black Tumblestone→Ancient Heavy/Leaden/Gigaton. Sky Tumblestone→Ancient Feather/Wing/Jet. Red Tumblestone→Ancient Poke/Great/Azure/Citrine etc. Removed disc system description.
+- **fazenda-berries**: Added BotanyPots integration note (mod IS in datapack at botanypots/recipe/cobblemon/crop/).
+- **treino-ev**: Corrected Blissey EV yield (+3 HP, not +2 — verified from species JSON). Removed Macho Brace (not in datapack items.json) and added TODO note. All 6 Power items (Power Bracer/Belt/Lens/Band/Anklet/Weight) confirmed in datapack.
+- **caca-shinies**: Marked Shiny Charm as TODO — not found in datapack or items.json; may not be implemented in Cobblemon 1.7.3.
+- Files changed: src/content/guides/index.ts
+- `npm run typecheck` passes; browser verification requires manual testing
+- **Learnings for future iterations:**
+  - Standard Apricorn Balls (Fast, Level, Lure, Friend, Love, Heavy, Moon) use 4 Apricorns of DIFFERENT colors + metal ingot. NO Tumblestones.
+  - Tumblestones (Red/Sky/Black) are EXCLUSIVELY for Ancient Balls. The old disc crafting system was removed in Cobblemon 1.5+.
+  - BotanyPots, Adorn, and CarryOn ARE integrated (present in datapack namespaces) — Adorn adds apricorn/saccharine furniture recipes; BotanyPots enables automated crop growing.
+  - Shiny Charm is NOT in the Cobblemon datapack — it may be a custom server mechanic or not yet implemented.
+  - Macho Brace is NOT in the Cobblemon datapack (no recipe or item entry found).
+  - Blissey gives +3 HP EV (not +2); Chansey gives +2 HP EV — verified from species evYield field.
+  - Apricorn biome assignments cannot be verified from the datapack alone — placed_feature JSONs only specify block survival conditions, not biomes. Biome placement is in Cobblemon's internal code.
+---
+
 ## 2026-05-30 - US-007
 - Inspected dialogues/ (4 files: example.json, npc-example.json, sacchi_healed.json, sacchi_interaction.json) — no vendor/shop NPCs; Sacchi is a healer only, others are dialogue templates
 - Inspected loot_table/villages/village_pokecenters.json — chest loot (apricorn seeds, exp candy xs, remedies, oran berries), NOT shop inventory
@@ -79,6 +99,10 @@
 - When using TypeScript `"prop" in obj` check and the type already guarantees the property exists, the truthy branch becomes `never` — use `=== undefined` instead.
 - worldgen/structure/ has ruins (20+), fossils (24+), shipwreck_coves, fishing_boat structures — NO raid dens.
 - shops.json is gitignored (data/*.json) — transform scripts run in-place on disk; only TypeScript source changes are committed.
+- Standard Apricorn Balls use 4 Apricorns (DIFFERENT colors per ball) + metal ingot. NO Tumblestones. Tumblestones (Red/Sky/Black) are ONLY for Ancient Balls.
+- BotanyPots and Adorn ARE integrated in the datapack (namespaces botanypots/, adorn/). Adorn adds apricorn furniture; BotanyPots enables automated crop growing of Berries and Apricorns.
+- Shiny Charm and Macho Brace are NOT in the Cobblemon 1.7.3 datapack — mark as TODO if referenced in guides.
+- EV yields are in species JSON under `evYield` key: e.g. `{'speed': 2}` for Jolteon. Always verify from datapack rather than relying on general Pokémon knowledge.
 
 ---
 

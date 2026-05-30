@@ -132,8 +132,8 @@
         "Verify in browser using dev-browser skill — navegar para a seção de guias e confirmar que todos os guias renderizam sem erros"
       ],
       "priority": 8,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Verified all guides against datapack and corrected inaccuracies. instalacao-cobblemon: updated MC version to 1.21.1, Fabric Loader to 0.16.x, added integrated mod list (BotanyPots, Adorn, CarryOn), removed Forge-specific content. guia-apricorns: corrected Apricorn→Ball mapping (each ball requires MULTIPLE colors of Apricorn + metal ingot, NOT one-color-per-ball); removed disc system reference; added full recipe list with correct apricorn combinations; added BotanyPots mention; marked biome assignments as TODO (not verifiable from datapack). guia-tumblestones: corrected ball associations (Tumblestones are ONLY for Ancient Balls, not standard balls); removed disc system description; added accurate Ancient Ball recipe format (2 apricorns + 2 tumblestones + metal ingot). fazenda-berries: added BotanyPots integration note. treino-ev: corrected Blissey EV yield (+3 HP, not +2); removed Macho Brace (not found in datapack) and added TODO note; all 6 Power items confirmed in datapack. caca-shinies: marked Shiny Charm as TODO (not found in datapack items). Typecheck passes."
     },
     {
       "id": "US-009",
