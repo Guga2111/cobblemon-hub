@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import type { MetaFunction } from "react-router";
 import { RouteErrorBoundary } from "~/components/layout/route-error-boundary";
 import { cn } from "~/lib/utils";
@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "~/com
 import { Badge } from "~/components/ui/badge";
 import { ShoppingCart, Store, ChevronDown, Coins } from "lucide-react";
 
-import shopsData from "../../../data/shops.json";
+import shopsRaw from "../../../data/shops.json";
 
 export const meta: MetaFunction = () => [
   { title: "Lojas — Cobbleverse Hub" },
@@ -18,26 +18,51 @@ export function ErrorBoundary() {
 }
 
 interface ShopItem {
-  item: string;
-  price: number;
+  name: string;
+  price: number | null;
+  category: string;
 }
 
-interface ShopCategory {
+interface ShopEntry {
+  npcId: string;
   name: string;
-  items: ShopItem[];
-}
-
-interface Shop {
-  name: string;
+  location: string;
   description: string;
   currency: string;
-  categories: ShopCategory[];
+  items: ShopItem[];
+  sourceFile: string | null;
 }
 
-function ShopSection({ shop, icon: Icon }: { shop: Shop; icon: React.ElementType }) {
-  const [expandedCat, setExpandedCat] = useState<string | null>(shop.categories[0]?.name ?? null);
+interface ShopsData {
+  _meta?: { datapackVersion: string; generatedAt: string; note?: string };
+  data: ShopEntry[];
+}
 
-  const totalItems = shop.categories.reduce((sum, cat) => sum + cat.items.length, 0);
+function formatItemName(id: string): string {
+  return id
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+const SHOP_ICONS: Record<string, React.ElementType> = {
+  poke_mart: ShoppingCart,
+  department_store: Store,
+};
+
+function ShopSection({ shop }: { shop: ShopEntry }) {
+  const categories = useMemo(() => {
+    const map = new Map<string, ShopItem[]>();
+    for (const item of shop.items) {
+      const cat = item.category ?? "Outros";
+      if (!map.has(cat)) map.set(cat, []);
+      map.get(cat)!.push(item);
+    }
+    return Array.from(map.entries()).map(([name, items]) => ({ name, items }));
+  }, [shop.items]);
+
+  const [expandedCat, setExpandedCat] = useState<string | null>(categories[0]?.name ?? null);
+
+  const Icon = SHOP_ICONS[shop.npcId] ?? Store;
 
   return (
     <Card className="border-border/30 bg-card/40 backdrop-blur-sm overflow-hidden">
@@ -49,17 +74,20 @@ function ShopSection({ shop, icon: Icon }: { shop: Shop; icon: React.ElementType
           <div className="flex-1">
             <CardTitle className="text-base">{shop.name}</CardTitle>
             <CardDescription className="text-xs mt-0.5">
-              {totalItems} itens — Moeda: {shop.currency}
+              {shop.items.length} itens — Moeda: {shop.currency}
             </CardDescription>
           </div>
         </div>
         <p className="text-xs text-muted-foreground leading-relaxed mt-2">
           {shop.description}
         </p>
+        <p className="text-xs text-muted-foreground/60 mt-1">
+          📍 {shop.location}
+        </p>
       </CardHeader>
 
       <CardContent className="pt-0 space-y-2">
-        {shop.categories.map((cat) => {
+        {categories.map((cat) => {
           const isExpanded = expandedCat === cat.name;
           return (
             <div key={cat.name} className="rounded-lg border border-border/20 overflow-hidden">
@@ -87,14 +115,18 @@ function ShopSection({ shop, icon: Icon }: { shop: Shop; icon: React.ElementType
                   <div className="divide-y divide-border/10">
                     {cat.items.map((shopItem) => (
                       <div
-                        key={shopItem.item}
+                        key={shopItem.name}
                         className="flex items-center justify-between px-3 py-2 hover:bg-muted/10 transition-colors"
                       >
-                        <span className="text-xs text-foreground">{shopItem.item}</span>
-                        <div className="flex items-center gap-1 text-xs font-bold tabular-nums text-amber-500">
-                          <Coins size={10} />
-                          {shopItem.price.toLocaleString()}
-                        </div>
+                        <span className="text-xs text-foreground">{formatItemName(shopItem.name)}</span>
+                        {shopItem.price !== null ? (
+                          <div className="flex items-center gap-1 text-xs font-bold tabular-nums text-amber-500">
+                            <Coins size={10} />
+                            {shopItem.price.toLocaleString()}
+                          </div>
+                        ) : (
+                          <span className="text-xs text-muted-foreground/40 italic">preço indisponível</span>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -109,8 +141,10 @@ function ShopSection({ shop, icon: Icon }: { shop: Shop; icon: React.ElementType
 }
 
 export default function ShopsPage() {
-  const pokeMart = shopsData.pokeMart as Shop;
-  const departmentStore = shopsData.departmentStore as Shop;
+  const shopsData = shopsRaw as unknown as ShopsData;
+  const shops: ShopEntry[] = Array.isArray(shopsData)
+    ? (shopsData as unknown as ShopEntry[])
+    : (shopsData.data ?? []);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
@@ -137,8 +171,9 @@ export default function ShopsPage() {
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <ShopSection shop={pokeMart} icon={ShoppingCart} />
-        <ShopSection shop={departmentStore} icon={Store} />
+        {shops.map((shop) => (
+          <ShopSection key={shop.npcId} shop={shop} />
+        ))}
       </div>
     </div>
   );
