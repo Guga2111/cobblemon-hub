@@ -34,7 +34,7 @@ const MECHANICS: Mechanic[] = [
     icon: Flame,
     color: "text-red-500",
     borderColor: "border-red-500/30 bg-red-500/5",
-    description: "Transforme seu Pokemon em uma versao mais poderosa durante a batalha. O Cobbleverse inclui todas as 93 Mega Evolucoes.",
+    description: "Transforme seu Pokemon em uma versao mais poderosa durante a batalha. O Cobblemon 1.7.3 inclui 48 formas Mega de 46 especies (Charizard e Mewtwo possuem variantes X e Y).",
     howItWorks: [
       "Obtenha a Mega Stone especifica do seu Pokemon",
       "Equipe a Mega Stone como held item",
@@ -43,7 +43,7 @@ const MECHANICS: Mechanic[] = [
       "Apenas 1 Mega Evolucao por batalha por treinador",
     ],
     keyFacts: [
-      { label: "Total de Megas", value: "93" },
+      { label: "Formas Mega", value: "48 (46 esp.)" },
       { label: "Mega Stones", value: "Held Item" },
       { label: "Duracao", value: "1 Batalha" },
       { label: "Limite", value: "1 por batalha" },
@@ -55,7 +55,7 @@ const MECHANICS: Mechanic[] = [
     icon: Zap,
     color: "text-amber-500",
     borderColor: "border-amber-500/30 bg-amber-500/5",
-    description: "Movimentos ultra-poderosos que podem ser usados uma vez por batalha. Cada tipo tem seu Z-Move correspondente, alem de Z-Moves exclusivos.",
+    description: "Movimentos ultra-poderosos que podem ser usados uma vez por batalha. TODO: Z-Crystals nao foram encontrados no datapack do Cobblemon 1.7.3 — verificar se esta mecanica esta implementada nesta versao ou requer um mod adicional.",
     howItWorks: [
       "Obtenha o Z-Crystal do tipo desejado",
       "Equipe o Z-Crystal no Pokemon como held item",
@@ -64,10 +64,10 @@ const MECHANICS: Mechanic[] = [
       "Movimentos de status ganham efeitos bonus com Z-Power",
     ],
     keyFacts: [
-      { label: "Z-Crystals", value: "18 tipos + especiais" },
+      { label: "Z-Crystals", value: "TODO" },
       { label: "Requisito", value: "Move do mesmo tipo" },
       { label: "Uso", value: "1 por batalha" },
-      { label: "Dano", value: "Muito alto" },
+      { label: "Fonte", value: "Nao confirmado" },
     ],
   },
   {
@@ -76,18 +76,18 @@ const MECHANICS: Mechanic[] = [
     icon: Shield,
     color: "text-purple-500",
     borderColor: "border-purple-500/30 bg-purple-500/5",
-    description: "Seu Pokemon cresce enormemente, ganhando HP bonus e movimentos Max. Alguns Pokemon possuem formas Gigantamax exclusivas com G-Max Moves unicos.",
+    description: "Seu Pokemon cresce enormemente, ganhando HP bonus e movimentos Max. O Cobblemon 1.7.3 inclui 33 especies com formas Dynamax/Gigantamax, incluindo Eternatus com Eternamax.",
     howItWorks: [
       "Dynamax pode ser ativado em batalhas de Raid e arenas especificas",
       "O Pokemon dobra seu HP e seus movimentos se tornam Max Moves",
       "Max Moves tem efeitos secundarios baseados no tipo (clima, terrain, etc.)",
-      "Gigantamax: formas especiais com G-Max Moves exclusivos",
+      "Gigantamax: 32 especies possuem formas G-Max exclusivas com G-Max Moves unicos",
       "Dura 3 turnos antes de voltar ao tamanho normal",
     ],
     keyFacts: [
       { label: "HP Bonus", value: "x2" },
       { label: "Duracao", value: "3 turnos" },
-      { label: "G-Max Forms", value: "Varios" },
+      { label: "G-Max Forms", value: "32 + Eternamax" },
       { label: "Onde usar", value: "Raids / Arenas" },
     ],
   },
@@ -97,19 +97,19 @@ const MECHANICS: Mechanic[] = [
     icon: Gem,
     color: "text-cyan-500",
     borderColor: "border-cyan-500/30 bg-cyan-500/5",
-    description: "Mude o tipo do seu Pokemon durante a batalha com Terastallization. O Tera Type pode ser diferente dos tipos originais, criando estrategias unicas.",
+    description: "TODO: A mecanica geral de Terastallization (mudar tipo de qualquer Pokemon em batalha) nao foi encontrada no datapack do Cobblemon 1.7.3. O recurso tera_form existe apenas para Terapagos (troca visual Normal/Terastal/Stellar). Verificar se implementado nesta versao.",
     howItWorks: [
-      "Cada Pokemon tem um Tera Type (pode ser qualquer um dos 18 tipos)",
-      "Ative Terastallization durante a batalha para mudar o tipo do Pokemon",
-      "Movimentos STAB ganham um boost adicional com o Tera Type",
-      "Se o Tera Type coincide com o tipo original, o boost de STAB e ainda maior",
-      "Dura ate o fim da batalha",
+      "TODO: verificar implementacao no Cobblemon 1.7.3",
+      "Cada Pokemon teria um Tera Type (qualquer um dos 18 tipos)",
+      "Terastallization mudaria o tipo do Pokemon durante a batalha",
+      "Movimentos STAB ganhariam um boost adicional com o Tera Type",
+      "Duraria ate o fim da batalha",
     ],
     keyFacts: [
-      { label: "Tipos disponiveis", value: "18" },
+      { label: "Status", value: "TODO" },
       { label: "STAB Bonus", value: "Aumentado" },
       { label: "Duracao", value: "1 Batalha" },
-      { label: "Uso", value: "1 por batalha" },
+      { label: "Fonte", value: "Nao confirmado" },
     ],
   },
 ];
@@ -197,7 +197,7 @@ export default function BattleMechanicsPage() {
       <div className="flex flex-wrap gap-2 mb-6">
         <Badge variant="outline" className="border-red-500/30 text-red-500 text-[10px]">
           <Flame size={10} className="mr-1" />
-          93 Mega Evolucoes
+          48 Formas Mega
         </Badge>
         <Badge variant="outline" className="border-amber-500/30 text-amber-500 text-[10px]">
           <Zap size={10} className="mr-1" />
@@ -224,8 +224,9 @@ export default function BattleMechanicsPage() {
           <div className="flex items-start gap-3">
             <Sparkles size={14} className="text-muted-foreground/40 mt-0.5 shrink-0" />
             <p className="text-xs text-muted-foreground/60 leading-relaxed">
-              Todas as mecanicas sao fornecidas pelo mod <strong className="text-foreground">Cobblemon Mega Showdown</strong> incluido no Cobbleverse.
-              Apenas uma mecanica de transformacao pode ser usada por batalha (Mega OU Z-Move OU Dynamax OU Tera).
+              <strong className="text-foreground">Confirmado no datapack:</strong> Mega Evolution (48 formas / 46 especies) e Dynamax/Gigantamax (33 especies) sao recursos nativos do Cobblemon 1.7.3.
+              <br />
+              <strong className="text-foreground">TODO (verificacao manual necessaria):</strong> Z-Moves e Terastallization nao foram encontrados no datapack 1.7.3 — podem exigir mod adicional ou nao estar implementados nesta versao.
             </p>
           </div>
         </CardContent>
