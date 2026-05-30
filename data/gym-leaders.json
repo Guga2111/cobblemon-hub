@@ -1,0 +1,3216 @@
+{
+  "_meta": {
+    "datapackVersion": "1.7.3+1.21.1",
+    "generatedAt": "2026-05-30T12:00:00.000Z",
+    "note": "Gym Leader teams are not defined in the Cobbleverse datapack NPCs/npc_presets. Teams are manually curated from the canonical Cobblemon game data. Fields moves/heldItem/ability are null (no canonical datapack source)."
+  },
+  "data": [
+    {
+      "id": "kanto-brock",
+      "name": "Brock",
+      "region": "kanto",
+      "role": "gym-leader",
+      "typeSpecialty": "rock",
+      "badgeName": "Boulder Badge",
+      "levelCap": 25,
+      "orderInRegion": 1,
+      "biome": "Stony Peaks",
+      "team": [
+        {
+          "pokemon": "geodude",
+          "displayName": "Geodude",
+          "level": 12,
+          "types": [
+            "rock",
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "onix",
+          "displayName": "Onix",
+          "level": 14,
+          "types": [
+            "rock",
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Boulder Badge",
+        "TM"
+      ],
+      "unlockRequirement": null,
+      "locateCommand": "/locate structure cobbleverse:brock"
+    },
+    {
+      "id": "kanto-misty",
+      "name": "Misty",
+      "region": "kanto",
+      "role": "gym-leader",
+      "typeSpecialty": "water",
+      "badgeName": "Cascade Badge",
+      "levelCap": 30,
+      "orderInRegion": 2,
+      "biome": "Beach",
+      "team": [
+        {
+          "pokemon": "staryu",
+          "displayName": "Staryu",
+          "level": 18,
+          "types": [
+            "water"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "starmie",
+          "displayName": "Starmie",
+          "level": 21,
+          "types": [
+            "water",
+            "psychic"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Cascade Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Brock",
+      "locateCommand": "/locate structure cobbleverse:misty"
+    },
+    {
+      "id": "kanto-ltsurge",
+      "name": "Lt. Surge",
+      "region": "kanto",
+      "role": "gym-leader",
+      "typeSpecialty": "electric",
+      "badgeName": "Thunder Badge",
+      "levelCap": 35,
+      "orderInRegion": 3,
+      "biome": "Plains",
+      "team": [
+        {
+          "pokemon": "voltorb",
+          "displayName": "Voltorb",
+          "level": 21,
+          "types": [
+            "electric"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "pikachu",
+          "displayName": "Pikachu",
+          "level": 18,
+          "types": [
+            "electric"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "raichu",
+          "displayName": "Raichu",
+          "level": 24,
+          "types": [
+            "electric"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Thunder Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Misty",
+      "locateCommand": "/locate structure cobbleverse:ltsurge"
+    },
+    {
+      "id": "kanto-erika",
+      "name": "Erika",
+      "region": "kanto",
+      "role": "gym-leader",
+      "typeSpecialty": "grass",
+      "badgeName": "Rainbow Badge",
+      "levelCap": 40,
+      "orderInRegion": 4,
+      "biome": "Flower Forest",
+      "team": [
+        {
+          "pokemon": "victreebel",
+          "displayName": "Victreebel",
+          "level": 29,
+          "types": [
+            "grass",
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "tangela",
+          "displayName": "Tangela",
+          "level": 24,
+          "types": [
+            "grass"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "vileplume",
+          "displayName": "Vileplume",
+          "level": 29,
+          "types": [
+            "grass",
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Rainbow Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Lt. Surge",
+      "locateCommand": "/locate structure cobbleverse:erika"
+    },
+    {
+      "id": "kanto-sabrina",
+      "name": "Sabrina",
+      "region": "kanto",
+      "role": "gym-leader",
+      "typeSpecialty": "psychic",
+      "badgeName": "Marsh Badge",
+      "levelCap": 45,
+      "orderInRegion": 5,
+      "biome": "Dark Forest",
+      "team": [
+        {
+          "pokemon": "kadabra",
+          "displayName": "Kadabra",
+          "level": 38,
+          "types": [
+            "psychic"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "mr-mime",
+          "displayName": "Mr. Mime",
+          "level": 37,
+          "types": [
+            "psychic",
+            "fairy"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "venomoth",
+          "displayName": "Venomoth",
+          "level": 38,
+          "types": [
+            "bug",
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "alakazam",
+          "displayName": "Alakazam",
+          "level": 43,
+          "types": [
+            "psychic"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Marsh Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Erika",
+      "locateCommand": "/locate structure cobbleverse:sabrina"
+    },
+    {
+      "id": "kanto-koga",
+      "name": "Koga",
+      "region": "kanto",
+      "role": "gym-leader",
+      "typeSpecialty": "poison",
+      "badgeName": "Soul Badge",
+      "levelCap": 50,
+      "orderInRegion": 6,
+      "biome": "Swamp",
+      "team": [
+        {
+          "pokemon": "koffing",
+          "displayName": "Koffing",
+          "level": 37,
+          "types": [
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "muk",
+          "displayName": "Muk",
+          "level": 39,
+          "types": [
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "koffing",
+          "displayName": "Koffing",
+          "level": 37,
+          "types": [
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "weezing",
+          "displayName": "Weezing",
+          "level": 43,
+          "types": [
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Soul Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Sabrina",
+      "locateCommand": "/locate structure cobbleverse:koga"
+    },
+    {
+      "id": "kanto-blaine",
+      "name": "Blaine",
+      "region": "kanto",
+      "role": "gym-leader",
+      "typeSpecialty": "fire",
+      "badgeName": "Volcano Badge",
+      "levelCap": 55,
+      "orderInRegion": 7,
+      "biome": "Nether Wastes",
+      "team": [
+        {
+          "pokemon": "growlithe",
+          "displayName": "Growlithe",
+          "level": 42,
+          "types": [
+            "fire"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "ponyta",
+          "displayName": "Ponyta",
+          "level": 40,
+          "types": [
+            "fire"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "rapidash",
+          "displayName": "Rapidash",
+          "level": 42,
+          "types": [
+            "fire"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "arcanine",
+          "displayName": "Arcanine",
+          "level": 47,
+          "types": [
+            "fire"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Volcano Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Koga",
+      "locateCommand": "/locate structure cobbleverse:blaine"
+    },
+    {
+      "id": "kanto-giovanni",
+      "name": "Giovanni",
+      "region": "kanto",
+      "role": "gym-leader",
+      "typeSpecialty": "ground",
+      "badgeName": "Earth Badge",
+      "levelCap": 60,
+      "orderInRegion": 8,
+      "biome": "Badlands",
+      "team": [
+        {
+          "pokemon": "rhyhorn",
+          "displayName": "Rhyhorn",
+          "level": 45,
+          "types": [
+            "ground",
+            "rock"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "dugtrio",
+          "displayName": "Dugtrio",
+          "level": 42,
+          "types": [
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "nidoqueen",
+          "displayName": "Nidoqueen",
+          "level": 44,
+          "types": [
+            "poison",
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "nidoking",
+          "displayName": "Nidoking",
+          "level": 45,
+          "types": [
+            "poison",
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "rhydon",
+          "displayName": "Rhydon",
+          "level": 50,
+          "types": [
+            "ground",
+            "rock"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Earth Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Blaine",
+      "locateCommand": "/locate structure cobbleverse:giovanni"
+    },
+    {
+      "id": "kanto-lorelei",
+      "name": "Lorelei",
+      "region": "kanto",
+      "role": "elite-four",
+      "typeSpecialty": "ice",
+      "badgeName": null,
+      "levelCap": 65,
+      "orderInRegion": 9,
+      "biome": "Kanto League",
+      "team": [
+        {
+          "pokemon": "dewgong",
+          "displayName": "Dewgong",
+          "level": 52,
+          "types": [
+            "water",
+            "ice"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "cloyster",
+          "displayName": "Cloyster",
+          "level": 51,
+          "types": [
+            "water",
+            "ice"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "slowbro",
+          "displayName": "Slowbro",
+          "level": 52,
+          "types": [
+            "water",
+            "psychic"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "jynx",
+          "displayName": "Jynx",
+          "level": 54,
+          "types": [
+            "ice",
+            "psychic"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "lapras",
+          "displayName": "Lapras",
+          "level": 54,
+          "types": [
+            "water",
+            "ice"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [],
+      "unlockRequirement": "Derrotar Giovanni (8 badges Kanto)",
+      "locateCommand": "/locate structure cobbleverse:kanto_league"
+    },
+    {
+      "id": "kanto-bruno",
+      "name": "Bruno",
+      "region": "kanto",
+      "role": "elite-four",
+      "typeSpecialty": "fighting",
+      "badgeName": null,
+      "levelCap": 65,
+      "orderInRegion": 10,
+      "biome": "Kanto League",
+      "team": [
+        {
+          "pokemon": "onix",
+          "displayName": "Onix",
+          "level": 51,
+          "types": [
+            "rock",
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "hitmonchan",
+          "displayName": "Hitmonchan",
+          "level": 53,
+          "types": [
+            "fighting"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "hitmonlee",
+          "displayName": "Hitmonlee",
+          "level": 53,
+          "types": [
+            "fighting"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "onix",
+          "displayName": "Onix",
+          "level": 54,
+          "types": [
+            "rock",
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "machamp",
+          "displayName": "Machamp",
+          "level": 56,
+          "types": [
+            "fighting"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [],
+      "unlockRequirement": "Derrotar Lorelei",
+      "locateCommand": "/locate structure cobbleverse:kanto_league"
+    },
+    {
+      "id": "kanto-agatha",
+      "name": "Agatha",
+      "region": "kanto",
+      "role": "elite-four",
+      "typeSpecialty": "ghost",
+      "badgeName": null,
+      "levelCap": 65,
+      "orderInRegion": 11,
+      "biome": "Kanto League",
+      "team": [
+        {
+          "pokemon": "gengar",
+          "displayName": "Gengar",
+          "level": 54,
+          "types": [
+            "ghost",
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "golbat",
+          "displayName": "Golbat",
+          "level": 54,
+          "types": [
+            "poison",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "haunter",
+          "displayName": "Haunter",
+          "level": 53,
+          "types": [
+            "ghost",
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "arbok",
+          "displayName": "Arbok",
+          "level": 56,
+          "types": [
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "gengar",
+          "displayName": "Gengar",
+          "level": 58,
+          "types": [
+            "ghost",
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [],
+      "unlockRequirement": "Derrotar Bruno",
+      "locateCommand": "/locate structure cobbleverse:kanto_league"
+    },
+    {
+      "id": "kanto-lance",
+      "name": "Lance",
+      "region": "kanto",
+      "role": "elite-four",
+      "typeSpecialty": "dragon",
+      "badgeName": null,
+      "levelCap": 65,
+      "orderInRegion": 12,
+      "biome": "Kanto League",
+      "team": [
+        {
+          "pokemon": "gyarados",
+          "displayName": "Gyarados",
+          "level": 56,
+          "types": [
+            "water",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "dragonair",
+          "displayName": "Dragonair",
+          "level": 54,
+          "types": [
+            "dragon"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "dragonair",
+          "displayName": "Dragonair",
+          "level": 54,
+          "types": [
+            "dragon"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "aerodactyl",
+          "displayName": "Aerodactyl",
+          "level": 58,
+          "types": [
+            "rock",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "dragonite",
+          "displayName": "Dragonite",
+          "level": 60,
+          "types": [
+            "dragon",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [],
+      "unlockRequirement": "Derrotar Agatha",
+      "locateCommand": "/locate structure cobbleverse:kanto_league"
+    },
+    {
+      "id": "kanto-blue",
+      "name": "Blue",
+      "region": "kanto",
+      "role": "champion",
+      "typeSpecialty": "normal",
+      "badgeName": "Kanto Champion Trophy",
+      "levelCap": 70,
+      "orderInRegion": 13,
+      "biome": "Kanto League",
+      "team": [
+        {
+          "pokemon": "pidgeot",
+          "displayName": "Pidgeot",
+          "level": 59,
+          "types": [
+            "normal",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "alakazam",
+          "displayName": "Alakazam",
+          "level": 57,
+          "types": [
+            "psychic"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "rhydon",
+          "displayName": "Rhydon",
+          "level": 59,
+          "types": [
+            "ground",
+            "rock"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "arcanine",
+          "displayName": "Arcanine",
+          "level": 59,
+          "types": [
+            "fire"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "exeggutor",
+          "displayName": "Exeggutor",
+          "level": 61,
+          "types": [
+            "grass",
+            "psychic"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "blastoise",
+          "displayName": "Blastoise",
+          "level": 63,
+          "types": [
+            "water"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Kanto Champion Trophy"
+      ],
+      "unlockRequirement": "Derrotar Lance",
+      "locateCommand": "/locate structure cobbleverse:kanto_league"
+    },
+    {
+      "id": "johto-alfredo",
+      "name": "Alfredo",
+      "region": "johto",
+      "role": "gym-leader",
+      "typeSpecialty": "flying",
+      "badgeName": "Zephyr Badge",
+      "levelCap": 73,
+      "orderInRegion": 1,
+      "biome": "Meadow",
+      "team": [
+        {
+          "pokemon": "pidgey",
+          "displayName": "Pidgey",
+          "level": 67,
+          "types": [
+            "normal",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "pidgeotto",
+          "displayName": "Pidgeotto",
+          "level": 69,
+          "types": [
+            "normal",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "pidgeot",
+          "displayName": "Pidgeot",
+          "level": 72,
+          "types": [
+            "normal",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Zephyr Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Blue (Campeao de Kanto)",
+      "locateCommand": "/locate structure cobbleverse:alfredo"
+    },
+    {
+      "id": "johto-angelo",
+      "name": "Angelo",
+      "region": "johto",
+      "role": "gym-leader",
+      "typeSpecialty": "bug",
+      "badgeName": "Hive Badge",
+      "levelCap": 76,
+      "orderInRegion": 2,
+      "biome": "Forest",
+      "team": [
+        {
+          "pokemon": "scyther",
+          "displayName": "Scyther",
+          "level": 72,
+          "types": [
+            "bug",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "beedrill",
+          "displayName": "Beedrill",
+          "level": 73,
+          "types": [
+            "bug",
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "heracross",
+          "displayName": "Heracross",
+          "level": 75,
+          "types": [
+            "bug",
+            "fighting"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Hive Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Alfredo",
+      "locateCommand": "/locate structure cobbleverse:angelo"
+    },
+    {
+      "id": "johto-chiara",
+      "name": "Chiara",
+      "region": "johto",
+      "role": "gym-leader",
+      "typeSpecialty": "normal",
+      "badgeName": "Plain Badge",
+      "levelCap": 79,
+      "orderInRegion": 3,
+      "biome": "Plains",
+      "team": [
+        {
+          "pokemon": "clefairy",
+          "displayName": "Clefairy",
+          "level": 75,
+          "types": [
+            "fairy"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "miltank",
+          "displayName": "Miltank",
+          "level": 78,
+          "types": [
+            "normal"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Plain Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Angelo",
+      "locateCommand": "/locate structure cobbleverse:chiara"
+    },
+    {
+      "id": "johto-furio",
+      "name": "Furio",
+      "region": "johto",
+      "role": "gym-leader",
+      "typeSpecialty": "ghost",
+      "badgeName": "Fog Badge",
+      "levelCap": 82,
+      "orderInRegion": 4,
+      "biome": "Swamp",
+      "team": [
+        {
+          "pokemon": "gastly",
+          "displayName": "Gastly",
+          "level": 78,
+          "types": [
+            "ghost",
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "haunter",
+          "displayName": "Haunter",
+          "level": 79,
+          "types": [
+            "ghost",
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "gengar",
+          "displayName": "Gengar",
+          "level": 81,
+          "types": [
+            "ghost",
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Fog Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Chiara",
+      "locateCommand": "/locate structure cobbleverse:furio"
+    },
+    {
+      "id": "johto-jasmine",
+      "name": "Jasmine",
+      "region": "johto",
+      "role": "gym-leader",
+      "typeSpecialty": "steel",
+      "badgeName": "Mineral Badge",
+      "levelCap": 85,
+      "orderInRegion": 5,
+      "biome": "Stony Shore",
+      "team": [
+        {
+          "pokemon": "magnemite",
+          "displayName": "Magnemite",
+          "level": 81,
+          "types": [
+            "electric",
+            "steel"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "magnemite",
+          "displayName": "Magnemite",
+          "level": 81,
+          "types": [
+            "electric",
+            "steel"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "steelix",
+          "displayName": "Steelix",
+          "level": 84,
+          "types": [
+            "steel",
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Mineral Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Furio",
+      "locateCommand": "/locate structure cobbleverse:jasmine"
+    },
+    {
+      "id": "johto-raffaello",
+      "name": "Raffaello",
+      "region": "johto",
+      "role": "gym-leader",
+      "typeSpecialty": "fighting",
+      "badgeName": "Storm Badge",
+      "levelCap": 88,
+      "orderInRegion": 6,
+      "biome": "Windswept Hills",
+      "team": [
+        {
+          "pokemon": "primeape",
+          "displayName": "Primeape",
+          "level": 84,
+          "types": [
+            "fighting"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "poliwrath",
+          "displayName": "Poliwrath",
+          "level": 86,
+          "types": [
+            "water",
+            "fighting"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "machamp",
+          "displayName": "Machamp",
+          "level": 87,
+          "types": [
+            "fighting"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Storm Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Jasmine",
+      "locateCommand": "/locate structure cobbleverse:raffaello"
+    },
+    {
+      "id": "johto-valerio",
+      "name": "Valerio",
+      "region": "johto",
+      "role": "gym-leader",
+      "typeSpecialty": "ice",
+      "badgeName": "Glacier Badge",
+      "levelCap": 91,
+      "orderInRegion": 7,
+      "biome": "Snowy Taiga",
+      "team": [
+        {
+          "pokemon": "seel",
+          "displayName": "Seel",
+          "level": 87,
+          "types": [
+            "water"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "dewgong",
+          "displayName": "Dewgong",
+          "level": 89,
+          "types": [
+            "water",
+            "ice"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "piloswine",
+          "displayName": "Piloswine",
+          "level": 90,
+          "types": [
+            "ice",
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Glacier Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Raffaello",
+      "locateCommand": "/locate structure cobbleverse:valerio"
+    },
+    {
+      "id": "johto-sandra",
+      "name": "Sandra",
+      "region": "johto",
+      "role": "gym-leader",
+      "typeSpecialty": "dragon",
+      "badgeName": "Rising Badge",
+      "levelCap": 94,
+      "orderInRegion": 8,
+      "biome": "Dragon's Den",
+      "team": [
+        {
+          "pokemon": "dragonair",
+          "displayName": "Dragonair",
+          "level": 90,
+          "types": [
+            "dragon"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "dragonair",
+          "displayName": "Dragonair",
+          "level": 90,
+          "types": [
+            "dragon"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "gyarados",
+          "displayName": "Gyarados",
+          "level": 92,
+          "types": [
+            "water",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "kingdra",
+          "displayName": "Kingdra",
+          "level": 93,
+          "types": [
+            "water",
+            "dragon"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Rising Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Valerio",
+      "locateCommand": "/locate structure cobbleverse:sandra"
+    },
+    {
+      "id": "johto-pino",
+      "name": "Pino",
+      "region": "johto",
+      "role": "elite-four",
+      "typeSpecialty": "psychic",
+      "badgeName": null,
+      "levelCap": 97,
+      "orderInRegion": 9,
+      "biome": "Johto League",
+      "team": [
+        {
+          "pokemon": "xatu",
+          "displayName": "Xatu",
+          "level": 92,
+          "types": [
+            "psychic",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "slowbro",
+          "displayName": "Slowbro",
+          "level": 93,
+          "types": [
+            "water",
+            "psychic"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "jynx",
+          "displayName": "Jynx",
+          "level": 93,
+          "types": [
+            "ice",
+            "psychic"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "exeggutor",
+          "displayName": "Exeggutor",
+          "level": 94,
+          "types": [
+            "grass",
+            "psychic"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "xatu",
+          "displayName": "Xatu",
+          "level": 95,
+          "types": [
+            "psychic",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [],
+      "unlockRequirement": "Derrotar Sandra (8 badges Johto)",
+      "locateCommand": "/locate structure cobbleverse:johto_league"
+    },
+    {
+      "id": "johto-koga-e4",
+      "name": "Koga",
+      "region": "johto",
+      "role": "elite-four",
+      "typeSpecialty": "poison",
+      "badgeName": null,
+      "levelCap": 97,
+      "orderInRegion": 10,
+      "biome": "Johto League",
+      "team": [
+        {
+          "pokemon": "ariados",
+          "displayName": "Ariados",
+          "level": 93,
+          "types": [
+            "bug",
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "venomoth",
+          "displayName": "Venomoth",
+          "level": 93,
+          "types": [
+            "bug",
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "forretress",
+          "displayName": "Forretress",
+          "level": 94,
+          "types": [
+            "bug",
+            "steel"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "muk",
+          "displayName": "Muk",
+          "level": 95,
+          "types": [
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "crobat",
+          "displayName": "Crobat",
+          "level": 96,
+          "types": [
+            "poison",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [],
+      "unlockRequirement": "Derrotar Pino",
+      "locateCommand": "/locate structure cobbleverse:johto_league"
+    },
+    {
+      "id": "johto-bruno-e4",
+      "name": "Bruno",
+      "region": "johto",
+      "role": "elite-four",
+      "typeSpecialty": "fighting",
+      "badgeName": null,
+      "levelCap": 97,
+      "orderInRegion": 11,
+      "biome": "Johto League",
+      "team": [
+        {
+          "pokemon": "hitmontop",
+          "displayName": "Hitmontop",
+          "level": 93,
+          "types": [
+            "fighting"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "hitmonlee",
+          "displayName": "Hitmonlee",
+          "level": 93,
+          "types": [
+            "fighting"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "hitmonchan",
+          "displayName": "Hitmonchan",
+          "level": 93,
+          "types": [
+            "fighting"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "onix",
+          "displayName": "Onix",
+          "level": 95,
+          "types": [
+            "rock",
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "machamp",
+          "displayName": "Machamp",
+          "level": 96,
+          "types": [
+            "fighting"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [],
+      "unlockRequirement": "Derrotar Koga",
+      "locateCommand": "/locate structure cobbleverse:johto_league"
+    },
+    {
+      "id": "johto-karen",
+      "name": "Karen",
+      "region": "johto",
+      "role": "elite-four",
+      "typeSpecialty": "dark",
+      "badgeName": null,
+      "levelCap": 97,
+      "orderInRegion": 12,
+      "biome": "Johto League",
+      "team": [
+        {
+          "pokemon": "umbreon",
+          "displayName": "Umbreon",
+          "level": 94,
+          "types": [
+            "dark"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "murkrow",
+          "displayName": "Murkrow",
+          "level": 94,
+          "types": [
+            "dark",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "vileplume",
+          "displayName": "Vileplume",
+          "level": 95,
+          "types": [
+            "grass",
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "gengar",
+          "displayName": "Gengar",
+          "level": 96,
+          "types": [
+            "ghost",
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "houndoom",
+          "displayName": "Houndoom",
+          "level": 97,
+          "types": [
+            "dark",
+            "fire"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [],
+      "unlockRequirement": "Derrotar Bruno",
+      "locateCommand": "/locate structure cobbleverse:johto_league"
+    },
+    {
+      "id": "johto-lance-champion",
+      "name": "Lance",
+      "region": "johto",
+      "role": "champion",
+      "typeSpecialty": "dragon",
+      "badgeName": "Johto Champion Trophy",
+      "levelCap": 100,
+      "orderInRegion": 13,
+      "biome": "Johto League",
+      "team": [
+        {
+          "pokemon": "gyarados",
+          "displayName": "Gyarados",
+          "level": 96,
+          "types": [
+            "water",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "dragonite",
+          "displayName": "Dragonite",
+          "level": 97,
+          "types": [
+            "dragon",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "dragonite",
+          "displayName": "Dragonite",
+          "level": 97,
+          "types": [
+            "dragon",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "aerodactyl",
+          "displayName": "Aerodactyl",
+          "level": 98,
+          "types": [
+            "rock",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "charizard",
+          "displayName": "Charizard",
+          "level": 98,
+          "types": [
+            "fire",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "dragonite",
+          "displayName": "Dragonite",
+          "level": 100,
+          "types": [
+            "dragon",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Johto Champion Trophy"
+      ],
+      "unlockRequirement": "Derrotar Karen",
+      "locateCommand": "/locate structure cobbleverse:johto_league"
+    },
+    {
+      "id": "hoenn-petra",
+      "name": "Petra",
+      "region": "hoenn",
+      "role": "gym-leader",
+      "typeSpecialty": "rock",
+      "badgeName": "Stone Badge",
+      "levelCap": 100,
+      "orderInRegion": 1,
+      "biome": "Stony Peaks",
+      "team": [
+        {
+          "pokemon": "geodude",
+          "displayName": "Geodude",
+          "level": 92,
+          "types": [
+            "rock",
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "nosepass",
+          "displayName": "Nosepass",
+          "level": 95,
+          "types": [
+            "rock"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Stone Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Lance (Campeao de Johto)",
+      "locateCommand": "/locate structure cobbleverse:petra"
+    },
+    {
+      "id": "hoenn-rudi",
+      "name": "Rudi",
+      "region": "hoenn",
+      "role": "gym-leader",
+      "typeSpecialty": "fighting",
+      "badgeName": "Knuckle Badge",
+      "levelCap": 100,
+      "orderInRegion": 2,
+      "biome": "Savanna",
+      "team": [
+        {
+          "pokemon": "machop",
+          "displayName": "Machop",
+          "level": 94,
+          "types": [
+            "fighting"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "meditite",
+          "displayName": "Meditite",
+          "level": 94,
+          "types": [
+            "fighting",
+            "psychic"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "makuhita",
+          "displayName": "Makuhita",
+          "level": 96,
+          "types": [
+            "fighting"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Knuckle Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Petra",
+      "locateCommand": "/locate structure cobbleverse:rudi"
+    },
+    {
+      "id": "hoenn-walter",
+      "name": "Walter",
+      "region": "hoenn",
+      "role": "gym-leader",
+      "typeSpecialty": "electric",
+      "badgeName": "Dynamo Badge",
+      "levelCap": 100,
+      "orderInRegion": 3,
+      "biome": "Plains",
+      "team": [
+        {
+          "pokemon": "voltorb",
+          "displayName": "Voltorb",
+          "level": 95,
+          "types": [
+            "electric"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "electrike",
+          "displayName": "Electrike",
+          "level": 95,
+          "types": [
+            "electric"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "magneton",
+          "displayName": "Magneton",
+          "level": 97,
+          "types": [
+            "electric",
+            "steel"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "manectric",
+          "displayName": "Manectric",
+          "level": 98,
+          "types": [
+            "electric"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Dynamo Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Rudi",
+      "locateCommand": "/locate structure cobbleverse:walter"
+    },
+    {
+      "id": "hoenn-fiammetta",
+      "name": "Fiammetta",
+      "region": "hoenn",
+      "role": "gym-leader",
+      "typeSpecialty": "fire",
+      "badgeName": "Heat Badge",
+      "levelCap": 100,
+      "orderInRegion": 4,
+      "biome": "Nether Wastes",
+      "team": [
+        {
+          "pokemon": "numel",
+          "displayName": "Numel",
+          "level": 96,
+          "types": [
+            "fire",
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "slugma",
+          "displayName": "Slugma",
+          "level": 96,
+          "types": [
+            "fire"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "camerupt",
+          "displayName": "Camerupt",
+          "level": 98,
+          "types": [
+            "fire",
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "torkoal",
+          "displayName": "Torkoal",
+          "level": 99,
+          "types": [
+            "fire"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Heat Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Walter",
+      "locateCommand": "/locate structure cobbleverse:fiammetta"
+    },
+    {
+      "id": "hoenn-norman",
+      "name": "Norman",
+      "region": "hoenn",
+      "role": "gym-leader",
+      "typeSpecialty": "normal",
+      "badgeName": "Balance Badge",
+      "levelCap": 100,
+      "orderInRegion": 5,
+      "biome": "Plains",
+      "team": [
+        {
+          "pokemon": "spinda",
+          "displayName": "Spinda",
+          "level": 97,
+          "types": [
+            "normal"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "vigoroth",
+          "displayName": "Vigoroth",
+          "level": 97,
+          "types": [
+            "normal"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "linoone",
+          "displayName": "Linoone",
+          "level": 98,
+          "types": [
+            "normal"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "slaking",
+          "displayName": "Slaking",
+          "level": 100,
+          "types": [
+            "normal"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Balance Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Fiammetta",
+      "locateCommand": "/locate structure cobbleverse:norman"
+    },
+    {
+      "id": "hoenn-alice",
+      "name": "Alice",
+      "region": "hoenn",
+      "role": "gym-leader",
+      "typeSpecialty": "flying",
+      "badgeName": "Feather Badge",
+      "levelCap": 100,
+      "orderInRegion": 6,
+      "biome": "Windswept Hills",
+      "team": [
+        {
+          "pokemon": "swellow",
+          "displayName": "Swellow",
+          "level": 98,
+          "types": [
+            "normal",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "pelipper",
+          "displayName": "Pelipper",
+          "level": 98,
+          "types": [
+            "water",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "skarmory",
+          "displayName": "Skarmory",
+          "level": 99,
+          "types": [
+            "steel",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "altaria",
+          "displayName": "Altaria",
+          "level": 100,
+          "types": [
+            "dragon",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Feather Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Norman",
+      "locateCommand": "/locate structure cobbleverse:alice"
+    },
+    {
+      "id": "hoenn-tell",
+      "name": "Tell",
+      "region": "hoenn",
+      "role": "gym-leader",
+      "typeSpecialty": "psychic",
+      "badgeName": "Mind Badge",
+      "levelCap": 100,
+      "orderInRegion": 7,
+      "biome": "Dark Forest",
+      "team": [
+        {
+          "pokemon": "solrock",
+          "displayName": "Solrock",
+          "level": 98,
+          "types": [
+            "rock",
+            "psychic"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "lunatone",
+          "displayName": "Lunatone",
+          "level": 98,
+          "types": [
+            "rock",
+            "psychic"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "claydol",
+          "displayName": "Claydol",
+          "level": 99,
+          "types": [
+            "ground",
+            "psychic"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "xatu",
+          "displayName": "Xatu",
+          "level": 100,
+          "types": [
+            "psychic",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Mind Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Alice",
+      "locateCommand": "/locate structure cobbleverse:tell"
+    },
+    {
+      "id": "hoenn-adriano",
+      "name": "Adriano",
+      "region": "hoenn",
+      "role": "gym-leader",
+      "typeSpecialty": "water",
+      "badgeName": "Rain Badge",
+      "levelCap": 100,
+      "orderInRegion": 8,
+      "biome": "Ocean",
+      "team": [
+        {
+          "pokemon": "luvdisc",
+          "displayName": "Luvdisc",
+          "level": 97,
+          "types": [
+            "water"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "whiscash",
+          "displayName": "Whiscash",
+          "level": 98,
+          "types": [
+            "water",
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "sealeo",
+          "displayName": "Sealeo",
+          "level": 99,
+          "types": [
+            "ice",
+            "water"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "milotic",
+          "displayName": "Milotic",
+          "level": 100,
+          "types": [
+            "water"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Rain Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Tell",
+      "locateCommand": "/locate structure cobbleverse:adriano"
+    },
+    {
+      "id": "hoenn-lyris",
+      "name": "Lyris",
+      "region": "hoenn",
+      "role": "elite-four",
+      "typeSpecialty": "dark",
+      "badgeName": null,
+      "levelCap": 100,
+      "orderInRegion": 9,
+      "biome": "Hoenn League",
+      "team": [
+        {
+          "pokemon": "mightyena",
+          "displayName": "Mightyena",
+          "level": 98,
+          "types": [
+            "dark"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "shiftry",
+          "displayName": "Shiftry",
+          "level": 99,
+          "types": [
+            "grass",
+            "dark"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "cacturne",
+          "displayName": "Cacturne",
+          "level": 99,
+          "types": [
+            "grass",
+            "dark"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "absol",
+          "displayName": "Absol",
+          "level": 100,
+          "types": [
+            "dark"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [],
+      "unlockRequirement": "Derrotar Adriano (8 badges Hoenn)",
+      "locateCommand": "/locate structure cobbleverse:hoenn_league"
+    },
+    {
+      "id": "hoenn-pat",
+      "name": "Pat",
+      "region": "hoenn",
+      "role": "elite-four",
+      "typeSpecialty": "ghost",
+      "badgeName": null,
+      "levelCap": 100,
+      "orderInRegion": 10,
+      "biome": "Hoenn League",
+      "team": [
+        {
+          "pokemon": "dusclops",
+          "displayName": "Dusclops",
+          "level": 98,
+          "types": [
+            "ghost"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "banette",
+          "displayName": "Banette",
+          "level": 99,
+          "types": [
+            "ghost"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "sableye",
+          "displayName": "Sableye",
+          "level": 99,
+          "types": [
+            "dark",
+            "ghost"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "banette",
+          "displayName": "Banette",
+          "level": 100,
+          "types": [
+            "ghost"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [],
+      "unlockRequirement": "Derrotar Lyris",
+      "locateCommand": "/locate structure cobbleverse:hoenn_league"
+    },
+    {
+      "id": "hoenn-champion-rocco",
+      "name": "Rocco",
+      "region": "hoenn",
+      "role": "champion",
+      "typeSpecialty": "steel",
+      "badgeName": "Hoenn Champion Trophy",
+      "levelCap": 100,
+      "orderInRegion": 13,
+      "biome": "Hoenn League",
+      "team": [
+        {
+          "pokemon": "skarmory",
+          "displayName": "Skarmory",
+          "level": 99,
+          "types": [
+            "steel",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "aggron",
+          "displayName": "Aggron",
+          "level": 99,
+          "types": [
+            "steel",
+            "rock"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "claydol",
+          "displayName": "Claydol",
+          "level": 99,
+          "types": [
+            "ground",
+            "psychic"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "armaldo",
+          "displayName": "Armaldo",
+          "level": 100,
+          "types": [
+            "rock",
+            "bug"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "cradily",
+          "displayName": "Cradily",
+          "level": 100,
+          "types": [
+            "rock",
+            "grass"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "metagross",
+          "displayName": "Metagross",
+          "level": 100,
+          "types": [
+            "steel",
+            "psychic"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Hoenn Champion Trophy"
+      ],
+      "unlockRequirement": "Derrotar Elite Four de Hoenn",
+      "locateCommand": "/locate structure cobbleverse:hoenn_league"
+    },
+    {
+      "id": "sinnoh-ferruccio",
+      "name": "Ferruccio",
+      "region": "sinnoh",
+      "role": "gym-leader",
+      "typeSpecialty": "rock",
+      "badgeName": "Coal Badge",
+      "levelCap": 100,
+      "orderInRegion": 1,
+      "biome": "Sandstone Valley",
+      "team": [
+        {
+          "pokemon": "geodude",
+          "displayName": "Geodude",
+          "level": 96,
+          "types": [
+            "rock",
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "onix",
+          "displayName": "Onix",
+          "level": 97,
+          "types": [
+            "rock",
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "cranidos",
+          "displayName": "Cranidos",
+          "level": 99,
+          "types": [
+            "rock"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Coal Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Rocco (Campeao de Hoenn)",
+      "locateCommand": "/locate structure cobbleverse:ferruccio"
+    },
+    {
+      "id": "sinnoh-gardenia",
+      "name": "Gardenia",
+      "region": "sinnoh",
+      "role": "gym-leader",
+      "typeSpecialty": "grass",
+      "badgeName": "Forest Badge",
+      "levelCap": 100,
+      "orderInRegion": 2,
+      "biome": "Flower Forest",
+      "team": [
+        {
+          "pokemon": "cherubi",
+          "displayName": "Cherubi",
+          "level": 97,
+          "types": [
+            "grass"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "turtwig",
+          "displayName": "Turtwig",
+          "level": 97,
+          "types": [
+            "grass"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "roserade",
+          "displayName": "Roserade",
+          "level": 100,
+          "types": [
+            "grass",
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Forest Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Ferruccio",
+      "locateCommand": "/locate structure cobbleverse:gardenia"
+    },
+    {
+      "id": "sinnoh-fannie",
+      "name": "Fannie",
+      "region": "sinnoh",
+      "role": "gym-leader",
+      "typeSpecialty": "fighting",
+      "badgeName": "Cobble Badge",
+      "levelCap": 100,
+      "orderInRegion": 3,
+      "biome": "Mountains",
+      "team": [
+        {
+          "pokemon": "meditite",
+          "displayName": "Meditite",
+          "level": 98,
+          "types": [
+            "fighting",
+            "psychic"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "machoke",
+          "displayName": "Machoke",
+          "level": 98,
+          "types": [
+            "fighting"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "lucario",
+          "displayName": "Lucario",
+          "level": 100,
+          "types": [
+            "fighting",
+            "steel"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Cobble Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Gardenia",
+      "locateCommand": "/locate structure cobbleverse:fannie"
+    },
+    {
+      "id": "sinnoh-marzia",
+      "name": "Marzia",
+      "region": "sinnoh",
+      "role": "gym-leader",
+      "typeSpecialty": "water",
+      "badgeName": "Fen Badge",
+      "levelCap": 100,
+      "orderInRegion": 4,
+      "biome": "Swamp",
+      "team": [
+        {
+          "pokemon": "gyarados",
+          "displayName": "Gyarados",
+          "level": 98,
+          "types": [
+            "water",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "quagsire",
+          "displayName": "Quagsire",
+          "level": 99,
+          "types": [
+            "water",
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "floatzel",
+          "displayName": "Floatzel",
+          "level": 100,
+          "types": [
+            "water"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Fen Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Fannie",
+      "locateCommand": "/locate structure cobbleverse:marzia"
+    },
+    {
+      "id": "sinnoh-elfio",
+      "name": "Elfio",
+      "region": "sinnoh",
+      "role": "gym-leader",
+      "typeSpecialty": "ghost",
+      "badgeName": "Relic Badge",
+      "levelCap": 100,
+      "orderInRegion": 5,
+      "biome": "Old Growth Taiga",
+      "team": [
+        {
+          "pokemon": "drifblim",
+          "displayName": "Drifblim",
+          "level": 98,
+          "types": [
+            "ghost",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "haunter",
+          "displayName": "Haunter",
+          "level": 99,
+          "types": [
+            "ghost",
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "mismagius",
+          "displayName": "Mismagius",
+          "level": 100,
+          "types": [
+            "ghost"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "gengar",
+          "displayName": "Gengar",
+          "level": 100,
+          "types": [
+            "ghost",
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Relic Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Marzia",
+      "locateCommand": "/locate structure cobbleverse:elfio"
+    },
+    {
+      "id": "sinnoh-corrado",
+      "name": "Corrado",
+      "region": "sinnoh",
+      "role": "gym-leader",
+      "typeSpecialty": "steel",
+      "badgeName": "Mine Badge",
+      "levelCap": 100,
+      "orderInRegion": 6,
+      "biome": "Dripstone Caves",
+      "team": [
+        {
+          "pokemon": "bronzor",
+          "displayName": "Bronzor",
+          "level": 98,
+          "types": [
+            "steel",
+            "psychic"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "steelix",
+          "displayName": "Steelix",
+          "level": 99,
+          "types": [
+            "steel",
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "bastiodon",
+          "displayName": "Bastiodon",
+          "level": 100,
+          "types": [
+            "rock",
+            "steel"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Mine Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Elfio",
+      "locateCommand": "/locate structure cobbleverse:corrado"
+    },
+    {
+      "id": "sinnoh-bianca",
+      "name": "Bianca",
+      "region": "sinnoh",
+      "role": "gym-leader",
+      "typeSpecialty": "ice",
+      "badgeName": "Icicle Badge",
+      "levelCap": 100,
+      "orderInRegion": 7,
+      "biome": "Frozen Peaks",
+      "team": [
+        {
+          "pokemon": "snover",
+          "displayName": "Snover",
+          "level": 98,
+          "types": [
+            "grass",
+            "ice"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "sneasel",
+          "displayName": "Sneasel",
+          "level": 99,
+          "types": [
+            "dark",
+            "ice"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "abomasnow",
+          "displayName": "Abomasnow",
+          "level": 100,
+          "types": [
+            "grass",
+            "ice"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "froslass",
+          "displayName": "Froslass",
+          "level": 100,
+          "types": [
+            "ice",
+            "ghost"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Icicle Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Corrado",
+      "locateCommand": "/locate structure cobbleverse:bianca"
+    },
+    {
+      "id": "sinnoh-pedro",
+      "name": "Pedro",
+      "region": "sinnoh",
+      "role": "gym-leader",
+      "typeSpecialty": "electric",
+      "badgeName": "Beacon Badge",
+      "levelCap": 100,
+      "orderInRegion": 8,
+      "biome": "Sunflower Plains",
+      "team": [
+        {
+          "pokemon": "raichu",
+          "displayName": "Raichu",
+          "level": 99,
+          "types": [
+            "electric"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "luxray",
+          "displayName": "Luxray",
+          "level": 99,
+          "types": [
+            "electric"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "electivire",
+          "displayName": "Electivire",
+          "level": 100,
+          "types": [
+            "electric"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Beacon Badge",
+        "TM"
+      ],
+      "unlockRequirement": "Derrotar Bianca",
+      "locateCommand": "/locate structure cobbleverse:pedro"
+    },
+    {
+      "id": "sinnoh-aaron",
+      "name": "Aaron",
+      "region": "sinnoh",
+      "role": "elite-four",
+      "typeSpecialty": "bug",
+      "badgeName": null,
+      "levelCap": 100,
+      "orderInRegion": 9,
+      "biome": "Sinnoh League",
+      "team": [
+        {
+          "pokemon": "yanmega",
+          "displayName": "Yanmega",
+          "level": 99,
+          "types": [
+            "bug",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "scizor",
+          "displayName": "Scizor",
+          "level": 99,
+          "types": [
+            "bug",
+            "steel"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "vespiquen",
+          "displayName": "Vespiquen",
+          "level": 100,
+          "types": [
+            "bug",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "heracross",
+          "displayName": "Heracross",
+          "level": 100,
+          "types": [
+            "bug",
+            "fighting"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "drapion",
+          "displayName": "Drapion",
+          "level": 100,
+          "types": [
+            "poison",
+            "dark"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [],
+      "unlockRequirement": "Derrotar Pedro (8 badges Sinnoh)",
+      "locateCommand": "/locate structure cobbleverse:sinnoh_league"
+    },
+    {
+      "id": "sinnoh-vulcano",
+      "name": "Vulcano",
+      "region": "sinnoh",
+      "role": "elite-four",
+      "typeSpecialty": "fire",
+      "badgeName": null,
+      "levelCap": 100,
+      "orderInRegion": 10,
+      "biome": "Sinnoh League",
+      "team": [
+        {
+          "pokemon": "rapidash",
+          "displayName": "Rapidash",
+          "level": 99,
+          "types": [
+            "fire"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "steelix",
+          "displayName": "Steelix",
+          "level": 99,
+          "types": [
+            "steel",
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "lopunny",
+          "displayName": "Lopunny",
+          "level": 100,
+          "types": [
+            "normal"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "infernape",
+          "displayName": "Infernape",
+          "level": 100,
+          "types": [
+            "fire",
+            "fighting"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "magmortar",
+          "displayName": "Magmortar",
+          "level": 100,
+          "types": [
+            "fire"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [],
+      "unlockRequirement": "Derrotar Aaron",
+      "locateCommand": "/locate structure cobbleverse:sinnoh_league"
+    },
+    {
+      "id": "sinnoh-terrie",
+      "name": "Terrie",
+      "region": "sinnoh",
+      "role": "elite-four",
+      "typeSpecialty": "ground",
+      "badgeName": null,
+      "levelCap": 100,
+      "orderInRegion": 11,
+      "biome": "Sinnoh League",
+      "team": [
+        {
+          "pokemon": "whiscash",
+          "displayName": "Whiscash",
+          "level": 99,
+          "types": [
+            "water",
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "gliscor",
+          "displayName": "Gliscor",
+          "level": 100,
+          "types": [
+            "ground",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "golem",
+          "displayName": "Golem",
+          "level": 100,
+          "types": [
+            "rock",
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "hippowdon",
+          "displayName": "Hippowdon",
+          "level": 100,
+          "types": [
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "rhyperior",
+          "displayName": "Rhyperior",
+          "level": 100,
+          "types": [
+            "ground",
+            "rock"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [],
+      "unlockRequirement": "Derrotar Vulcano",
+      "locateCommand": "/locate structure cobbleverse:sinnoh_league"
+    },
+    {
+      "id": "sinnoh-luciano",
+      "name": "Luciano",
+      "region": "sinnoh",
+      "role": "elite-four",
+      "typeSpecialty": "psychic",
+      "badgeName": null,
+      "levelCap": 100,
+      "orderInRegion": 12,
+      "biome": "Sinnoh League",
+      "team": [
+        {
+          "pokemon": "mr-mime",
+          "displayName": "Mr. Mime",
+          "level": 99,
+          "types": [
+            "psychic",
+            "fairy"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "espeon",
+          "displayName": "Espeon",
+          "level": 100,
+          "types": [
+            "psychic"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "bronzong",
+          "displayName": "Bronzong",
+          "level": 100,
+          "types": [
+            "steel",
+            "psychic"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "alakazam",
+          "displayName": "Alakazam",
+          "level": 100,
+          "types": [
+            "psychic"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "gallade",
+          "displayName": "Gallade",
+          "level": 100,
+          "types": [
+            "psychic",
+            "fighting"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [],
+      "unlockRequirement": "Derrotar Terrie",
+      "locateCommand": "/locate structure cobbleverse:sinnoh_league"
+    },
+    {
+      "id": "sinnoh-champion-camilla",
+      "name": "Camilla",
+      "region": "sinnoh",
+      "role": "champion",
+      "typeSpecialty": "normal",
+      "badgeName": "Sinnoh Champion Trophy",
+      "levelCap": 100,
+      "orderInRegion": 13,
+      "biome": "Sinnoh League",
+      "team": [
+        {
+          "pokemon": "spiritomb",
+          "displayName": "Spiritomb",
+          "level": 100,
+          "types": [
+            "ghost",
+            "dark"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "roserade",
+          "displayName": "Roserade",
+          "level": 100,
+          "types": [
+            "grass",
+            "poison"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "togekiss",
+          "displayName": "Togekiss",
+          "level": 100,
+          "types": [
+            "fairy",
+            "flying"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "lucario",
+          "displayName": "Lucario",
+          "level": 100,
+          "types": [
+            "fighting",
+            "steel"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "milotic",
+          "displayName": "Milotic",
+          "level": 100,
+          "types": [
+            "water"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        },
+        {
+          "pokemon": "garchomp",
+          "displayName": "Garchomp",
+          "level": 100,
+          "types": [
+            "dragon",
+            "ground"
+          ],
+          "moves": [],
+          "heldItem": null,
+          "ability": null
+        }
+      ],
+      "rewards": [
+        "Sinnoh Champion Trophy"
+      ],
+      "unlockRequirement": "Derrotar Luciano",
+      "locateCommand": "/locate structure cobbleverse:sinnoh_league"
+    }
+  ]
+}
