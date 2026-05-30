@@ -1,3 +1,24 @@
+## 2026-05-30 - US-007
+- Inspected dialogues/ (4 files: example.json, npc-example.json, sacchi_healed.json, sacchi_interaction.json) — no vendor/shop NPCs; Sacchi is a healer only, others are dialogue templates
+- Inspected loot_table/villages/village_pokecenters.json — chest loot (apricorn seeds, exp candy xs, remedies, oran berries), NOT shop inventory
+- Shop NPCs (Poke Mart, Department Store) are custom server features with no canonical datapack source — documented in PRD notes
+- Created `scripts/extract-shops.ts` — reads existing shops.json (legacy pokeMart/departmentStore format), validates items against data/items.json, removes cobblemon-specific items not in datapack, transforms to _meta/data[] format
+- Removed 6 items not in datapack: glacier_feather, thunder_feather, ember_feather, soul_feather (custom cobblemon feathers not in 1.7.3), trainer_card, store_card (custom server items)
+- Kept vanilla Minecraft items (gunpowder, emerald_block, elytra) even though not in cobblemon items.json
+- Each shop entry now has: npcId, location, items[] (with name, price, category fields), name, description, currency, sourceFile (null)
+- Poke Mart: 23 items kept across Cobble Balls, Poções, Mob Drops categories
+- Department Store: 25 items kept across Medicina, Vitaminas, Itens Especiais, Câmbio categories
+- Updated `src/app/routes/shops.tsx` to handle new _meta/data format, group items by category field for accordion UI, format item names from snake_case IDs to Title Case
+- Added `tsx scripts/extract-shops.ts` to npm extract script
+- Files changed: scripts/extract-shops.ts (new), src/app/routes/shops.tsx, package.json
+- `npm run typecheck` passes; browser verification requires manual testing
+- **Learnings for future iterations:**
+  - dialogues/ contains only healer/example NPCs — no shop vendors. Shop system is fully custom server-side
+  - loot_table/villages/ has only pokecenter chest loot (apricorn seeds, remedies) — NOT shop inventories
+  - When `"price" in item` is used as a TypeScript narrowing check and the type already guarantees the field exists, the truthy branch is inferred as `never` — use `=== undefined` check instead
+  - shops.json is gitignored (data/*.json) — the script transforms it in-place on disk but the commit only includes the TypeScript source
+---
+
 ## 2026-05-30 - US-006
 - Created `scripts/extract-raids.ts` — reads loot_table/sets/ to build per-tier reward pools, reads worldgen/structure/ to document available structures, merges with existing raids.json
 - Inspected all 8 loot_table/sets/ files (any_ancient_held_item, any_apricorn_seed, any_armor_trim, any_common_pokeball, any_evo_stone, any_exp_candy, any_natural_heal_item, any_type_gem)
@@ -54,8 +75,10 @@
 - Recipe files in `recipe/` use 6 main types: crafting_shaped, crafting_shapeless, brewing_stand, cooking_pot_shapeless, smelting/blasting, stonecutting. Two subdirs: `recipe/brewing_stand/` and `recipe/campfire_pot/`. bag_items/ and held_items/ use .js files (JS scripts, not JSON) — only filenames are usable for item ID discovery.
 - Species filenames in datapack use no hyphens: `mrmime.json` (not `mr-mime.json`). Validate species names against `data/datapack/data/cobblemon/species/**/*.json` filenames (strip .json extension).
 - `loot_table/ruins/` contains `minecraft:archaeology` dig loot, NOT chest loot. `loot_table/sets/` has 8 generic reward categories. `loot_table/injection/` injects into vanilla Minecraft loot tables.
-- Raid Dens and Gym Leaders are custom server content — no canonical datapack source. pokemonPool/location fields for raids are always null.
+- Raid Dens, Gym Leaders, and Shop NPCs are all custom server content — no canonical datapack source. dialogues/ has only healer/example NPCs (Sacchi is a healer). loot_table/villages/ has only pokecenter chest loot.
+- When using TypeScript `"prop" in obj` check and the type already guarantees the property exists, the truthy branch becomes `never` — use `=== undefined` instead.
 - worldgen/structure/ has ruins (20+), fossils (24+), shipwreck_coves, fishing_boat structures — NO raid dens.
+- shops.json is gitignored (data/*.json) — transform scripts run in-place on disk; only TypeScript source changes are committed.
 
 ---
 
