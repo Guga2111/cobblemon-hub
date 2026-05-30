@@ -5,12 +5,13 @@
  */
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { join, basename } from "node:path";
 import { spawnEntrySchema } from "../src/lib/schemas";
 import type { SpawnEntry, SpawnBucket, SpawnContext } from "../src/types/spawn";
 import { normalizePokemonName } from "../src/lib/utils";
 
 const DATAPACK_PATH = process.env.COBBLEMON_DATAPACK_PATH ?? "./data/datapack";
+const DATAPACK_VERSION = "1.7.3+1.21.1";
 const SPAWN_DIR = join(DATAPACK_PATH, "data", "cobblemon", "spawn_pool_world");
 const OUTPUT_PATH = "./data/spawns.json";
 
@@ -119,7 +120,11 @@ function main() {
 
   if (!existsSync(SPAWN_DIR)) {
     console.warn(`[warn] Spawn pool directory not found at "${SPAWN_DIR}". Writing empty spawns.json.`);
-    writeFileSync(OUTPUT_PATH, JSON.stringify([], null, 2));
+    const emptyOutput = {
+      _meta: { datapackVersion: DATAPACK_VERSION, generatedAt: new Date().toISOString() },
+      data: [],
+    };
+    writeFileSync(OUTPUT_PATH, JSON.stringify(emptyOutput, null, 2));
     console.log(`[done] ${OUTPUT_PATH} (0 entries)`);
     return;
   }
@@ -153,6 +158,7 @@ function main() {
           levelRange,
           conditions: normalizeCondition(raw.condition),
           anticonditions: normalizeCondition(raw.anticondition),
+          sourceFile: basename(file),
         };
 
         const result = spawnEntrySchema.safeParse(entry);
@@ -173,7 +179,11 @@ function main() {
     }
   }
 
-  writeFileSync(OUTPUT_PATH, JSON.stringify(entries, null, 2));
+  const output = {
+    _meta: { datapackVersion: DATAPACK_VERSION, generatedAt: new Date().toISOString() },
+    data: entries,
+  };
+  writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2));
   console.log(`[done] ${OUTPUT_PATH} (${entries.length} entries, ${errors} errors)`);
 }
 

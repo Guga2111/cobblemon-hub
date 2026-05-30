@@ -1,5 +1,6 @@
 import { readFileSync, existsSync } from "fs";
 import { resolve } from "path";
+import { spawnSync } from "child_process";
 import { createClient } from "@libsql/client";
 import { pokemonSchema, spawnEntrySchema, itemSchema, moveSchema } from "../src/lib/schemas";
 import type { Pokemon } from "../src/types/pokemon";
@@ -12,13 +13,32 @@ const url = process.env.TURSO_DATABASE_URL ?? "file:./data/cobblemon.db";
 const authToken = process.env.TURSO_AUTH_TOKEN;
 const db = createClient(url.startsWith("file:") ? { url } : { url, authToken });
 
-function readJson<T>(filename: string): T[] {
+const DATAPACK_VERSION = "1.7.3+1.21.1";
+
+interface DataFile<T> {
+  _meta?: { datapackVersion: string; generatedAt: string };
+  data: T[];
+}
+
+function readJson<T>(filename: string): DataFile<T> {
   const path = resolve("./data", filename);
   if (!existsSync(path)) {
     console.warn(`[seed] ${filename} not found — skipping`);
-    return [];
+    return { data: [] };
   }
-  return JSON.parse(readFileSync(path, "utf-8")) as T[];
+  const raw = JSON.parse(readFileSync(path, "utf-8")) as DataFile<T> | T[];
+  if (Array.isArray(raw)) {
+    return { data: raw };
+  }
+  return raw;
+}
+
+function runExtract(script: string): void {
+  const tsxBin = resolve("./node_modules/.bin/tsx");
+  const result = spawnSync(tsxBin, [script], { stdio: "inherit", cwd: resolve(".") });
+  if (result.status !== 0) {
+    throw new Error(`[seed] Extract script ${script} failed with status ${String(result.status)}`);
+  }
 }
 
 async function applySchema(): Promise<void> {
@@ -27,11 +47,29 @@ async function applySchema(): Promise<void> {
   for (const stmt of sql.split(";").map((s) => s.trim()).filter(Boolean)) {
     await db.execute(stmt);
   }
+
+  // Add source_file column to existing tables if not present (idempotent migration)
+  const alterStmts = [
+    "ALTER TABLE pokemon ADD COLUMN source_file TEXT",
+    "ALTER TABLE spawn_entries ADD COLUMN source_file TEXT",
+    "ALTER TABLE items ADD COLUMN source_file TEXT",
+    "ALTER TABLE moves ADD COLUMN source_file TEXT",
+  ];
+  for (const stmt of alterStmts) {
+    try {
+      await db.execute(stmt);
+    } catch {
+      // Column already exists — safe to ignore
+    }
+  }
+
   console.log("[seed] Schema applied");
 }
 
 async function seedPokemon(): Promise<void> {
-  const rows = readJson<Pokemon>("pokemon.json");
+  const file = readJson<Pokemon>("pokemon.json");
+  const rows = file.data;
+  const datapackVersion = file._meta?.datapackVersion ?? DATAPACK_VERSION;
   let ok = 0;
   let skip = 0;
   for (const row of rows) {
@@ -46,8 +84,8 @@ async function seedPokemon(): Promise<void> {
       sql: `INSERT OR REPLACE INTO pokemon
         (id, dex_number, name, display_name, types, base_stats, abilities, moves,
          evolutions, forms, drops, catch_rate, base_exp, growth_rate, egg_groups,
-         gender_ratio, generation)
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+         gender_ratio, generation, source_file)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
       args: [
         p.id, p.dexNumber, p.name, p.displayName,
         JSON.stringify(p.types),
@@ -60,6 +98,7 @@ async function seedPokemon(): Promise<void> {
         p.catchRate, p.baseExp, p.growthRate,
         JSON.stringify(p.eggGroups),
         p.genderRatio ?? null, p.generation,
+        p.sourceFile ?? datapackVersion,
       ],
     });
     ok++;
@@ -68,7 +107,9 @@ async function seedPokemon(): Promise<void> {
 }
 
 async function seedSpawns(): Promise<void> {
-  const rows = readJson<SpawnEntry>("spawns.json");
+  const file = readJson<SpawnEntry>("spawns.json");
+  const rows = file.data;
+  const datapackVersion = file._meta?.datapackVersion ?? DATAPACK_VERSION;
   let ok = 0;
   let skip = 0;
   for (const row of rows) {
@@ -82,14 +123,15 @@ async function seedSpawns(): Promise<void> {
     await db.execute({
       sql: `INSERT OR REPLACE INTO spawn_entries
         (id, pokemon_id, bucket, context, biomes, weight, level_min, level_max,
-         conditions, anticonditions)
-        VALUES (?,?,?,?,?,?,?,?,?,?)`,
+         conditions, anticonditions, source_file)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
       args: [
         s.id, s.pokemonId, s.bucket, s.context,
         JSON.stringify(s.biomes),
         s.weight, s.levelRange.min, s.levelRange.max,
         JSON.stringify(s.conditions),
         JSON.stringify(s.anticonditions),
+        s.sourceFile ?? datapackVersion,
       ],
     });
     ok++;
@@ -98,7 +140,9 @@ async function seedSpawns(): Promise<void> {
 }
 
 async function seedItems(): Promise<void> {
-  const rows = readJson<Item>("items.json");
+  const file = readJson<Item>("items.json");
+  const rows = file.data;
+  const datapackVersion = file._meta?.datapackVersion ?? DATAPACK_VERSION;
   let ok = 0;
   let skip = 0;
   for (const row of rows) {
@@ -111,12 +155,13 @@ async function seedItems(): Promise<void> {
     const it = result.data;
     await db.execute({
       sql: `INSERT OR REPLACE INTO items
-        (id, name, display_name, category, description, sprite, dropped_by)
-        VALUES (?,?,?,?,?,?,?)`,
+        (id, name, display_name, category, description, sprite, dropped_by, source_file)
+        VALUES (?,?,?,?,?,?,?,?)`,
       args: [
         it.id, it.name, it.displayName, it.category,
         it.description, it.sprite ?? null,
         JSON.stringify(it.droppedBy),
+        it.sourceFile ?? datapackVersion,
       ],
     });
     ok++;
@@ -125,7 +170,9 @@ async function seedItems(): Promise<void> {
 }
 
 async function seedMoves(): Promise<void> {
-  const rows = readJson<Move>("moves.json");
+  const file = readJson<Move>("moves.json");
+  const rows = file.data;
+  const datapackVersion = file._meta?.datapackVersion ?? DATAPACK_VERSION;
   let ok = 0;
   let skip = 0;
   for (const row of rows) {
@@ -138,11 +185,12 @@ async function seedMoves(): Promise<void> {
     const m = result.data;
     await db.execute({
       sql: `INSERT OR REPLACE INTO moves
-        (id, name, display_name, type, category, power, accuracy, pp)
-        VALUES (?,?,?,?,?,?,?,?)`,
+        (id, name, display_name, type, category, power, accuracy, pp, source_file)
+        VALUES (?,?,?,?,?,?,?,?,?)`,
       args: [
         m.id, m.name, m.displayName, m.type, m.category,
         m.power ?? null, m.accuracy ?? null, m.pp,
+        m.sourceFile ?? datapackVersion,
       ],
     });
     ok++;
@@ -151,7 +199,8 @@ async function seedMoves(): Promise<void> {
 }
 
 async function seedGymLeaders(): Promise<void> {
-  const rows = readJson<GymLeader>("gym-leaders.json");
+  const file = readJson<GymLeader>("gym-leaders.json");
+  const rows = file.data;
   let ok = 0;
   for (const g of rows) {
     await db.execute({
@@ -176,6 +225,17 @@ async function seedGymLeaders(): Promise<void> {
 
 async function main(): Promise<void> {
   console.log(`[seed] Connecting to: ${url}`);
+
+  // Regenerate data files from canonical datapack sources
+  console.log("[seed] Extracting pokemon from datapack...");
+  runExtract("scripts/extract-pokemon.ts");
+
+  console.log("[seed] Extracting spawns from datapack...");
+  runExtract("scripts/extract-spawns.ts");
+
+  console.log("[seed] Extracting items from pokemon drops...");
+  runExtract("scripts/extract-items.ts");
+
   await applySchema();
   await seedPokemon();
   await seedSpawns();

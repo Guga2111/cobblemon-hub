@@ -15,4 +15,5 @@ export interface Item {
   description: string;
   sprite: string | null;
   droppedBy: string[]; // pokemon IDs
+  sourceFile?: string;
 }

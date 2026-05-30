@@ -1,0 +1,155 @@
+{
+  "project": "Cobbleverse Hub",
+  "branchName": "ralph/content-refactoring",
+  "description": "Refatoração de Conteúdo — Auditoria e atualização de todos os dados do app para conformidade com a versão atual do modpack Cobbleverse (1.7.3+1.21.1). Todos os dados devem ser extraídos programaticamente dos arquivos canônicos do datapack em /data/datapack/.",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Atualizar Script de Seed — Leitura Programática do Datapack",
+      "description": "Como desenvolvedor, quero refatorar scripts/seed-db.ts para ler os arquivos do datapack em /data/datapack/ e popular cobblemon.db com dados canônicos, eliminando dependência de dados mantidos manualmente.",
+      "acceptanceCriteria": [
+        "scripts/seed-db.ts lê arquivos de /data/datapack/data/cobblemon/ ao invés de dados hardcoded ou manuais",
+        "Script é idempotente — pode ser executado múltiplas vezes sem criar duplicatas (use INSERT OR REPLACE ou DELETE + INSERT)",
+        "Cada tabela populada inclui o campo de rastreabilidade da fonte (ex: source_file ou datapack_id)",
+        "Campo _meta.datapackVersion com valor '1.7.3+1.21.1' incluído nos JSONs de saída",
+        "npm run seed (ou ts-node scripts/seed-db.ts) executa sem erros",
+        "Typecheck passes"
+      ],
+      "priority": 1,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-002",
+      "title": "Extração e Validação dos Dados de Spawn",
+      "description": "Como desenvolvedor de dados, quero parsear todos os arquivos spawn_pool_world/*.json do datapack para gerar um spawns.json validado que reflita 100% das condições de spawn da versão atual.",
+      "acceptanceCriteria": [
+        "Script (scripts/extract-spawns.ts ou integrado em seed-db.ts) lê todos os arquivos de /data/datapack/data/cobblemon/spawn_pool_world/",
+        "Cada entrada em data/spawns.json inclui: pokemonId, bucket, levelRange (min/max), biomes[], conditions (isThundering, minSkyLight, maxSkyLight, timeRange), weight, weightMultipliers",
+        "Campo sourceFile em cada entrada aponta para o arquivo .json de origem (ex: '0025_pikachu.json')",
+        "data/spawns.json gerado e substituindo o arquivo anterior",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill — navegar para rota que exibe spawns e confirmar que dados renderizam sem erros ou campos undefined"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-003",
+      "title": "Validação dos Dados de Legendários",
+      "description": "Como desenvolvedor de dados, quero extrair as condições de spawn dos Pokémon legendários do datapack para garantir que legendaries.json reflita as condições reais de encontro na versão atual.",
+      "acceptanceCriteria": [
+        "Script filtra os arquivos spawn_pool_world/*.json e species/ para identificar espécies legendárias e míticas",
+        "Cada entrada em data/legendaries.json inclui: pokemonId, spawnMethod, location (bioma ou estrutura), conditions (horário, clima, estrutura especial), rarity (bucket do datapack)",
+        "Entradas do legendaries.json anterior que não existem no datapack são removidas",
+        "data/legendaries.json atualizado e comitado",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill — navegar para /legendaries e confirmar renderização sem erros"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-004",
+      "title": "Validação e Atualização dos Times dos Gym Leaders",
+      "description": "Como desenvolvedor de dados, quero auditar gym-leaders.json contra os arquivos de NPC e configuração do datapack para garantir que times, levels, movesets e recompensas estejam corretos.",
+      "acceptanceCriteria": [
+        "Todos os arquivos em /data/datapack/data/cobblemon/npcs/ e npc_presets/ inspecionados e documentados no progress log",
+        "Se a fonte canônica de Gym Leaders não estiver no datapack extraído, documentar a origem atual dos dados em notes desta story e marcar campos sem fonte como null",
+        "Cada Gym Leader em data/gym-leaders.json tem team[] com os campos: pokemon, level, moves[], heldItem (null se inexistente), ability",
+        "Nenhum Pokémon, moveset ou item no team[] que não exista no datapack atual",
+        "data/gym-leaders.json atualizado e comitado",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill — navegar para /gym-leaders e confirmar que todos os trainers renderizam corretamente sem campos vazios"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-005",
+      "title": "Atualização da Base de Itens e Receitas",
+      "description": "Como desenvolvedor de dados, quero parsear os arquivos de recipe, held_items e bag_items do datapack para garantir que items.json reflita apenas itens e receitas existentes na versão atual.",
+      "acceptanceCriteria": [
+        "Receitas de /data/datapack/data/cobblemon/recipe/ (subpastas crafting, brewing_stand, campfire_pot) parseadas e incluídas",
+        "Held items de /data/datapack/data/cobblemon/held_items/ e bag_items/ incluídos",
+        "Cada entrada em data/items.json tem: id, name, obtainMethod, recipe (null se não craftável), effect (null se não aplicável), sourceFile",
+        "Itens do items.json anterior que não existem no datapack removidos",
+        "data/items.json atualizado e comitado",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill — navegar para /items e confirmar que lista renderiza sem erros"
+      ],
+      "priority": 5,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-006",
+      "title": "Validação dos Dados de Raids",
+      "description": "Como desenvolvedor de dados, quero auditar raids.json contra as loot tables e estruturas do datapack para garantir que raids reflitam as recompensas e Pokémon disponíveis na versão atual.",
+      "acceptanceCriteria": [
+        "Loot tables em /data/datapack/data/cobblemon/loot_table/ analisadas para recompensas de raid",
+        "Estruturas relevantes de /data/datapack/data/cobblemon/worldgen/ inspecionadas",
+        "Cada entrada em data/raids.json tem: id, difficulty, pokemonPool[], rewards[], location",
+        "Entradas de raids que não existem mais no datapack removidas",
+        "data/raids.json atualizado e comitado",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill — navegar para /raids e confirmar renderização sem erros"
+      ],
+      "priority": 6,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-007",
+      "title": "Validação de Lojas e NPCs Vendedores",
+      "description": "Como desenvolvedor de dados, quero auditar shops.json contra os dialogues e loot tables de villages do datapack para garantir que lojas e itens vendidos reflitam o estado atual do modpack.",
+      "acceptanceCriteria": [
+        "Dialogues em /data/datapack/data/cobblemon/dialogues/ inspecionados para identificar NPCs vendedores",
+        "Loot tables de villages em /data/datapack/data/cobblemon/loot_table/villages/ analisadas",
+        "Cada loja em data/shops.json tem: npcId, location, items[] com name e price (null se preço indisponível na fonte)",
+        "Itens de lojas que não existem no datapack removidos ou marcados como null",
+        "data/shops.json atualizado e comitado",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill — navegar para /shops e confirmar renderização sem erros"
+      ],
+      "priority": 7,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-008",
+      "title": "Revisão dos Guias e Conteúdo Textual",
+      "description": "Como desenvolvedor de conteúdo, quero revisar todos os guias em src/content/guides/index.ts para eliminar referências a mecânicas desatualizadas, IDs de itens inválidos e fluxos de progressão incorretos.",
+      "acceptanceCriteria": [
+        "Cada guia em src/content/guides/index.ts verificado contra o datapack atual — todos os IDs de items, Pokémon e mecânicas mencionados existem no datapack",
+        "Referências a mods integrados (botanypots, adorn, carryon — presentes em /data/datapack/data/) são precisas quanto às suas mecânicas de integração",
+        "Fluxo de progressão dos guias validado contra data/progression.json (após US-R001 a US-R007 concluídos)",
+        "Textos com informações confirmadamente incorretas corrigidos; textos sem fonte verificável marcados com TODO para revisão manual",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill — navegar para a seção de guias e confirmar que todos os guias renderizam sem erros"
+      ],
+      "priority": 8,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-009",
+      "title": "Validação dos Dados de Battle Mechanics",
+      "description": "Como desenvolvedor de dados, quero validar os dados exibidos na rota /battle-mechanics contra os arquivos de mechanics e species_features do datapack para garantir que as mecânicas de batalha estejam corretas.",
+      "acceptanceCriteria": [
+        "Arquivos em /data/datapack/data/cobblemon/mechanics/ inspecionados e comparados com os dados em src/app/routes/battle-mechanics.tsx ou arquivos de dados associados",
+        "Species features em /data/datapack/data/cobblemon/species_features/ e global_species_features/ revisadas para mecânicas especiais exibidas",
+        "Qualquer dado hardcoded na rota que conflite com o datapack corrigido",
+        "Mecânicas removidas do datapack removidas da rota; novas mecânicas relevantes adicionadas",
+        "Typecheck passes",
+        "Verify in browser using dev-browser skill — navegar para /battle-mechanics e confirmar que a página renderiza sem erros ou dados incorretos visíveis"
+      ],
+      "priority": 9,
+      "passes": false,
+      "notes": ""
+    }
+  ]
+}

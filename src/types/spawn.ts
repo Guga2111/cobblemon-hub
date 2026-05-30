@@ -35,4 +35,5 @@ export interface SpawnEntry {
   levelRange: { min: number; max: number };
   conditions: SpawnCondition;
   anticonditions: SpawnCondition;
+  sourceFile?: string;
 }

@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS pokemon (
   growth_rate TEXT NOT NULL,
   egg_groups TEXT NOT NULL,    -- JSON: EggGroup[]
   gender_ratio REAL,           -- null = genderless
-  generation INTEGER NOT NULL
+  generation INTEGER NOT NULL,
+  source_file TEXT             -- datapack source file for traceability
 );
 
 CREATE TABLE IF NOT EXISTS spawn_entries (
@@ -28,7 +29,8 @@ CREATE TABLE IF NOT EXISTS spawn_entries (
   level_min INTEGER NOT NULL,
   level_max INTEGER NOT NULL,
   conditions TEXT NOT NULL,    -- JSON: SpawnCondition
-  anticonditions TEXT NOT NULL -- JSON: SpawnCondition
+  anticonditions TEXT NOT NULL, -- JSON: SpawnCondition
+  source_file TEXT              -- datapack source file for traceability
 );
 
 CREATE TABLE IF NOT EXISTS items (
@@ -38,7 +40,8 @@ CREATE TABLE IF NOT EXISTS items (
   category TEXT NOT NULL,
   description TEXT NOT NULL,
   sprite TEXT,                 -- nullable
-  dropped_by TEXT NOT NULL     -- JSON: string[] of pokemon IDs
+  dropped_by TEXT NOT NULL,    -- JSON: string[] of pokemon IDs
+  source_file TEXT             -- datapack source file for traceability
 );
 
 CREATE TABLE IF NOT EXISTS users (
@@ -75,5 +78,6 @@ CREATE TABLE IF NOT EXISTS moves (
   category TEXT NOT NULL,
   power INTEGER,               -- nullable
   accuracy INTEGER,            -- nullable
-  pp INTEGER NOT NULL
+  pp INTEGER NOT NULL,
+  source_file TEXT             -- datapack source file for traceability
 );

@@ -121,4 +121,5 @@ export interface Pokemon {
   eggGroups: EggGroup[];
   genderRatio: number | null;
   generation: number;
+  sourceFile?: string;
 }

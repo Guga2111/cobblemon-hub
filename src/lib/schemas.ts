@@ -94,6 +94,7 @@ export const pokemonSchema = z.object({
   eggGroups: z.array(eggGroupSchema),
   genderRatio: z.number().min(0).max(1).nullable(),
   generation: z.number().int().min(1),
+  sourceFile: z.string().optional(),
 });
 
 const spawnBucketSchema = z.enum(SPAWN_BUCKETS as [string, ...string[]]) as z.ZodEnum<[
@@ -132,6 +133,7 @@ export const spawnEntrySchema = z.object({
   levelRange: z.object({ min: z.number().int().min(1), max: z.number().int().min(1) }),
   conditions: spawnConditionSchema,
   anticonditions: spawnConditionSchema,
+  sourceFile: z.string().optional(),
 });
 
 const statBlockSchema = z.object({
@@ -185,6 +187,7 @@ export const itemSchema = z.object({
   description: z.string(),
   sprite: z.string().nullable(),
   droppedBy: z.array(z.string()),
+  sourceFile: z.string().optional(),
 });
 
 export const moveSchema = z.object({
@@ -196,6 +199,7 @@ export const moveSchema = z.object({
   power: z.number().int().min(1).nullable(),
   accuracy: z.number().int().min(1).max(100).nullable(),
   pp: z.number().int().min(1),
+  sourceFile: z.string().optional(),
 });
 
 export type PokemonSchema = z.infer<typeof pokemonSchema>;

@@ -11,6 +11,7 @@ import type { Item, ItemCategory } from "../src/types/item";
 import type { Pokemon } from "../src/types/pokemon";
 
 const POKEMON_JSON = "./data/pokemon.json";
+const DATAPACK_VERSION = "1.7.3+1.21.1";
 const OUTPUT_PATH = "./data/items.json";
 const SPRITES_DIR = "./public/sprites/items";
 
@@ -60,12 +61,17 @@ function main() {
   if (!existsSync(POKEMON_JSON)) {
     console.warn("[warn] data/pokemon.json not found. Run extract-pokemon first.");
     console.warn("       Writing empty items.json.");
-    writeFileSync(OUTPUT_PATH, JSON.stringify([], null, 2));
+    const emptyOutput = {
+      _meta: { datapackVersion: DATAPACK_VERSION, generatedAt: new Date().toISOString() },
+      data: [],
+    };
+    writeFileSync(OUTPUT_PATH, JSON.stringify(emptyOutput, null, 2));
     console.log(`[done] ${OUTPUT_PATH} (0 items)`);
     return;
   }
 
-  const pokemon = JSON.parse(readFileSync(POKEMON_JSON, "utf-8")) as Pokemon[];
+  const pokemonFile = JSON.parse(readFileSync(POKEMON_JSON, "utf-8")) as { data: Pokemon[] } | Pokemon[];
+  const pokemon = Array.isArray(pokemonFile) ? pokemonFile : pokemonFile.data;
   console.log(`[info] Scanning drops from ${pokemon.length} pokemon`);
 
   const spriteIndex = buildSpriteIndex();
@@ -89,6 +95,7 @@ function main() {
             description: "",
             sprite: resolveSprite(drop.item, spriteIndex),
             droppedBy: [],
+            sourceFile: "derived:pokemon-drops",
           },
           pokemonSet: new Set([poke.id]),
         });
@@ -117,7 +124,11 @@ function main() {
 
   items.sort((a, b) => a.name.localeCompare(b.name));
 
-  writeFileSync(OUTPUT_PATH, JSON.stringify(items, null, 2));
+  const output = {
+    _meta: { datapackVersion: DATAPACK_VERSION, generatedAt: new Date().toISOString() },
+    data: items,
+  };
+  writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2));
   console.log(`[done] ${OUTPUT_PATH} (${items.length} items, ${errors} errors)`);
 }
 

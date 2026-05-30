@@ -5,12 +5,13 @@
  */
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { join, basename } from "node:path";
 import { pokemonSchema } from "../src/lib/schemas";
 import type { Pokemon, PokemonType, GrowthRate, EggGroup } from "../src/types/pokemon";
 import { normalizePokemonName } from "../src/lib/utils";
 
 const DATAPACK_PATH = process.env.COBBLEMON_DATAPACK_PATH ?? "./data/datapack";
+const DATAPACK_VERSION = "1.7.3+1.21.1";
 const SPECIES_DIR = join(DATAPACK_PATH, "data", "cobblemon", "species");
 const OUTPUT_PATH = "./data/pokemon.json";
 
@@ -309,6 +310,7 @@ function transformSpecies(raw: RawSpecies, filePath: string): Pokemon | null {
     eggGroups,
     genderRatio,
     generation: getGeneration(raw.nationalPokedexNumber),
+    sourceFile: basename(filePath),
   };
 }
 
@@ -320,7 +322,11 @@ function main() {
   if (!existsSync(SPECIES_DIR)) {
     console.warn(`[warn] Datapack not found at "${SPECIES_DIR}". Writing empty pokemon.json.`);
     console.warn("       Set COBBLEMON_DATAPACK_PATH to re-extract from the real datapack.");
-    writeFileSync(OUTPUT_PATH, JSON.stringify([], null, 2));
+    const emptyOutput = {
+      _meta: { datapackVersion: DATAPACK_VERSION, generatedAt: new Date().toISOString() },
+      data: [],
+    };
+    writeFileSync(OUTPUT_PATH, JSON.stringify(emptyOutput, null, 2));
     console.log(`[done] ${OUTPUT_PATH} (0 pokemon)`);
     return;
   }
@@ -357,7 +363,11 @@ function main() {
   // Sort by dex number
   pokemon.sort((a, b) => a.dexNumber - b.dexNumber);
 
-  writeFileSync(OUTPUT_PATH, JSON.stringify(pokemon, null, 2));
+  const output = {
+    _meta: { datapackVersion: DATAPACK_VERSION, generatedAt: new Date().toISOString() },
+    data: pokemon,
+  };
+  writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2));
   console.log(`[done] ${OUTPUT_PATH} (${pokemon.length} pokemon, ${errors} errors)`);
 }
 

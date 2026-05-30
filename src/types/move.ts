@@ -9,4 +9,5 @@ export interface Move {
   power: number | null;
   accuracy: number | null;
   pp: number;
+  sourceFile?: string;
 }

@@ -12,6 +12,7 @@ import type { Move } from "../src/types/move";
 import type { Pokemon, PokemonType, MoveCategory } from "../src/types/pokemon";
 
 const POKEMON_JSON = "./data/pokemon.json";
+const DATAPACK_VERSION = "1.7.3+1.21.1";
 const OUTPUT_PATH = "./data/moves.json";
 const POKEAPI_BASE = "https://pokeapi.co/api/v2";
 
@@ -80,6 +81,7 @@ async function fetchMove(moveName: string): Promise<Move | null> {
       power: data.power,
       accuracy: data.accuracy,
       pp: data.pp ?? 1,
+      sourceFile: "pokeapi",
     };
   } catch (err) {
     console.warn(`[warn] Failed to fetch move "${moveName}": ${String(err)}`);
@@ -95,12 +97,17 @@ async function main() {
   if (!existsSync(POKEMON_JSON)) {
     console.warn("[warn] data/pokemon.json not found. Run extract-pokemon first.");
     console.warn("       Writing empty moves.json.");
-    writeFileSync(OUTPUT_PATH, JSON.stringify([], null, 2));
+    const emptyOutput = {
+      _meta: { datapackVersion: DATAPACK_VERSION, generatedAt: new Date().toISOString() },
+      data: [],
+    };
+    writeFileSync(OUTPUT_PATH, JSON.stringify(emptyOutput, null, 2));
     console.log(`[done] ${OUTPUT_PATH} (0 moves)`);
     return;
   }
 
-  const pokemon = JSON.parse(readFileSync(POKEMON_JSON, "utf-8")) as Pokemon[];
+  const pokemonFile = JSON.parse(readFileSync(POKEMON_JSON, "utf-8")) as { data: Pokemon[] } | Pokemon[];
+  const pokemon = Array.isArray(pokemonFile) ? pokemonFile : pokemonFile.data;
 
   // Collect unique move names
   const moveNames = new Set<string>();
@@ -115,7 +122,8 @@ async function main() {
   const cached = new Map<string, Move>();
   if (existsSync(OUTPUT_PATH)) {
     try {
-      const existing = JSON.parse(readFileSync(OUTPUT_PATH, "utf-8")) as Move[];
+      const raw = JSON.parse(readFileSync(OUTPUT_PATH, "utf-8")) as { data: Move[] } | Move[];
+      const existing = Array.isArray(raw) ? raw : raw.data;
       for (const move of existing) {
         cached.set(move.name, move);
       }
@@ -156,6 +164,7 @@ async function main() {
             power: null,
             accuracy: null,
             pp: 1,
+            sourceFile: "stub",
           };
           cached.set(name, stub);
           failed++;
@@ -190,7 +199,11 @@ async function main() {
 
   moves.sort((a, b) => a.name.localeCompare(b.name));
 
-  writeFileSync(OUTPUT_PATH, JSON.stringify(moves, null, 2));
+  const output = {
+    _meta: { datapackVersion: DATAPACK_VERSION, generatedAt: new Date().toISOString() },
+    data: moves,
+  };
+  writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2));
   console.log(`[done] ${OUTPUT_PATH} (${moves.length} moves, ${errors} errors)`);
 }
 
