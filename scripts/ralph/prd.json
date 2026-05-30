@@ -82,8 +82,8 @@
         "Verify in browser using dev-browser skill — navegar para /items e confirmar que lista renderiza sem erros"
       ],
       "priority": 5,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Rewrote extract-items.ts to parse all recipe files (crafting, brewing_stand, campfire_pot subfolders), held_items/, and bag_items/ from the datapack. Added obtainMethod, recipe, and effect fields to Item type and itemSchema. Updated DB schema with obtain_method/recipe/effect columns, rowToItem in server/index.ts, and seedItems in seed-db.ts. Result: 653 items (362 crafting, 74 campfire_pot, 25 brewing_stand, 31 smelting, 1 stonecutting, 155 drop-only, 5 held/bag). All have required fields: id, name, obtainMethod, recipe (null if not craftable), effect (null — JS files not parseable), sourceFile. 0 validation errors. Typecheck passes."
     },
     {
       "id": "US-006",
