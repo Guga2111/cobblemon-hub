@@ -24,11 +24,12 @@ import type { SpawnBucket, SpawnContext } from "~/types/spawn";
 export interface SpawnConditionData {
   minY: number | null;
   maxY: number | null;
-  minLight: number | null;
-  maxLight: number | null;
+  minSkyLight: number | null;
+  maxSkyLight: number | null;
   isRaining: boolean | null;
   isThundering: boolean | null;
   isDay: boolean | null;
+  timeRange: string | null;
   structures: string[];
   nearbyBlocks: { blocks: string[]; minCount: number | null; maxCount: number | null }[];
 }
@@ -118,10 +119,11 @@ function hasConditions(cond: SpawnConditionData): boolean {
     cond.isDay !== null ||
     cond.isRaining !== null ||
     cond.isThundering !== null ||
+    cond.timeRange !== null ||
     cond.minY !== null ||
     cond.maxY !== null ||
-    cond.minLight !== null ||
-    cond.maxLight !== null ||
+    cond.minSkyLight !== null ||
+    cond.maxSkyLight !== null ||
     cond.structures.length > 0 ||
     cond.nearbyBlocks.length > 0
   );
@@ -167,6 +169,9 @@ function ConditionsList({
 
   if (cond.isDay === true) chips.push({ icon: Sun, label: "Daytime" });
   if (cond.isDay === false) chips.push({ icon: Moon, label: "Nighttime" });
+  if (cond.timeRange === "night") chips.push({ icon: Moon, label: "Night" });
+  else if (cond.timeRange === "day") chips.push({ icon: Sun, label: "Day" });
+  else if (cond.timeRange) chips.push({ icon: Sun, label: cond.timeRange });
   if (cond.isThundering) chips.push({ icon: Zap, label: "Thunderstorm" });
   if (cond.isRaining) chips.push({ icon: CloudRain, label: "Rain" });
 
@@ -180,13 +185,13 @@ function ConditionsList({
     chips.push({ icon: Layers, label: yLabel });
   }
 
-  if (cond.minLight !== null || cond.maxLight !== null) {
+  if (cond.minSkyLight !== null || cond.maxSkyLight !== null) {
     const lLabel =
-      cond.minLight !== null && cond.maxLight !== null
-        ? `Light ${cond.minLight}–${cond.maxLight}`
-        : cond.minLight !== null
-          ? `Light ≥ ${cond.minLight}`
-          : `Light ≤ ${cond.maxLight}`;
+      cond.minSkyLight !== null && cond.maxSkyLight !== null
+        ? `Sky Light ${cond.minSkyLight}–${cond.maxSkyLight}`
+        : cond.minSkyLight !== null
+          ? `Sky Light ≥ ${cond.minSkyLight}`
+          : `Sky Light ≤ ${cond.maxSkyLight}`;
     chips.push({ icon: Lightbulb, label: lLabel });
   }
 

@@ -16,13 +16,19 @@ export interface NearbyBlock {
 export interface SpawnCondition {
   minY: number | null;
   maxY: number | null;
-  minLight: number | null;
-  maxLight: number | null;
+  minSkyLight: number | null;
+  maxSkyLight: number | null;
   isRaining: boolean | null;
   isThundering: boolean | null;
   isDay: boolean | null;
+  timeRange: string | null;
   structures: string[];
   nearbyBlocks: NearbyBlock[];
+}
+
+export interface WeightMultiplier {
+  multiplier: number;
+  condition: Record<string, unknown>;
 }
 
 export interface SpawnEntry {
@@ -32,6 +38,7 @@ export interface SpawnEntry {
   context: SpawnContext;
   biomes: string[];
   weight: number;
+  weightMultiplier: WeightMultiplier | null;
   levelRange: { min: number; max: number };
   conditions: SpawnCondition;
   anticonditions: SpawnCondition;

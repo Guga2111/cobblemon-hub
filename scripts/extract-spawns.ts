@@ -25,9 +25,15 @@ interface RawSpawnCondition {
   isThundering?: boolean;
   minY?: number;
   maxY?: number;
-  minLight?: number;
-  maxLight?: number;
-  neededNearbyBlocks?: Array<{ blocks: string[]; range?: number }>;
+  minSkyLight?: number;
+  maxSkyLight?: number;
+  timeRange?: string;
+  neededNearbyBlocks?: Array<string | { blocks: string[]; range?: number }>;
+}
+
+interface RawWeightMultiplier {
+  multiplier: number;
+  condition: Record<string, unknown>;
 }
 
 interface RawSpawnEntry {
@@ -37,6 +43,7 @@ interface RawSpawnEntry {
   bucket?: string;
   level?: string | number;
   weight?: number;
+  weightMultiplier?: RawWeightMultiplier;
   condition?: RawSpawnCondition;
   anticondition?: RawSpawnCondition;
 }
@@ -77,25 +84,27 @@ function parseLevelRange(raw?: string | number): { min: number; max: number } {
 function normalizeCondition(raw?: RawSpawnCondition) {
   if (!raw) {
     return {
-      minY: null, maxY: null, minLight: null, maxLight: null,
-      isRaining: null, isThundering: null, isDay: null,
+      minY: null, maxY: null, minSkyLight: null, maxSkyLight: null,
+      isRaining: null, isThundering: null, isDay: null, timeRange: null,
       structures: [], nearbyBlocks: [],
     };
   }
+  const nearbyBlocks = (raw.neededNearbyBlocks ?? []).flatMap((nb) => {
+    if (typeof nb === "string") return [{ blocks: [nb], minCount: null, maxCount: null }];
+    if (!nb.blocks) return [];
+    return [{ blocks: nb.blocks, minCount: nb.range ?? null, maxCount: nb.range ?? null }];
+  });
   return {
     minY: raw.minY ?? null,
     maxY: raw.maxY ?? null,
-    minLight: raw.minLight ?? null,
-    maxLight: raw.maxLight ?? null,
+    minSkyLight: raw.minSkyLight ?? null,
+    maxSkyLight: raw.maxSkyLight ?? null,
     isRaining: raw.isRaining ?? null,
     isThundering: raw.isThundering ?? null,
     isDay: raw.isDay ?? null,
+    timeRange: raw.timeRange ?? null,
     structures: raw.structures ?? [],
-    nearbyBlocks: (raw.neededNearbyBlocks ?? []).map((nb) => ({
-      blocks: nb.blocks,
-      minCount: nb.range ?? null,
-      maxCount: nb.range ?? null,
-    })),
+    nearbyBlocks,
   };
 }
 
@@ -155,6 +164,9 @@ function main() {
           context: normalizeContext(raw.context),
           biomes,
           weight: raw.weight ?? 1,
+          weightMultiplier: raw.weightMultiplier
+            ? { multiplier: raw.weightMultiplier.multiplier, condition: raw.weightMultiplier.condition }
+            : null,
           levelRange,
           conditions: normalizeCondition(raw.condition),
           anticonditions: normalizeCondition(raw.anticondition),

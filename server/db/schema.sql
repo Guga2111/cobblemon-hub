@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS spawn_entries (
   context TEXT NOT NULL,
   biomes TEXT NOT NULL,        -- JSON: string[]
   weight REAL NOT NULL,
+  weight_multiplier TEXT,      -- JSON: WeightMultiplier | null
   level_min INTEGER NOT NULL,
   level_max INTEGER NOT NULL,
   conditions TEXT NOT NULL,    -- JSON: SpawnCondition

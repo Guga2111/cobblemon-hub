@@ -114,13 +114,19 @@ export const nearbyBlockSchema = z.object({
 export const spawnConditionSchema = z.object({
   minY: z.number().int().nullable(),
   maxY: z.number().int().nullable(),
-  minLight: z.number().int().min(0).max(15).nullable(),
-  maxLight: z.number().int().min(0).max(15).nullable(),
+  minSkyLight: z.number().int().min(0).max(15).nullable(),
+  maxSkyLight: z.number().int().min(0).max(15).nullable(),
   isRaining: z.boolean().nullable(),
   isThundering: z.boolean().nullable(),
   isDay: z.boolean().nullable(),
+  timeRange: z.string().nullable(),
   structures: z.array(z.string()),
   nearbyBlocks: z.array(nearbyBlockSchema),
+});
+
+const weightMultiplierSchema = z.object({
+  multiplier: z.number(),
+  condition: z.record(z.unknown()),
 });
 
 export const spawnEntrySchema = z.object({
@@ -130,6 +136,7 @@ export const spawnEntrySchema = z.object({
   context: spawnContextSchema,
   biomes: z.array(z.string()),
   weight: z.number().min(0),
+  weightMultiplier: weightMultiplierSchema.nullable(),
   levelRange: z.object({ min: z.number().int().min(1), max: z.number().int().min(1) }),
   conditions: spawnConditionSchema,
   anticonditions: spawnConditionSchema,

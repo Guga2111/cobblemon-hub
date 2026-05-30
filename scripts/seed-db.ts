@@ -48,10 +48,11 @@ async function applySchema(): Promise<void> {
     await db.execute(stmt);
   }
 
-  // Add source_file column to existing tables if not present (idempotent migration)
+  // Add columns to existing tables if not present (idempotent migration)
   const alterStmts = [
     "ALTER TABLE pokemon ADD COLUMN source_file TEXT",
     "ALTER TABLE spawn_entries ADD COLUMN source_file TEXT",
+    "ALTER TABLE spawn_entries ADD COLUMN weight_multiplier TEXT",
     "ALTER TABLE items ADD COLUMN source_file TEXT",
     "ALTER TABLE moves ADD COLUMN source_file TEXT",
   ];
@@ -122,13 +123,15 @@ async function seedSpawns(): Promise<void> {
     const s = result.data;
     await db.execute({
       sql: `INSERT OR REPLACE INTO spawn_entries
-        (id, pokemon_id, bucket, context, biomes, weight, level_min, level_max,
+        (id, pokemon_id, bucket, context, biomes, weight, weight_multiplier, level_min, level_max,
          conditions, anticonditions, source_file)
-        VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`,
       args: [
         s.id, s.pokemonId, s.bucket, s.context,
         JSON.stringify(s.biomes),
-        s.weight, s.levelRange.min, s.levelRange.max,
+        s.weight,
+        s.weightMultiplier !== null ? JSON.stringify(s.weightMultiplier) : null,
+        s.levelRange.min, s.levelRange.max,
         JSON.stringify(s.conditions),
         JSON.stringify(s.anticonditions),
         s.sourceFile ?? datapackVersion,
