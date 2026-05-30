@@ -1,5 +1,8 @@
 ## Codebase Patterns
 - JSON output files use `{ _meta: { datapackVersion: '1.7.3+1.21.1', generatedAt: '...' }, data: [...] }` format. All readers must handle both the old array format and the new object format (check `Array.isArray`).
+- `legendaries.json` is an EXCEPTION to the `{ _meta, data }` format — it uses `{ _meta, legendaries: [...], obtainMethods: {...}, dimensions: [...] }` because the UI imports it directly and reads named keys. Do NOT wrap in a `data` key.
+- Legendary/mythical Pokémon are identified by `labels` array in species JSON (look for "legendary" or "mythical"); there are NO entries for legendaries in spawn_pool_world/.
+- Species generation folders map to regions: generation1→kanto, generation2→johto, generation3→hoenn, generation4→sinnoh, generation5→unova, generation6→kalos, generation7/7b→alola, generation8→galar, generation8a→hisui, generation9→paldea.
 - `seed-db.ts` calls extract-pokemon.ts, extract-spawns.ts, extract-items.ts via spawnSync before seeding — data always comes from the canonical datapack, not manually-edited files.
 - DB tables (pokemon, spawn_entries, items, moves) have a `source_file TEXT` column for traceability.
 - Extract scripts use COBBLEMON_DATAPACK_PATH env var (default: `./data/datapack`).
@@ -47,4 +50,21 @@
   - 824 spawn pool files, yielding 2851 spawn entries total
   - `neededNearbyBlocks` in anticondition can be plain string arrays (e.g., `["#cobblemon:saccharine_trees"]`) — treat each string as `{ blocks: [string] }`
   - `weightMultiplier` appears on ~606 entries; condition inside it can have `isThundering`, `timeRange`, `minLureLevel`, etc.
+---
+
+## 2026-05-30 - US-003
+- Created `scripts/extract-legendaries.ts` — reads all species/ JSON to find legendary/mythical Pokémon by `labels` array, checks spawn_pool_world/ for spawn data (0 found), merges with existing legendaries.json preserving curated fields
+- Expanded legendaries.json from 35 entries (Gen 1-4) to 94 entries (Gen 1-9, all 71 legendaries + 23 mythicals in datapack)
+- No entries removed (all 35 existing Gen 1-4 entries exist in datapack); 59 new entries added (Gen 5-9)
+- Each entry now includes: pokemonId, spawnMethod, location, conditions (null — no spawn pool data), rarity (null — no spawn pool data), sourceFile
+- Updated `src/app/routes/legendaries.tsx` REGION_LABELS to include unova, kalos, alola, galar, hisui, paldea so new entries render in grouped view
+- Updated Legendary interface in legendaries.tsx with optional new fields (pokemonId, spawnMethod, location, conditions, rarity, sourceFile)
+- Added `tsx scripts/extract-legendaries.ts` to the `extract` npm script
+- Files changed: scripts/extract-legendaries.ts (new), src/app/routes/legendaries.tsx, package.json
+- `npm run typecheck` passes; browser verification requires manual testing (no browser MCP tool available)
+- **Learnings for future iterations:**
+  - Legendaries have NO spawn pool files — their `conditions` and `rarity` fields will always be null until Cobblemon adds shrine-based spawning to the datapack
+  - 71 legendary + 23 mythical = 94 total in the Cobbleverse 1.7.3+1.21.1 datapack
+  - Existing manually curated obtain methods (shrine/raid/biome) for Gen 1-4 are preserved by merge logic — always merge, never overwrite existing data
+  - `generation7b` folder exists for Alola alternate forms (also mapped to alola/gen7)
 ---
