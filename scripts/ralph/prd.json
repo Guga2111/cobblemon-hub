@@ -16,8 +16,8 @@
         "Typecheck passes"
       ],
       "priority": 1,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "seed-db.ts calls extract-pokemon, extract-spawns, extract-items via spawnSync before seeding. Added _meta.datapackVersion and sourceFile to all JSON outputs. Added source_file column to DB tables."
     },
     {
       "id": "US-002",
