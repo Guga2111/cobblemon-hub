@@ -27,6 +27,7 @@ export function ErrorBoundary() {
 }
 
 interface RaidTier {
+  id: string;
   tier: number;
   stars: number;
   displayName: string;
@@ -40,6 +41,9 @@ interface RaidTier {
   energy: number;
   ai: string;
   description: string;
+  pokemonPool: string[] | null;
+  rewards: string[];
+  location: string | null;
 }
 
 const DIFFICULTY_COLORS: Record<string, string> = {
@@ -139,13 +143,37 @@ function RaidCard({ raid }: { raid: RaidTier }) {
             </p>
           </div>
         )}
+
+        {raid.rewards && raid.rewards.length > 0 && (
+          <div className="mt-3">
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground/50 mb-1.5">
+              Recompensas possíveis
+            </p>
+            <div className="flex flex-wrap gap-1">
+              {raid.rewards.slice(0, 8).map((item) => (
+                <span
+                  key={item}
+                  className="inline-block rounded px-1.5 py-0.5 text-[9px] font-mono bg-muted/40 text-muted-foreground/70 border border-border/20"
+                >
+                  {item.replace(/_/g, " ")}
+                </span>
+              ))}
+              {raid.rewards.length > 8 && (
+                <span className="inline-block rounded px-1.5 py-0.5 text-[9px] font-mono bg-muted/20 text-muted-foreground/40 border border-border/10">
+                  +{raid.rewards.length - 8} mais
+                </span>
+              )}
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
 }
 
 export default function RaidsPage() {
-  const raids = raidsData as RaidTier[];
+  const raw = raidsData as { data?: RaidTier[] } | RaidTier[];
+  const raids: RaidTier[] = Array.isArray(raw) ? raw : (raw.data ?? []);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
