@@ -39,7 +39,7 @@ export const GUIDES: Guide[] = [
     slug: "instalacao-cobblemon",
     title: "Instalação do Cobblemon",
     description:
-      "Guia completo para instalar o mod Cobblemon no Minecraft, cobrindo Forge, Fabric e todas as dependências necessárias.",
+      "Guia completo para instalar o mod Cobblemon no Minecraft, cobrindo Fabric e todas as dependências necessárias para o Cobbleverse 1.7.3+1.21.1.",
     difficulty: "Easy",
     tags: ["Instalação"],
     thumbnail: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/137.png",
@@ -47,27 +47,33 @@ export const GUIDES: Guide[] = [
     sections: [
       {
         heading: "Pré-requisitos",
-        body: "Antes de instalar o Cobblemon, você precisa de uma versão compatível do Minecraft Java Edition e um mod loader (Forge ou Fabric).",
+        body: "O Cobbleverse roda em Minecraft Java Edition 1.21.1 com Fabric. Certifique-se de ter os seguintes itens antes de começar:",
         list: [
-          "Minecraft Java Edition 1.20.1 ou superior",
-          "Forge 47.x ou Fabric 0.15.x",
+          "Minecraft Java Edition 1.21.1",
+          "Fabric Loader 0.16.x (cobbleverse usa Fabric — não Forge)",
           "Pelo menos 4 GB de RAM alocados para o Minecraft",
-          "Java 17 ou superior instalado",
+          "Java 21 ou superior instalado",
         ],
       },
       {
-        heading: "Instalando via Forge",
-        body: "O Forge é o loader mais tradicional e amplamente suportado. Acesse o site oficial do Forge e baixe a versão recomendada para o Minecraft 1.20.1. Execute o instalador e selecione 'Install Client'.",
-        tip: "Use sempre a versão 'Recommended' do Forge para maior estabilidade.",
-      },
-      {
         heading: "Instalando via Fabric",
-        body: "O Fabric é mais leve e moderno. Baixe o Fabric Installer no site oficial, execute-o e instale para a versão correta do Minecraft. Você também precisará do Fabric API como dependência adicional.",
-        tip: "Fabric geralmente tem melhor performance que Forge para servidores com muitos jogadores.",
+        body: "O Cobbleverse usa exclusivamente Fabric. Baixe o Fabric Installer no site oficial (fabricmc.net), execute-o e instale para o Minecraft 1.21.1. Você também precisará do Fabric API como dependência adicional.",
+        tip: "Use sempre a versão de Fabric Loader 0.16.x para garantir compatibilidade com os mods do Cobbleverse.",
       },
       {
         heading: "Colocando o Cobblemon",
-        body: "Baixe o arquivo .jar do Cobblemon no site oficial ou no Modrinth. Coloque o arquivo na pasta 'mods' dentro do diretório do Minecraft (.minecraft/mods). Certifique-se que todas as dependências também estejam na pasta mods.",
+        body: "Baixe o arquivo cobblemon-fabric-1.7.3+1.21.1.jar no site oficial ou no Modrinth. Coloque o arquivo na pasta 'mods' dentro do diretório do Minecraft (.minecraft/mods). Certifique-se que todas as dependências também estejam na pasta mods.",
+      },
+      {
+        heading: "Dependências Obrigatórias",
+        body: "Além do Fabric API, o Cobbleverse requer outros mods integrados para funcionar corretamente. Os principais são:",
+        list: [
+          "Fabric API — base para todos os mods Fabric",
+          "Kotlin for Fabric — obrigatório para o Cobblemon",
+          "BotanyPots — cultivo automatizado de Apricorns e Berries",
+          "Adorn — móveis e decoração com madeira de Apricorn",
+          "CarryOn — carregar blocos e entidades",
+        ],
       },
       {
         heading: "Configurações Iniciais",
@@ -78,16 +84,10 @@ export const GUIDES: Guide[] = [
     ],
     faq: [
       {
-        id: "forge-version",
-        question: "Qual versão do Forge devo usar?",
-        answer:
-          "Use sempre a versão 'Recommended' mais recente para o Minecraft 1.20.1. Você encontra esta informação no site oficial do Forge (files.minecraftforge.net). Evite versões 'Latest' em produção pois podem ter bugs.",
-      },
-      {
         id: "fabric-deps",
         question: "Quais dependências preciso para o Fabric?",
         answer:
-          "Para o Fabric você precisará: Fabric Loader (o instalador em si), Fabric API (obrigatório para maioria dos mods), e Kotlin for Fabric (obrigatório para o Cobblemon). Todos estão disponíveis no Modrinth ou CurseForge.",
+          "Para o Cobbleverse você precisará: Fabric Loader 0.16.x (o instalador em si), Fabric API para 1.21.1 (obrigatório para maioria dos mods), e Kotlin for Fabric (obrigatório para o Cobblemon). Todos estão disponíveis no Modrinth ou CurseForge.",
       },
       {
         id: "ram-config",
@@ -99,13 +99,13 @@ export const GUIDES: Guide[] = [
         id: "configs",
         question: "Como personalizar as configurações do Cobblemon?",
         answer:
-          "Os arquivos de configuração ficam em .minecraft/config/cobblemon/. Os principais são: main.json (configurações gerais, spawn rates globais), pokemon-spawn.json (chances de spawn por espécie), e starter-pokemon.json (Pokémon iniciais disponíveis). Edite com qualquer editor de texto e reinicie o jogo para aplicar.",
+          "Os arquivos de configuração ficam em .minecraft/config/cobblemon/. O principal é main.json (configurações gerais, spawn rates globais, dificuldade de captura). Edite com qualquer editor de texto e reinicie o jogo para aplicar.",
       },
       {
         id: "server-install",
         question: "Como instalar em um servidor?",
         answer:
-          "Para servidores, baixe o Forge/Fabric Server Installer e execute com 'java -jar installer.jar --installServer'. Coloque os mods na pasta mods/ do servidor. Recomendamos pelo menos 6 GB de RAM para servidores com múltiplos jogadores capturando Pokémon simultaneamente.",
+          "Para servidores, baixe o Fabric Server Installer e execute com 'java -jar fabric-installer.jar server -mcversion 1.21.1 -loader 0.16.x'. Coloque os mods na pasta mods/ do servidor. Recomendamos pelo menos 6 GB de RAM para servidores com múltiplos jogadores capturando Pokémon simultaneamente.",
       },
     ],
   },
@@ -125,25 +125,37 @@ export const GUIDES: Guide[] = [
       },
       {
         heading: "Tipos e Biomas",
-        body: "Cada cor de Apricorn aparece em biomas específicos, tornando a coleta uma aventura de exploração.",
+        body: "Cada cor de Apricorn tem preferências de bioma no mundo. As associações abaixo são baseadas no comportamento padrão do Cobblemon — verificação manual no servidor pode revelar variações: TODO: confirmar biomas exatos no servidor.",
         list: [
-          "Red Apricorn → Savanna, Plains — faz Fast Ball",
-          "Yellow Apricorn → Desert, Badlands — faz Level Ball",
-          "Blue Apricorn → Ocean, Beach — faz Lure Ball",
-          "Green Apricorn → Forest, Jungle — faz Friend Ball",
-          "Pink Apricorn → Meadow, Flower Forest — faz Love Ball",
-          "Black Apricorn → Dark Forest, Taiga — faz Heavy Ball",
-          "White Apricorn → Snowy Tundra, Frozen Peaks — faz Moon Ball",
+          "Red Apricorn → Savanna, Plains",
+          "Yellow Apricorn → Desert, Badlands",
+          "Blue Apricorn → Ocean, Beach",
+          "Green Apricorn → Forest, Jungle",
+          "Pink Apricorn → Meadow, Flower Forest",
+          "Black Apricorn → Dark Forest, Taiga",
+          "White Apricorn → Snowy Tundra, Frozen Peaks",
         ],
       },
       {
         heading: "Cultivando Apricorns",
-        body: "As árvores de Apricorn podem ser cultivadas plantando sementes obtidas ao processar o fruto. Plante em Terra ou Terra com Grama, regue com água (não é obrigatório) e aguarde alguns dias de jogo para o crescimento.",
-        tip: "Crie uma fazenda compacta de Apricorns para garantir produção constante de todas as cores. Um espaço 3×7 com um de cada cor é suficiente para a maioria dos jogadores.",
+        body: "As árvores de Apricorn podem ser cultivadas plantando sementes obtidas ao processar o fruto. Plante em Terra ou Terra com Grama e aguarde alguns dias de jogo para o crescimento. Com o mod BotanyPots (integrado ao Cobbleverse), você também pode cultivar Apricorns em vasos especializados para produção automatizada.",
+        tip: "Crie uma fazenda com TODAS as 7 cores de Apricorn — cada tipo de ball requer combinações diferentes de cores.",
       },
       {
         heading: "Processando em Poké Balls",
-        body: "Use uma Workbench (bancada de trabalho) para combinar Apricorns com outros materiais e criar discos. Depois, use o Tumblestone para finalizar as Poké Balls. O processo requer alguns passos intermediários mas é muito recompensador.",
+        body: "No Cobbleverse 1.7.3, as Poké Balls são crafteadas diretamente na Workbench (bancada de trabalho) sem sistema de discos. A receita usa 4 Apricorns (posições top, left, right, bottom) + 1 Lingote de metal (posição central). Cada tipo de ball exige cores específicas de Apricorn combinadas:",
+        list: [
+          "Poke Ball: 4× Red Apricorn + Lingote de Cobre",
+          "Great Ball: Blue+Red+Red+Blue + Lingote de Ferro",
+          "Fast Ball: Red+Yellow+Yellow+White + Lingote de Ferro",
+          "Level Ball: Black+Pink+Pink+Red + Lingote de Ferro",
+          "Lure Ball: Red+Blue+Blue+Green + Lingote de Ferro",
+          "Friend Ball: Yellow+Green+Green+Red + Lingote de Ferro",
+          "Heavy Ball: Black+Blue+Blue+Black + Lingote de Ferro",
+          "Moon Ball: Yellow+Blue+Black+Yellow + Lingote de Ferro",
+          "Love Ball: White+Pink+Pink+Pink + Lingote de Ouro",
+        ],
+        tip: "Colete todas as 7 cores de Apricorn antes de começar a craftar — a maioria das balls melhores requer pelo menos 3 cores diferentes.",
       },
     ],
   },
@@ -163,21 +175,28 @@ export const GUIDES: Guide[] = [
       },
       {
         heading: "Tipos de Tumblestone",
-        body: "Cada tipo de Tumblestone tem um ambiente preferido de spawn:",
+        body: "Cada tipo de Tumblestone tem um ambiente preferido de spawn e é usado na criação de Ancient Balls (versões ancestrais das Poké Balls):",
         list: [
-          "Black Tumblestone — encontrado em cavernas profundas, biomas de Nether próximos a lava. Componente para Heavy Ball e outras balls de captura forçada.",
-          "Sky Tumblestone — gerado em altitudes elevadas, Mountain biomes, Flying Pokémon habitats. Usado em Fast Ball e Dive Ball.",
-          "Red Tumblestone — o mais comum, encontrado em qualquer caverna abaixo de Y=32. Base para Poké Ball e Great Ball padrão.",
+          "Red Tumblestone (Tumblestone) — o mais comum, encontrado em qualquer caverna. Usado em Ancient Poke Ball, Ancient Great Ball, Ancient Azure Ball e outras.",
+          "Sky Tumblestone — gerado em altitudes elevadas, Mountain biomes. Usado em Ancient Feather Ball, Ancient Wing Ball e Ancient Jet Ball.",
+          "Black Tumblestone — encontrado em cavernas profundas e próximo a lava. Usado em Ancient Heavy Ball, Ancient Leaden Ball e Ancient Gigaton Ball.",
         ],
       },
       {
         heading: "Minerando Eficientemente",
         body: "Tumblestones têm aparência similar a minérios comuns mas com textura levemente translúcida. Use um Pickaxe de Ferro ou superior para minerá-los. Cada bloco dropa de 1 a 3 unidades.",
-        tip: "Encante seu Pickaxe com Fortune III para triplicar o yield de Tumblestone por bloco.",
+        tip: "Encante seu Pickaxe com Fortune III para aumentar o yield de Tumblestone por bloco.",
       },
       {
-        heading: "Processamento na Workbench",
-        body: "Combine Tumblestones com Apricorns na Workbench para criar Apricorn Discs. Um disco requer 4 Apricorns da mesma cor + 1 Tumblestone. Os discos são depois refinados com calor para criar as Poké Balls finais.",
+        heading: "Criando Ancient Balls",
+        body: "Tumblestones são usados exclusivamente para criar Ancient Balls (não as balls padrão). A receita usa 2 Apricorns (top/bottom) + 2 Tumblestones do tipo correto (left/right) + 1 Lingote de metal (centro). Exemplos:",
+        list: [
+          "Ancient Poke Ball: Red Apricorn (×2) + Red Tumblestone (×2) + Cobre",
+          "Ancient Heavy Ball: Black Apricorn (×2) + Black Tumblestone (×2) + Cobre",
+          "Ancient Feather Ball: Blue+White Apricorn + Sky Tumblestone (×2) + Cobre",
+          "Ancient Gigaton Ball: Black Apricorn (×2) + Black Tumblestone (×2) + Ouro",
+        ],
+        tip: "Para Poké Balls padrão (Fast, Lure, Friend etc.) NÃO use Tumblestones — use 4 Apricorns de cores específicas + Lingote de metal.",
       },
     ],
   },
@@ -197,8 +216,8 @@ export const GUIDES: Guide[] = [
       },
       {
         heading: "Layout da Fazenda",
-        body: "A configuração ideal usa Farmland (terra arada) hidratada por um bloco de água a cada 4 tiles. Uma fazenda 8×8 com 4 poços d'água suporta 48 plantas simultaneamente — suficiente para produção constante de 12+ tipos de Berry.",
-        tip: "Use um sistema de irrigação automática com dispensers e tripwire hooks para regar automaticamente ao plantar.",
+        body: "A configuração ideal usa Farmland (terra arada) hidratada por um bloco de água a cada 4 tiles. Uma fazenda 8×8 com 4 poços d'água suporta 48 plantas simultaneamente — suficiente para produção constante de 12+ tipos de Berry. O Cobbleverse também integra o mod BotanyPots: você pode cultivar Berries em vasos especializados sem precisar de Farmland ou irrigação.",
+        tip: "BotanyPots (integrado ao Cobbleverse) permite crescimento automático de Berries e Apricorns em espaço compacto — ideal para bases pequenas.",
       },
       {
         heading: "Berries de Redução de EV",
@@ -238,10 +257,10 @@ export const GUIDES: Guide[] = [
         heading: "Melhores Locais por Stat",
         body: "Cada stat tem Pokémon ideais para farming em biomas específicos:",
         list: [
-          "HP: Chansey/Blissey em Plains e Meadows (+2 HP EV cada)",
+          "HP: Chansey (+2 HP EV) em Plains e Meadows; Blissey (+3 HP EV) como evolução",
           "Attack: Machoke em Mountain biomes (+2 Atk EV)",
-          "Defense: Onix e Graveler em Stone Shore e Caves (+1/+2 Def EV)",
-          "Sp. Atk: Gastly/Haunter em Dark Forest e Caves (+1/+2 SpA EV)",
+          "Defense: Onix (+1 Def EV) e Graveler (+2 Def EV) em Stone Shore e Caves",
+          "Sp. Atk: Gastly (+1 SpA EV) e Haunter (+2 SpA EV) em Dark Forest e Caves",
           "Sp. Def: Tentacool em Ocean e Beach (+1 SpD EV)",
           "Speed: Zubat em qualquer Cave (+1 Spe EV), Jolteon na Savanna (+2 Spe EV)",
         ],
@@ -256,8 +275,8 @@ export const GUIDES: Guide[] = [
           "Power Band (+8 SpD EV por batalha)",
           "Power Anklet (+8 Spe EV por batalha)",
           "Power Weight (+8 HP EV por batalha)",
-          "Macho Brace (dobra todos os EVs, reduz Speed em batalha)",
         ],
+        tip: "TODO: Macho Brace não foi encontrado no datapack do Cobbleverse 1.7.3 — verificar se está disponível como drop ou recompensa customizada no servidor.",
       },
       {
         heading: "Calculando o Spread Ideal",
@@ -282,8 +301,8 @@ export const GUIDES: Guide[] = [
       },
       {
         heading: "Shiny Charm",
-        body: "O Shiny Charm é o item mais importante para caça de shinies. Você o obtém completando a Pokédex do Cobblemon (registrando todos os Pokémon disponíveis). Com o Shiny Charm equipado, a taxa triplica para 3/4096.",
-        tip: "Foque em completar a dex de um bioma por vez — é mais eficiente do que tentar capturar aleatoriamente.",
+        body: "TODO: O Shiny Charm como item equipável não foi confirmado no datapack do Cobbleverse 1.7.3+1.21.1. Nos jogos oficiais, ele triplica a taxa de Shiny após completar a Pokédex. Verifique com a administração do servidor se este mecanismo está implementado.",
+        tip: "Mesmo sem Shiny Charm, as taxas de Shiny no Cobblemon podem ser ajustadas pelo servidor via config/cobblemon/main.json.",
       },
       {
         heading: "Método de Chaining",
