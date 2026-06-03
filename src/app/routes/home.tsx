@@ -11,6 +11,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { cn } from "~/lib/utils";
+import { API_BASE, STALE_TIMES } from "~/lib/api";
 
 export const meta: MetaFunction = () => [
   { title: "Cobbleverse Hub — Home" },
@@ -63,22 +64,22 @@ export default function HomePage() {
   const { data: pokemonData } = useQuery({
     queryKey: ["home-pokemon-count"],
     queryFn: async () => {
-      const res = await fetch("http://localhost:3001/api/pokemon?limit=1&page=1");
+      const res = await fetch(`${API_BASE}/pokemon?limit=1&page=1`);
       if (!res.ok) throw new Error("Failed");
       return res.json() as Promise<{ pagination: { total: number } }>;
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: STALE_TIMES.STATIC,
   });
 
   const { data: itemsData } = useQuery({
     queryKey: ["home-items-count"],
     queryFn: async () => {
-      const res = await fetch("http://localhost:3001/api/items");
+      const res = await fetch(`${API_BASE}/items`);
       if (!res.ok) throw new Error("Failed");
       const json = (await res.json()) as { data: unknown[] };
       return json.data.length;
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: STALE_TIMES.STATIC,
   });
 
   const pokemonCount = pokemonData?.pagination.total ?? 0;

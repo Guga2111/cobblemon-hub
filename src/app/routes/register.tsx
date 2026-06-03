@@ -18,10 +18,15 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { ScrollArea } from "~/components/ui/scroll-area";
+import { RouteErrorBoundary } from "~/components/layout/route-error-boundary";
 
 export const meta: MetaFunction = () => [
   { title: "Criar Conta - Cobbleverse Hub" },
 ];
+
+export function ErrorBoundary() {
+  return <RouteErrorBoundary routeName="Registro" />;
+}
 
 export default function RegisterPage() {
   const navigate = useNavigate();

@@ -125,7 +125,7 @@ export const GUIDES: Guide[] = [
       },
       {
         heading: "Tipos e Biomas",
-        body: "Cada cor de Apricorn tem preferências de bioma no mundo. As associações abaixo são baseadas no comportamento padrão do Cobblemon — verificação manual no servidor pode revelar variações: TODO: confirmar biomas exatos no servidor.",
+        body: "Cada cor de Apricorn tem preferências de bioma no mundo. As associações abaixo são baseadas no comportamento padrão do Cobblemon — verificação manual no servidor pode revelar variações.",
         list: [
           "Red Apricorn → Savanna, Plains",
           "Yellow Apricorn → Desert, Badlands",
@@ -276,7 +276,7 @@ export const GUIDES: Guide[] = [
           "Power Anklet (+8 Spe EV por batalha)",
           "Power Weight (+8 HP EV por batalha)",
         ],
-        tip: "TODO: Macho Brace não foi encontrado no datapack do Cobbleverse 1.7.3 — verificar se está disponível como drop ou recompensa customizada no servidor.",
+        tip: "Macho Brace pode nao estar disponivel nesta versao do Cobbleverse. Consulte a administracao do servidor para alternativas.",
       },
       {
         heading: "Calculando o Spread Ideal",
@@ -301,7 +301,7 @@ export const GUIDES: Guide[] = [
       },
       {
         heading: "Shiny Charm",
-        body: "TODO: O Shiny Charm como item equipável não foi confirmado no datapack do Cobbleverse 1.7.3+1.21.1. Nos jogos oficiais, ele triplica a taxa de Shiny após completar a Pokédex. Verifique com a administração do servidor se este mecanismo está implementado.",
+        body: "O Shiny Charm como item equipavel nao foi confirmado nesta versao do Cobbleverse. Nos jogos oficiais, ele triplica a taxa de Shiny apos completar a Pokedex. Verifique com a administracao do servidor se este mecanismo esta implementado.",
         tip: "Mesmo sem Shiny Charm, as taxas de Shiny no Cobblemon podem ser ajustadas pelo servidor via config/cobblemon/main.json.",
       },
       {

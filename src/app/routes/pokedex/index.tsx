@@ -1,5 +1,11 @@
 import { useRef, useState, useMemo, useEffect, useCallback, memo } from "react";
 import { Link } from "react-router";
+import type { MetaFunction } from "react-router";
+
+export const meta: MetaFunction = () => [
+  { title: "Pokedex — Cobbleverse Hub" },
+  { name: "description", content: "Explore todos os Pokemon do Cobbleverse com stats, tipos, spawns e raridade" },
+];
 import { RouteErrorBoundary } from "~/components/layout/route-error-boundary";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -23,9 +29,10 @@ import {
   X,
   SearchX,
 } from "lucide-react";
-import type { PokemonType } from "~/types/pokemon";
+import type { PokemonType, PokemonListItem, BaseStats } from "~/types/pokemon";
 import { TypeBadge } from "~/components/pokemon/type-badge";
 import { cn } from "~/lib/utils";
+import { API_BASE, STALE_TIMES } from "~/lib/api";
 import { getPokemonSprite, getPokemonSpriteFallback } from "~/lib/sprites";
 import {
   usePokedexFilters,
@@ -42,30 +49,6 @@ import { Badge } from "~/components/ui/badge";
 import { Card, CardContent } from "~/components/ui/card";
 
 // ── Types ────────────────────────────────────────────────────────────
-
-interface BaseStats {
-  hp: number;
-  attack: number;
-  defense: number;
-  specialAttack: number;
-  specialDefense: number;
-  speed: number;
-}
-
-interface PokemonListItem {
-  id: string;
-  dexNumber: number;
-  name: string;
-  displayName: string;
-  types: PokemonType[];
-  baseStats: BaseStats | null;
-  generation: number;
-  primaryBucket: string | null;
-  primaryBiomes: string[] | null;
-  primaryContext: string | null;
-  primaryWeather: string | null;
-  bst: number;
-}
 
 interface RawPokemonListItem {
   id: string;
@@ -586,13 +569,20 @@ export default function Pokedex() {
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["pokemon-list"],
-    queryFn: async () => {
-      const res = await fetch("http://localhost:3001/api/pokemon?limit=1000&page=1");
-      if (!res.ok) throw new Error("Failed to fetch Pokemon");
-      const json = (await res.json()) as { data: RawPokemonListItem[] };
-      return json.data;
+    queryFn: async ({ signal }) => {
+      const allData: RawPokemonListItem[] = [];
+      let page = 1;
+      while (true) {
+        const res = await fetch(`${API_BASE}/pokemon?limit=500&page=${page}`, { signal });
+        if (!res.ok) throw new Error("Failed to fetch Pokemon");
+        const json = (await res.json()) as { data: RawPokemonListItem[]; pagination: { totalPages: number } };
+        allData.push(...json.data);
+        if (page >= json.pagination.totalPages) break;
+        page++;
+      }
+      return allData;
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: STALE_TIMES.STATIC,
   });
 
   const processedData = useMemo((): PokemonListItem[] => {

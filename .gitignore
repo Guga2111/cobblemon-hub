@@ -7,3 +7,6 @@ dist
 .env.local
 data/*.db
 data/*.json
+*.jar
+*.zip
+.DS_Store

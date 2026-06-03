@@ -1,7 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuthStore, type AuthUser } from "./use-auth-store";
 
-const API_BASE = "http://localhost:3001/api/auth";
+import { API_BASE as BASE, STALE_TIMES } from "~/lib/api";
+
+const API_BASE = `${BASE}/auth`;
 
 async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, {
@@ -27,9 +29,9 @@ export function useCurrentUser() {
 
   return useQuery({
     queryKey: ["auth", "me"],
-    queryFn: async () => {
+    queryFn: async ({ signal }) => {
       try {
-        const data = await fetchJson<{ user: AuthUser }>(`${API_BASE}/me`);
+        const data = await fetchJson<{ user: AuthUser }>(`${API_BASE}/me`, { signal });
         setUser(data.user);
         return data.user;
       } catch {
@@ -37,7 +39,7 @@ export function useCurrentUser() {
         return null;
       }
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: STALE_TIMES.AUTH,
     retry: false,
   });
 }

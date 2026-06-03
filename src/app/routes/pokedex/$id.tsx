@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router";
+import type { MetaFunction } from "react-router";
+
+export const meta: MetaFunction = () => [
+  { title: "Pokemon — Cobbleverse Hub" },
+  { name: "description", content: "Detalhes do Pokemon: stats, habilidades, movimentos, spawns e evolucoes" },
+];
 import { RouteErrorBoundary } from "~/components/layout/route-error-boundary";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -18,6 +24,7 @@ import { StatBar } from "~/components/pokemon/stat-bar";
 import { SpawnCard, type SpawnEntryData } from "~/components/pokemon/spawn-card";
 import { MovesTable } from "~/components/pokemon/moves-table";
 import { cn } from "~/lib/utils";
+import { API_BASE, STALE_TIMES } from "~/lib/api";
 import { getPokemonSprite, getPokemonSpriteFallback } from "~/lib/sprites";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
@@ -121,13 +128,13 @@ export default function PokemonDetailPage() {
 
   const { data, isLoading, isError, refetch } = useQuery<{ data: PokemonDetail }>({
     queryKey: ["pokemon-detail", id],
-    queryFn: async () => {
-      const res = await fetch(`http://localhost:3001/api/pokemon/${id}`);
+    queryFn: async ({ signal }) => {
+      const res = await fetch(`${API_BASE}/pokemon/${id}`, { signal });
       if (!res.ok) throw new Error("Pokemon not found");
       return res.json() as Promise<{ data: PokemonDetail }>;
     },
     enabled: !!id,
-    staleTime: 5 * 60 * 1000,
+    staleTime: STALE_TIMES.STATIC,
   });
 
   if (isLoading) return <PageSkeleton />;

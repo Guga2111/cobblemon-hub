@@ -1,4 +1,10 @@
+import type { MetaFunction } from "react-router";
 import { Swords, Trash2, Shield } from "lucide-react";
+
+export const meta: MetaFunction = () => [
+  { title: "Team Builder — Cobbleverse Hub" },
+  { name: "description", content: "Monte seu time competitivo de 6 Pokemon com EVs, IVs e natures" },
+];
 import { TeamSlot } from "~/components/team/team-slot";
 import { useTeamStore } from "~/features/team-builder/use-team-store";
 import { ExportDialog } from "~/components/team/export-dialog";
@@ -20,25 +26,9 @@ export default function TeamBuilderPage() {
       <div className="flex items-start justify-between gap-4">
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center gap-3">
-            <div
-              className="relative flex items-center justify-center h-10 w-10 rounded-xl"
-              style={{
-                background:
-                  "linear-gradient(135deg, hsl(var(--primary) / 0.15), hsl(var(--primary) / 0.05))",
-                border: "1px solid hsl(var(--primary) / 0.2)",
-              }}
-            >
-              <Swords
-                className="h-5 w-5"
-                style={{ color: "hsl(var(--primary))" }}
-              />
-              <div
-                className="absolute inset-0 rounded-xl blur-md -z-10"
-                style={{
-                  background:
-                    "radial-gradient(circle, hsl(var(--primary) / 0.25) 0%, transparent 70%)",
-                }}
-              />
+            <div className="relative flex items-center justify-center h-10 w-10 rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 border border-primary/20">
+              <Swords className="h-5 w-5 text-primary" />
+              <div className="absolute inset-0 rounded-xl blur-md -z-10 bg-[radial-gradient(circle,hsl(var(--primary)/0.25)_0%,transparent_70%)]" />
             </div>
             <div className="flex items-center gap-2.5">
               <h1 className="text-2xl font-bold tracking-tight font-[var(--font-heading)]">
@@ -55,10 +45,7 @@ export default function TeamBuilderPage() {
               </Badge>
             </div>
           </div>
-          <p
-            className="text-sm pl-[3.25rem]"
-            style={{ color: "hsl(var(--muted-foreground) / 0.6)" }}
-          >
+          <p className="text-sm pl-[3.25rem] text-muted-foreground/60">
             {filledCount === 0
               ? "Monte seu time de 6 Pokemon"
               : `${filledCount}/6 Pokemon selecionados`}
@@ -81,50 +68,23 @@ export default function TeamBuilderPage() {
         )}
       </div>
 
-      <Separator
-        className="opacity-50"
-        style={{
-          background:
-            "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.2), transparent)",
-        }}
-      />
+      <Separator className="opacity-50 bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
 
       {/* Empty state hint */}
       {filledCount === 0 && (
         <div
           className={cn(
             "flex flex-col items-center justify-center text-center py-8 rounded-2xl animate-fade-in",
-            "border border-dashed"
+            "border border-dashed border-primary/15 bg-gradient-to-b from-primary/[0.03] to-transparent"
           )}
-          style={{
-            borderColor: "hsl(var(--primary) / 0.15)",
-            background:
-              "linear-gradient(180deg, hsl(var(--primary) / 0.03) 0%, transparent 100%)",
-          }}
         >
-          <div
-            className="flex items-center justify-center h-14 w-14 rounded-2xl mb-4"
-            style={{
-              background:
-                "linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--primary) / 0.03))",
-              border: "1px solid hsl(var(--primary) / 0.12)",
-            }}
-          >
-            <Shield
-              className="h-7 w-7"
-              style={{ color: "hsl(var(--primary) / 0.4)" }}
-            />
+          <div className="flex items-center justify-center h-14 w-14 rounded-2xl mb-4 bg-gradient-to-br from-primary/10 to-primary/[0.03] border border-primary/[0.12]">
+            <Shield className="h-7 w-7 text-primary/40" />
           </div>
-          <p
-            className="text-sm font-medium"
-            style={{ color: "hsl(var(--muted-foreground) / 0.7)" }}
-          >
+          <p className="text-sm font-medium text-muted-foreground/70">
             Nenhum Pokemon adicionado ainda
           </p>
-          <p
-            className="text-xs mt-1 max-w-xs"
-            style={{ color: "hsl(var(--muted-foreground) / 0.4)" }}
-          >
+          <p className="text-xs mt-1 max-w-xs text-muted-foreground/40">
             Clique em um dos slots abaixo para pesquisar e adicionar Pokemon ao seu time.
           </p>
         </div>

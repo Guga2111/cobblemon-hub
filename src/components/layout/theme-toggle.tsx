@@ -5,9 +5,13 @@ import { cn } from "~/lib/utils";
 type Theme = "dark" | "light";
 
 function getInitialTheme(): Theme {
-  if (typeof window === "undefined") return "dark";
-  const stored = localStorage.getItem("theme") as Theme | null;
-  return stored === "light" ? "light" : "dark";
+  try {
+    if (typeof window === "undefined") return "dark";
+    const stored = localStorage.getItem("theme") as Theme | null;
+    return stored === "light" ? "light" : "dark";
+  } catch {
+    return "dark";
+  }
 }
 
 export function ThemeToggle() {
@@ -20,7 +24,7 @@ export function ThemeToggle() {
 
     setTheme((prev) => {
       const next: Theme = prev === "dark" ? "light" : "dark";
-      localStorage.setItem("theme", next);
+      try { localStorage.setItem("theme", next); } catch { /* ignore */ }
       if (next === "light") {
         root.classList.add("light");
       } else {

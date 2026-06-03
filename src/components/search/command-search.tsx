@@ -26,19 +26,11 @@ import {
 } from "lucide-react";
 import { TypeBadge } from "~/components/pokemon/type-badge";
 import { cn } from "~/lib/utils";
+import { API_BASE, STALE_TIMES } from "~/lib/api";
 import { getPokemonSprite, getPokemonSpriteFallback } from "~/lib/sprites";
-import type { PokemonType } from "~/types/pokemon";
+import type { PokemonSearchResult } from "~/types/pokemon";
 
 // ── Types ────────────────────────────────────────────────────────────
-
-interface PokemonSearchResult {
-  id: string;
-  dexNumber: number;
-  name: string;
-  displayName: string;
-  types: [PokemonType] | [PokemonType, PokemonType];
-  generation: number;
-}
 
 interface HistoryEntry extends PokemonSearchResult {
   visitedAt: number;
@@ -336,16 +328,17 @@ export function CommandSearch({ open: controlledOpen, onOpenChange }: CommandSea
   // Search query
   const { data: searchData, isFetching } = useQuery({
     queryKey: ["command-search", debouncedQuery],
-    queryFn: async (): Promise<{ data: PokemonSearchResult[] }> => {
+    queryFn: async ({ signal }): Promise<{ data: PokemonSearchResult[] }> => {
       if (!debouncedQuery.trim()) return { data: [] };
       const res = await fetch(
-        `http://localhost:3001/api/pokemon/search?q=${encodeURIComponent(debouncedQuery)}`
+        `${API_BASE}/pokemon/search?q=${encodeURIComponent(debouncedQuery)}`,
+        { signal }
       );
       if (!res.ok) throw new Error("Search failed");
       return res.json() as Promise<{ data: PokemonSearchResult[] }>;
     },
     enabled: open && debouncedQuery.trim().length > 0,
-    staleTime: 30_000,
+    staleTime: STALE_TIMES.DYNAMIC,
   });
 
   const results = searchData?.data ?? [];

@@ -6,6 +6,9 @@ import { serialize } from "cookie";
 import { db } from "../db/client.ts";
 import { AUTH_CONFIG } from "./config.ts";
 import { requireAuth } from "./middleware.ts";
+import { rateLimit } from "../middleware/rate-limit.ts";
+
+const DUMMY_HASH = "$2a$10$abcdefghijklmnopqrstuuABCDEFGHIJKLMNOPQRSTUVWXYZ012";
 
 const authApp = new Hono<{ Variables: { userId: string } }>();
 
@@ -42,7 +45,7 @@ function clearTokenCookie(): string {
 }
 
 // POST /api/auth/register
-authApp.post("/register", async (c) => {
+authApp.post("/register", rateLimit, async (c) => {
   const body = await c.req.json();
   const parsed = registerSchema.safeParse(body);
 
@@ -78,7 +81,7 @@ authApp.post("/register", async (c) => {
 });
 
 // POST /api/auth/login
-authApp.post("/login", async (c) => {
+authApp.post("/login", rateLimit, async (c) => {
   const body = await c.req.json();
   const parsed = loginSchema.safeParse(body);
 
@@ -93,14 +96,11 @@ authApp.post("/login", async (c) => {
     args: [email],
   });
 
-  if (result.rows.length === 0) {
-    return c.json({ error: "Email ou senha incorretos" }, 401);
-  }
+  const row = result.rows[0] as Record<string, unknown> | undefined;
+  const hashToCompare = row?.password_hash as string ?? DUMMY_HASH;
+  const valid = await bcrypt.compare(password, hashToCompare);
 
-  const row = result.rows[0] as Record<string, unknown>;
-  const valid = await bcrypt.compare(password, row.password_hash as string);
-
-  if (!valid) {
+  if (!row || !valid) {
     return c.json({ error: "Email ou senha incorretos" }, 401);
   }
 

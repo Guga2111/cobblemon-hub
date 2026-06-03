@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router";
+import type { MetaFunction } from "react-router";
 import { RouteErrorBoundary } from "~/components/layout/route-error-boundary";
+
+export const meta: MetaFunction = () => [
+  { title: "Guias — Cobbleverse Hub" },
+  { name: "description", content: "Tutoriais e guias para o Cobbleverse: farming, EV training, shiny hunting e mais" },
+];
 import { Trees, Mountain, Leaf, Dumbbell, Sparkles, Settings, ScrollText, Clock, ChevronRight, Filter } from "lucide-react";
 import { cn } from "~/lib/utils";
 import {

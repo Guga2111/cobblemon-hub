@@ -1,5 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
+import type { MetaFunction } from "react-router";
 import { RouteErrorBoundary } from "~/components/layout/route-error-boundary";
+
+export const meta: MetaFunction = () => [
+  { title: "Item Codex — Cobbleverse Hub" },
+  { name: "description", content: "Catalogo completo de itens do Cobbleverse: balls, berries, held items e mais" },
+];
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
@@ -32,6 +38,7 @@ import {
 } from "lucide-react";
 import { TypeBadge } from "~/components/pokemon/type-badge";
 import { cn } from "~/lib/utils";
+import { API_BASE, STALE_TIMES } from "~/lib/api";
 import { getPokemonSprite } from "~/lib/sprites";
 import type { ItemCategory } from "~/types/item";
 import type { PokemonType } from "~/types/pokemon";
@@ -188,7 +195,7 @@ function ItemDetailDialog({ item, onClose }: { item: ItemData | null; onClose: (
       if (!item || item.droppedBy.length === 0) return [];
       const results = await Promise.all(
         item.droppedBy.map(async (id) => {
-          const res = await fetch(`http://localhost:3001/api/pokemon/${id}`);
+          const res = await fetch(`${API_BASE}/pokemon/${id}`);
           if (!res.ok) return null;
           const json = (await res.json()) as { data: PokemonDropInfo & Record<string, unknown> };
           return { id: json.data.id, name: json.data.name, displayName: json.data.displayName, types: json.data.types, dexNumber: json.data.dexNumber } as PokemonDropInfo;
@@ -197,7 +204,7 @@ function ItemDetailDialog({ item, onClose }: { item: ItemData | null; onClose: (
       return results.filter((r): r is PokemonDropInfo => r !== null).sort((a, b) => a.dexNumber - b.dexNumber);
     },
     enabled: !!item && item.droppedBy.length > 0,
-    staleTime: 60_000,
+    staleTime: STALE_TIMES.DYNAMIC,
   });
 
   return (
@@ -345,8 +352,8 @@ export default function Items() {
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["items", debouncedSearch, selectedCategory],
-    queryFn: async () => {
-      const res = await fetch(`http://localhost:3001/api/items?${queryParams.toString()}`);
+    queryFn: async ({ signal }) => {
+      const res = await fetch(`${API_BASE}/items?${queryParams.toString()}`, { signal });
       if (!res.ok) throw new Error("Failed to fetch items");
       const json = (await res.json()) as { data: ItemData[] };
       return json.data;

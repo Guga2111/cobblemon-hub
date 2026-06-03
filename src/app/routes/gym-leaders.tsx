@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { RouteErrorBoundary } from "~/components/layout/route-error-boundary";
 import { TypeBadge } from "~/components/pokemon/type-badge";
 import { cn } from "~/lib/utils";
+import { API_BASE, STALE_TIMES } from "~/lib/api";
 const SHOWDOWN_SPRITE_BASE = "https://play.pokemonshowdown.com/sprites/gen5/";
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -246,13 +247,13 @@ export default function GymLeadersPage() {
 
   const { data: gymLeaders, isLoading } = useQuery({
     queryKey: ["gym-leaders"],
-    queryFn: async () => {
-      const res = await fetch("http://localhost:3001/api/gym-leaders");
+    queryFn: async ({ signal }) => {
+      const res = await fetch(`${API_BASE}/gym-leaders`, { signal });
       if (!res.ok) throw new Error("Failed to fetch gym leaders");
       const json = (await res.json()) as { data: GymLeader[] };
       return json.data;
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: STALE_TIMES.STATIC,
   });
 
   const allLeaders = gymLeaders ?? [];

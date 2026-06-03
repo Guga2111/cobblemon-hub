@@ -1,26 +1,75 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import { logger } from "hono/logger";
+import { compress } from "hono/compress";
 import { db } from "./db/client.ts";
 import { pokemonSchema, itemSchema, spawnEntrySchema } from "../src/lib/schemas.ts";
 import { authApp } from "./auth/routes.ts";
 
 const app = new Hono();
 
+// ── Middleware ──────────────────────────────────────────────────────
+app.use("*", logger());
+app.use("*", compress());
+
+app.onError((err, c) => {
+  console.error("[API Error]", err.stack ?? err.message);
+  return c.json({ error: "Internal server error" }, 500);
+});
+
 app.use(
   "/api/*",
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CORS_ORIGIN ?? "http://localhost:5173",
     allowMethods: ["GET", "POST"],
     allowHeaders: ["Content-Type"],
     credentials: true,
   })
 );
 
+// ── Security headers ────────────────────────────────────────────────
+app.use("/api/*", async (c, next) => {
+  await next();
+  c.header(
+    "Content-Security-Policy-Report-Only",
+    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; connect-src 'self'"
+  );
+});
+
+// ── Cache headers ───────────────────────────────────────────────────
+app.use("/api/*", async (c, next) => {
+  await next();
+  const path = c.req.path;
+  if (path.startsWith("/api/auth")) {
+    c.header("Cache-Control", "no-store");
+  } else {
+    c.header("Cache-Control", "public, max-age=300");
+  }
+});
+
 // ── Auth routes ───────────────────────────────────────────────────
 app.route("/api/auth", authApp);
 
 // ── Helpers ─────────────────────────────────────────────────────────
+
+const POKEMON_TYPES = [
+  "normal", "fire", "water", "electric", "grass", "ice", "fighting", "poison",
+  "ground", "flying", "psychic", "bug", "rock", "ghost", "dragon", "dark", "steel", "fairy",
+] as const;
+
+function escapeLike(str: string): string {
+  return str.replace(/[%_\\]/g, (c) => `\\${c}`);
+}
+
+function safeJsonParse<T>(raw: string | null | undefined, fallback: T): T {
+  if (raw == null) return fallback;
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    return fallback;
+  }
+}
 
 function rowToPokemon(row: Record<string, unknown>) {
   return {
@@ -28,17 +77,17 @@ function rowToPokemon(row: Record<string, unknown>) {
     dexNumber: row.dex_number as number,
     name: row.name as string,
     displayName: row.display_name as string,
-    types: JSON.parse(row.types as string) as unknown,
-    baseStats: JSON.parse(row.base_stats as string) as unknown,
-    abilities: JSON.parse(row.abilities as string) as unknown,
-    moves: JSON.parse(row.moves as string) as unknown,
-    evolutions: JSON.parse(row.evolutions as string) as unknown,
-    forms: JSON.parse(row.forms as string) as unknown,
-    drops: JSON.parse(row.drops as string) as unknown,
+    types: safeJsonParse(row.types as string, []),
+    baseStats: safeJsonParse(row.base_stats as string, {}),
+    abilities: safeJsonParse(row.abilities as string, []),
+    moves: safeJsonParse(row.moves as string, []),
+    evolutions: safeJsonParse(row.evolutions as string, []),
+    forms: safeJsonParse(row.forms as string, []),
+    drops: safeJsonParse(row.drops as string, []),
     catchRate: row.catch_rate as number,
     baseExp: row.base_exp as number,
     growthRate: row.growth_rate as string,
-    eggGroups: JSON.parse(row.egg_groups as string) as unknown,
+    eggGroups: safeJsonParse(row.egg_groups as string, []),
     genderRatio: row.gender_ratio as number | null,
     generation: row.generation as number,
   };
@@ -50,12 +99,12 @@ function rowToListItem(row: Record<string, unknown>) {
     dexNumber: row.dex_number as number,
     name: row.name as string,
     displayName: row.display_name as string,
-    types: JSON.parse(row.types as string) as unknown,
-    baseStats: JSON.parse(row.base_stats as string) as unknown,
+    types: safeJsonParse(row.types as string, []),
+    baseStats: safeJsonParse(row.base_stats as string, null),
     generation: row.generation as number,
     primaryBucket: (row.primary_bucket as string | null) ?? null,
     primaryBiomes: row.primary_biomes
-      ? (JSON.parse(row.primary_biomes as string) as string[])
+      ? safeJsonParse<string[]>(row.primary_biomes as string, [])
       : null,
     primaryContext: (row.primary_context as string | null) ?? null,
     primaryWeather: (row.primary_weather as string | null) ?? null,
@@ -68,13 +117,16 @@ function rowToListItem(row: Record<string, unknown>) {
 app.get("/api/pokemon", async (c) => {
   const query = c.req.query();
   const page = Math.max(1, parseInt(query.page ?? "1", 10));
-  const limit = Math.min(1000, Math.max(1, parseInt(query.limit ?? "20", 10)));
+  const limit = Math.min(500, Math.max(1, parseInt(query.limit ?? "20", 10)));
   const offset = (page - 1) * limit;
 
   const conditions: string[] = [];
   const args: (string | number)[] = [];
 
   if (query.type) {
+    if (!POKEMON_TYPES.includes(query.type as typeof POKEMON_TYPES[number])) {
+      return c.json({ error: "Invalid type parameter" }, 400);
+    }
     conditions.push("types LIKE ?");
     args.push(`%"${query.type}"%`);
   }
@@ -88,17 +140,25 @@ app.get("/api/pokemon", async (c) => {
   const [countResult, dataResult] = await Promise.all([
     db.execute({ sql: `SELECT COUNT(*) as total FROM pokemon ${where}`, args }),
     db.execute({
-      sql: `SELECT
+      sql: `WITH ranked_spawns AS (
+        SELECT
+          pokemon_id, bucket, biomes, context, conditions,
+          ROW_NUMBER() OVER (PARTITION BY pokemon_id ORDER BY weight DESC) as rn
+        FROM spawn_entries
+      )
+      SELECT
         p.id, p.dex_number, p.name, p.display_name, p.types, p.base_stats, p.generation,
-        (SELECT bucket FROM spawn_entries WHERE pokemon_id = p.id ORDER BY weight DESC LIMIT 1) as primary_bucket,
-        (SELECT biomes FROM spawn_entries WHERE pokemon_id = p.id ORDER BY weight DESC LIMIT 1) as primary_biomes,
-        (SELECT context FROM spawn_entries WHERE pokemon_id = p.id ORDER BY weight DESC LIMIT 1) as primary_context,
-        (SELECT CASE
-          WHEN json_extract(conditions, '$.isThundering') = 1 THEN 'thunderstorm'
-          WHEN json_extract(conditions, '$.isRaining') = 1 THEN 'rain'
+        rs.bucket as primary_bucket,
+        rs.biomes as primary_biomes,
+        rs.context as primary_context,
+        CASE
+          WHEN json_extract(rs.conditions, '$.isThundering') = 1 THEN 'thunderstorm'
+          WHEN json_extract(rs.conditions, '$.isRaining') = 1 THEN 'rain'
           ELSE NULL
-         END FROM spawn_entries WHERE pokemon_id = p.id ORDER BY weight DESC LIMIT 1) as primary_weather
-      FROM pokemon p ${where} ORDER BY p.dex_number LIMIT ? OFFSET ?`,
+        END as primary_weather
+      FROM pokemon p
+      LEFT JOIN ranked_spawns rs ON rs.pokemon_id = p.id AND rs.rn = 1
+      ${where} ORDER BY p.dex_number LIMIT ? OFFSET ?`,
       args: [...args, limit, offset],
     }),
   ]);
@@ -117,8 +177,8 @@ app.get("/api/pokemon/search", async (c) => {
   if (!q) return c.json({ data: [] });
 
   const result = await db.execute({
-    sql: "SELECT id, dex_number, name, display_name, types, generation FROM pokemon WHERE name LIKE ? OR display_name LIKE ? ORDER BY dex_number LIMIT 20",
-    args: [`%${q}%`, `%${q}%`],
+    sql: "SELECT id, dex_number, name, display_name, types, generation FROM pokemon WHERE name LIKE ? ESCAPE '\\' OR display_name LIKE ? ESCAPE '\\' ORDER BY dex_number LIMIT 20",
+    args: [`%${escapeLike(q)}%`, `%${escapeLike(q)}%`],
   });
 
   return c.json({
@@ -129,7 +189,7 @@ app.get("/api/pokemon/search", async (c) => {
         dexNumber: row.dex_number as number,
         name: row.name as string,
         displayName: row.display_name as string,
-        types: JSON.parse(row.types as string) as unknown,
+        types: safeJsonParse(row.types as string, []),
         generation: row.generation as number,
       };
     }),
@@ -183,13 +243,13 @@ app.get("/api/pokemon/:id", async (c) => {
       pokemonId: r.pokemon_id,
       bucket: r.bucket,
       context: r.context,
-      biomes: JSON.parse(r.biomes as string),
+      biomes: safeJsonParse(r.biomes as string, []),
       weight: r.weight,
-      weightMultiplier: r.weight_multiplier ? JSON.parse(r.weight_multiplier as string) : null,
+      weightMultiplier: r.weight_multiplier ? safeJsonParse(r.weight_multiplier as string, null) : null,
       levelMin: r.level_min,
       levelMax: r.level_max,
-      conditions: JSON.parse(r.conditions as string),
-      anticonditions: JSON.parse(r.anticonditions as string),
+      conditions: safeJsonParse(r.conditions as string, {}),
+      anticonditions: safeJsonParse(r.anticonditions as string, {}),
     };
   });
 
@@ -223,12 +283,12 @@ app.get("/api/spawns/:pokemonId", async (c) => {
       pokemonId: r.pokemon_id as string,
       bucket: r.bucket as string,
       context: r.context as string,
-      biomes: JSON.parse(r.biomes as string) as string[],
+      biomes: safeJsonParse<string[]>(r.biomes as string, []),
       weight: r.weight as number,
-      weightMultiplier: r.weight_multiplier ? JSON.parse(r.weight_multiplier as string) : null,
+      weightMultiplier: r.weight_multiplier ? safeJsonParse(r.weight_multiplier as string, null) : null,
       levelRange: { min: r.level_min as number, max: r.level_max as number },
-      conditions: JSON.parse(r.conditions as string),
-      anticonditions: JSON.parse(r.anticonditions as string),
+      conditions: safeJsonParse(r.conditions as string, {}),
+      anticonditions: safeJsonParse(r.anticonditions as string, {}),
     };
 
     const validated = spawnEntrySchema.safeParse(entry);
@@ -261,9 +321,9 @@ function rowToItem(row: Record<string, unknown>) {
     category: row.category as string,
     description: row.description as string,
     sprite: row.sprite as string | null,
-    droppedBy: JSON.parse(row.dropped_by as string) as string[],
+    droppedBy: safeJsonParse<string[]>(row.dropped_by as string, []),
     obtainMethod: (row.obtain_method as string | null) ?? null,
-    recipe: row.recipe ? JSON.parse(row.recipe as string) as unknown : null,
+    recipe: row.recipe ? safeJsonParse(row.recipe as string, null) : null,
     effect: (row.effect as string | null) ?? null,
   };
 }
@@ -278,8 +338,8 @@ app.get("/api/items", async (c) => {
   const args: (string | number)[] = [];
 
   if (q) {
-    conditions.push("(name LIKE ? OR display_name LIKE ?)");
-    args.push(`%${q}%`, `%${q}%`);
+    conditions.push("(name LIKE ? ESCAPE '\\' OR display_name LIKE ? ESCAPE '\\')");
+    args.push(`%${escapeLike(q)}%`, `%${escapeLike(q)}%`);
   }
   if (category) {
     conditions.push("category = ?");
@@ -334,8 +394,8 @@ function rowToGymLeader(row: Record<string, unknown>) {
     levelCap: row.level_cap as number,
     orderInRegion: row.order_in_region as number,
     biome: row.biome as string | null,
-    team: JSON.parse(row.team as string) as unknown,
-    rewards: JSON.parse(row.rewards as string) as unknown,
+    team: safeJsonParse(row.team as string, []),
+    rewards: safeJsonParse(row.rewards as string, []),
     unlockRequirement: row.unlock_requirement as string | null,
     locateCommand: row.locate_command as string | null,
   };

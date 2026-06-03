@@ -19,6 +19,11 @@ CREATE TABLE IF NOT EXISTS pokemon (
   source_file TEXT             -- datapack source file for traceability
 );
 
+CREATE INDEX IF NOT EXISTS idx_pokemon_name ON pokemon(name);
+CREATE INDEX IF NOT EXISTS idx_pokemon_display_name ON pokemon(display_name);
+CREATE INDEX IF NOT EXISTS idx_pokemon_dex_number ON pokemon(dex_number);
+CREATE INDEX IF NOT EXISTS idx_pokemon_generation ON pokemon(generation);
+
 CREATE TABLE IF NOT EXISTS spawn_entries (
   id TEXT PRIMARY KEY,
   pokemon_id TEXT NOT NULL,
@@ -34,6 +39,9 @@ CREATE TABLE IF NOT EXISTS spawn_entries (
   source_file TEXT              -- datapack source file for traceability
 );
 
+CREATE INDEX IF NOT EXISTS idx_spawn_entries_pokemon_id ON spawn_entries(pokemon_id);
+CREATE INDEX IF NOT EXISTS idx_spawn_entries_weight ON spawn_entries(pokemon_id, weight DESC);
+
 CREATE TABLE IF NOT EXISTS items (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
@@ -47,6 +55,9 @@ CREATE TABLE IF NOT EXISTS items (
   effect TEXT,                 -- effect description | null
   source_file TEXT             -- datapack source file for traceability
 );
+
+CREATE INDEX IF NOT EXISTS idx_items_name ON items(name);
+CREATE INDEX IF NOT EXISTS idx_items_category ON items(category);
 
 CREATE TABLE IF NOT EXISTS users (
   id TEXT PRIMARY KEY,
@@ -74,6 +85,8 @@ CREATE TABLE IF NOT EXISTS gym_leaders (
   locate_command TEXT
 );
 
+CREATE INDEX IF NOT EXISTS idx_gym_leaders_region ON gym_leaders(region);
+
 CREATE TABLE IF NOT EXISTS moves (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
@@ -85,3 +98,6 @@ CREATE TABLE IF NOT EXISTS moves (
   pp INTEGER NOT NULL,
   source_file TEXT             -- datapack source file for traceability
 );
+
+CREATE INDEX IF NOT EXISTS idx_moves_name ON moves(name);
+CREATE INDEX IF NOT EXISTS idx_moves_type ON moves(type);

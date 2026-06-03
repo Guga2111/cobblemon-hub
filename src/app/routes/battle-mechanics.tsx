@@ -55,7 +55,7 @@ const MECHANICS: Mechanic[] = [
     icon: Zap,
     color: "text-amber-500",
     borderColor: "border-amber-500/30 bg-amber-500/5",
-    description: "Movimentos ultra-poderosos que podem ser usados uma vez por batalha. TODO: Z-Crystals nao foram encontrados no datapack do Cobblemon 1.7.3 — verificar se esta mecanica esta implementada nesta versao ou requer um mod adicional.",
+    description: "Movimentos ultra-poderosos que podem ser usados uma vez por batalha. A disponibilidade de Z-Crystals no Cobblemon 1.7.3 nao foi confirmada — esta mecanica pode requerer um mod adicional.",
     howItWorks: [
       "Obtenha o Z-Crystal do tipo desejado",
       "Equipe o Z-Crystal no Pokemon como held item",
@@ -64,7 +64,7 @@ const MECHANICS: Mechanic[] = [
       "Movimentos de status ganham efeitos bonus com Z-Power",
     ],
     keyFacts: [
-      { label: "Z-Crystals", value: "TODO" },
+      { label: "Z-Crystals", value: "Nao confirmado" },
       { label: "Requisito", value: "Move do mesmo tipo" },
       { label: "Uso", value: "1 por batalha" },
       { label: "Fonte", value: "Nao confirmado" },
@@ -97,16 +97,16 @@ const MECHANICS: Mechanic[] = [
     icon: Gem,
     color: "text-cyan-500",
     borderColor: "border-cyan-500/30 bg-cyan-500/5",
-    description: "TODO: A mecanica geral de Terastallization (mudar tipo de qualquer Pokemon em batalha) nao foi encontrada no datapack do Cobblemon 1.7.3. O recurso tera_form existe apenas para Terapagos (troca visual Normal/Terastal/Stellar). Verificar se implementado nesta versao.",
+    description: "A mecanica geral de Terastallization (mudar tipo de qualquer Pokemon em batalha) nao foi confirmada no Cobblemon 1.7.3. O recurso tera_form existe apenas para Terapagos (troca visual Normal/Terastal/Stellar). Pode nao estar disponivel nesta versao.",
     howItWorks: [
-      "TODO: verificar implementacao no Cobblemon 1.7.3",
+      "Implementacao nao confirmada no Cobblemon 1.7.3",
       "Cada Pokemon teria um Tera Type (qualquer um dos 18 tipos)",
       "Terastallization mudaria o tipo do Pokemon durante a batalha",
       "Movimentos STAB ganhariam um boost adicional com o Tera Type",
       "Duraria ate o fim da batalha",
     ],
     keyFacts: [
-      { label: "Status", value: "TODO" },
+      { label: "Status", value: "Nao confirmado" },
       { label: "STAB Bonus", value: "Aumentado" },
       { label: "Duracao", value: "1 Batalha" },
       { label: "Fonte", value: "Nao confirmado" },
@@ -226,7 +226,7 @@ export default function BattleMechanicsPage() {
             <p className="text-xs text-muted-foreground/60 leading-relaxed">
               <strong className="text-foreground">Confirmado no datapack:</strong> Mega Evolution (48 formas / 46 especies) e Dynamax/Gigantamax (33 especies) sao recursos nativos do Cobblemon 1.7.3.
               <br />
-              <strong className="text-foreground">TODO (verificacao manual necessaria):</strong> Z-Moves e Terastallization nao foram encontrados no datapack 1.7.3 — podem exigir mod adicional ou nao estar implementados nesta versao.
+              <strong className="text-foreground">Pendente de confirmacao:</strong> Z-Moves e Terastallization nao foram encontrados no datapack 1.7.3 — podem exigir mod adicional ou nao estar implementados nesta versao.
             </p>
           </div>
         </CardContent>

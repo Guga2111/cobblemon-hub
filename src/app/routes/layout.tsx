@@ -1,22 +1,10 @@
 import { Outlet, NavLink } from "react-router";
 import { useState, useCallback, Suspense } from "react";
 import {
-  Home,
-  BookOpen,
-  Swords,
-  Package,
-  ScrollText,
   ChevronLeft,
   ChevronRight,
   Menu,
   LogOut,
-  Map,
-  Trophy,
-  ShoppingCart,
-  Star,
-  Crosshair,
-  Sparkles,
-  Route,
 } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { Button } from "~/components/ui/button";
@@ -41,6 +29,7 @@ import { ScrollArea } from "~/components/ui/scroll-area";
 import { ProtectedRoute } from "~/components/auth/protected-route";
 import { useAuthStore } from "~/features/auth/use-auth-store";
 import { useLogout } from "~/features/auth/auth-queries";
+import { NAV_GROUPS, NAV_ITEMS_FLAT, type NavItem } from "~/lib/navigation";
 
 function RouteSkeleton() {
   return (
@@ -60,46 +49,6 @@ function RouteSkeleton() {
   );
 }
 
-interface NavItem {
-  to: string;
-  label: string;
-  icon: React.ElementType;
-  end: boolean;
-  disabled?: boolean;
-}
-
-interface NavGroup {
-  label: string;
-  items: NavItem[];
-}
-
-const NAV_GROUPS: NavGroup[] = [
-  {
-    label: "Plataforma",
-    items: [
-      { to: "/home", label: "Home", icon: Home, end: true },
-      { to: "/pokedex", label: "Pokedex", icon: BookOpen, end: false },
-      { to: "/team-builder", label: "Team Builder", icon: Swords, end: false },
-      { to: "/items", label: "Itens", icon: Package, end: false },
-      { to: "/guides", label: "Guias", icon: ScrollText, end: false },
-    ],
-  },
-  {
-    label: "Cobbleverse",
-    items: [
-      { to: "/gym-leaders", label: "Gym Leaders", icon: Trophy, end: false },
-      { to: "/raids", label: "Raids", icon: Crosshair, end: false },
-      { to: "/shops", label: "Lojas", icon: ShoppingCart, end: false },
-      { to: "/battle-mechanics", label: "Mecanicas", icon: Sparkles, end: false },
-      { to: "/legendaries", label: "Lendarios", icon: Star, end: false },
-      { to: "/map", label: "Mapa", icon: Map, end: false },
-      { to: "/progression", label: "Progressao", icon: Route, end: false },
-    ],
-  },
-];
-
-// Flat list for bottom nav (mobile) — only enabled items
-const NAV_ITEMS_FLAT = NAV_GROUPS.flatMap((g) => g.items).filter((i) => !i.disabled);
 
 function NavLinkItem({
   item,
@@ -281,9 +230,11 @@ function UserMenu() {
 
 export default function AppLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("sidebar-collapsed") === "true";
-    }
+    try {
+      if (typeof window !== "undefined") {
+        return localStorage.getItem("sidebar-collapsed") === "true";
+      }
+    } catch { /* ignore */ }
     return false;
   });
 
@@ -292,9 +243,11 @@ export default function AppLayout() {
   const toggleSidebar = useCallback(() => {
     setSidebarCollapsed((prev) => {
       const next = !prev;
-      if (typeof window !== "undefined") {
-        localStorage.setItem("sidebar-collapsed", String(next));
-      }
+      try {
+        if (typeof window !== "undefined") {
+          localStorage.setItem("sidebar-collapsed", String(next));
+        }
+      } catch { /* ignore */ }
       return next;
     });
   }, []);

@@ -103,6 +103,30 @@ export interface PokemonForm {
   baseStats: BaseStats;
 }
 
+export interface PokemonListItem {
+  id: string;
+  dexNumber: number;
+  name: string;
+  displayName: string;
+  types: PokemonType[];
+  baseStats: BaseStats | null;
+  generation: number;
+  primaryBucket: string | null;
+  primaryBiomes: string[] | null;
+  primaryContext: string | null;
+  primaryWeather: string | null;
+  bst: number;
+}
+
+export interface PokemonSearchResult {
+  id: string;
+  dexNumber: number;
+  name: string;
+  displayName: string;
+  types: [PokemonType] | [PokemonType, PokemonType];
+  generation: number;
+}
+
 export interface Pokemon {
   id: string;
   dexNumber: number;

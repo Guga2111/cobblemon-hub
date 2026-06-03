@@ -11,23 +11,16 @@ import {
 } from "lucide-react";
 import { TypeBadge } from "~/components/pokemon/type-badge";
 import { cn } from "~/lib/utils";
+import { API_BASE, STALE_TIMES } from "~/lib/api";
 import { getPokemonSprite } from "~/lib/sprites";
 import { NATURES } from "~/lib/constants";
 import { useTeamStore } from "~/features/team-builder/use-team-store";
 import { EvSlider } from "~/components/team/ev-slider";
 import { StatCalculator } from "~/components/team/stat-calculator";
-import type { PokemonType } from "~/types/pokemon";
+import type { PokemonType, PokemonSearchResult } from "~/types/pokemon";
 import type { StatBlock } from "~/types/team";
 
 // ── Types ────────────────────────────────────────────────────────────
-
-interface PokemonSearchResult {
-  id: string;
-  dexNumber: number;
-  name: string;
-  displayName: string;
-  types: [PokemonType] | [PokemonType, PokemonType];
-}
 
 interface PokemonDetailResponse {
   id: string;
@@ -70,6 +63,7 @@ function DropdownPanel({
 }) {
   return (
     <div
+      role="listbox"
       className={cn(
         "absolute left-0 right-0 top-full z-50 mt-1",
         "rounded-lg border border-border/70",
@@ -97,6 +91,8 @@ function AttrButton({
     <button
       type="button"
       onClick={onClick}
+      aria-expanded={open}
+      aria-haspopup="listbox"
       className={cn(
         "w-full flex items-center gap-2 px-3 py-[9px] text-left",
         "hover:bg-muted/30 transition-colors duration-100",
@@ -240,13 +236,13 @@ export const TeamSlot = memo(function TeamSlot({ slotIndex }: TeamSlotProps) {
     queryFn: async () => {
       if (!pokemonQueryDebounced.trim()) return [];
       const res = await fetch(
-        `http://localhost:3001/api/pokemon/search?q=${encodeURIComponent(pokemonQueryDebounced)}`
+        `${API_BASE}/pokemon/search?q=${encodeURIComponent(pokemonQueryDebounced)}`
       );
       const json = (await res.json()) as { data: PokemonSearchResult[] };
       return json.data;
     },
     enabled: pokemonQueryDebounced.trim().length > 0,
-    staleTime: 30_000,
+    staleTime: STALE_TIMES.DYNAMIC,
   });
 
   // Items query (only when item dropdown open)
@@ -256,12 +252,12 @@ export const TeamSlot = memo(function TeamSlot({ slotIndex }: TeamSlotProps) {
       const qs = itemQueryDebounced.trim()
         ? `?q=${encodeURIComponent(itemQueryDebounced)}`
         : "";
-      const res = await fetch(`http://localhost:3001/api/items${qs}`);
+      const res = await fetch(`${API_BASE}/items${qs}`);
       const json = (await res.json()) as { data: ItemResult[] };
       return json.data.slice(0, 30);
     },
     enabled: openDropdown === "item",
-    staleTime: 60_000,
+    staleTime: STALE_TIMES.DYNAMIC,
   });
 
   async function selectPokemon(result: PokemonSearchResult) {
@@ -270,7 +266,7 @@ export const TeamSlot = memo(function TeamSlot({ slotIndex }: TeamSlotProps) {
     setFetchingPokemon(true);
     try {
       const res = await fetch(
-        `http://localhost:3001/api/pokemon/${result.id}`
+        `${API_BASE}/pokemon/${result.id}`
       );
       const json = (await res.json()) as { data: PokemonDetailResponse };
       const d = json.data;

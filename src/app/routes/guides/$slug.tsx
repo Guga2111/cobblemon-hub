@@ -1,5 +1,11 @@
 import { Link, useParams } from "react-router";
+import type { MetaFunction } from "react-router";
 import { RouteErrorBoundary } from "~/components/layout/route-error-boundary";
+
+export const meta: MetaFunction = () => [
+  { title: "Guia — Cobbleverse Hub" },
+  { name: "description", content: "Guia detalhado do Cobbleverse" },
+];
 import * as Accordion from "@radix-ui/react-accordion";
 import {
   ArrowLeft,
